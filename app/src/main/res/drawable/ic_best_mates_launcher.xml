@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A crisp, self-contained Best Mates monogram: moonlight, heart and hand-drawn BM. -->
+    <path
+        android:fillColor="#524064"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#6F5B83"
+        android:pathData="M14,16C21,9 35,10 43,18C50,11 64,9 73,16C86,26 82,47 68,63L43,89L18,63C5,48 1,27 14,16Z" />
+    <path
+        android:fillColor="#A78AC5"
+        android:pathData="M43,18C50,11 64,9 73,16C81,22 82,33 79,42C70,29 58,25 43,26Z" />
+    <path
+        android:fillColor="#EDE6F7"
+        android:pathData="M77,20l2.2,5.3L85,27.5L79.2,29.7L77,35L74.8,29.7L69,27.5L74.8,25.3Z" />
+    <path
+        android:fillColor="#D7C8E8"
+        android:pathData="M25,27C20,33 20,42 26,48C30,52 36,53 41,50C35,54 27,53 22,48C16,41 17,31 25,27Z" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFF9FF"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M29,40L29,69M30,40C43,36 47,42 45,48C44,52 39,54 30,53M30,53C45,49 49,57 46,64C43,70 36,70 30,69M54,69L54,40L64,57L74,40L74,69" />
+    <path
+        android:fillColor="#F4EFFF"
+        android:pathData="M44,80C46.5,76.8 51.5,77.4 52.7,80.5C53.8,77.4 58.8,76.8 61.3,80C64.2,83.8 58.1,88.1 52.7,91C47.2,88.1 41.1,83.8 44,80Z" />
+</vector>

@@ -1,0 +1,23 @@
+.gradle/
+.idea/
+local.properties
+build/
+app/build/
+.tooling/
+.android-sdk/
+.city-data/
+.gradle-local/
+.kotlin/
+*.apk
+/release-assets/
+
+# Local test captures and reference material. Release screenshots live in docs/.
+/.tmp_*
+/bestmates_*.png
+/bm_*.png
+/bm_*.xml
+/*.png
+/*.jpg
+/*.xml
+/1/
+/KWGT/

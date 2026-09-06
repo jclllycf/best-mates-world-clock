@@ -1,0 +1,126 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_best_mates_launcher"
+        android:roundIcon="@drawable/ic_best_mates_launcher"
+        android:label="Best Mates"
+        android:theme="@style/Theme.BestMates">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".widget.WorldClockWidgetProvider" android:exported="false" android:label="Best Mates">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_info" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x1" android:exported="false" android:enabled="true" android:label="Best Mates 1×1">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x1" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x2" android:exported="false" android:enabled="true" android:label="Best Mates 1×2">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x2" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x3" android:exported="false" android:enabled="true" android:label="Best Mates 1×3">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x3" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x4" android:exported="false" android:enabled="true" android:label="Best Mates 1×4">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x4" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x5" android:exported="false" android:enabled="true" android:label="Best Mates 1×5">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x5" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_1x6" android:exported="false" android:enabled="true" android:label="Best Mates 1×6">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_1x6" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x1" android:exported="false" android:enabled="true" android:label="Best Mates 2×1">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x1" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x2" android:exported="false" android:enabled="true" android:label="Best Mates 2×2">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x2" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x3" android:exported="false" android:enabled="true" android:label="Best Mates 2×3">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x3" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x4" android:exported="false" android:enabled="true" android:label="Best Mates 2×4">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x4" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x5" android:exported="false" android:enabled="true" android:label="Best Mates 2×5">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x5" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_2x6" android:exported="false" android:enabled="true" android:label="Best Mates 2×6">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_2x6" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x1" android:exported="false" android:enabled="true" android:label="Best Mates 3×1">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x1" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x2" android:exported="false" android:enabled="true" android:label="Best Mates 3×2">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x2" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x3" android:exported="false" android:enabled="true" android:label="Best Mates 3×3">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x3" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x4" android:exported="false" android:enabled="true" android:label="Best Mates 3×4">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x4" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x5" android:exported="false" android:enabled="true" android:label="Best Mates 3×5">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x5" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_3x6" android:exported="false" android:enabled="true" android:label="Best Mates 3×6">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_3x6" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x1" android:exported="false" android:enabled="true" android:label="Best Mates 4×1">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x1" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x2" android:exported="false" android:enabled="true" android:label="Best Mates 4×2">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x2" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x3" android:exported="false" android:enabled="true" android:label="Best Mates 4×3">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x3" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x4" android:exported="false" android:enabled="true" android:label="Best Mates 4×4">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x4" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x5" android:exported="false" android:enabled="true" android:label="Best Mates 4×5">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x5" />
+        </receiver>
+        <receiver android:name=".widget.SizedWidgetProvider_4x6" android:exported="false" android:enabled="true" android:label="Best Mates 4×6">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/world_clock_widget_4x6" />
+        </receiver>
+        <receiver android:name=".widget.PinWidgetReceiver" android:exported="false" />
+    </application>
+</manifest>
