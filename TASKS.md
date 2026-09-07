@@ -1,9 +1,9 @@
-﻿# BEST MATES TASKS
+# BEST MATES TASKS
 
 ## P0 — Editor stability and correctness
 
 ### TASK-007 — Unlimited rotation and correct movement
-Status: DONE
+Status: IN_PROGRESS
 Priority: P0
 
 Requirements:
@@ -16,34 +16,35 @@ Requirements:
 - Existing saved projects must remain compatible.
 - Do not solve this by clamping rotation.
 
-Root cause (identified 2026-09-07):
-- Drag delta accumulation (total += drag) is in local/screen space.
-- The rotateLocalDelta() helper exists but the background layer drag (lines 1104–1132) explicitly
-  comments it out ("Rotating them again reverses movement at 180 degrees"), leaving drag
-  broken for any rotated layer.
-- The city and text drag code may have the same issue (needs inspection).
-- The rotation handle uses totalX * 0.45 heuristic – works for slow drags but not a true
-  angle computation.
-- Persistence: rotation is stored as raw Float in JSON; no normalization on save. Unlimited
-  rotation values will round-trip correctly once the gesture is fixed.
+Physical-device verification feedback (Reopened 2026-09-07):
+- Continuous 360° rotation became possible in principle.
+- Rotation-handle hit detection is poor: user often needs several attempts to grab the handle.
+- Component/city/text rotation handles are visually inconsistent and need unification.
+- Rotation sensitivity feels slightly low (needs modest increase without crude multiplier overshoot).
+- Tracking begins to feel wrong around 45°–60°.
+- Beyond roughly 60°, rotation no longer follows the finger correctly.
+- Note: Do NOT mark TASK-007 as DONE until physical-device verification passes.
 
 Files involved:
 - app/src/main/java/com/bestmates/worldclock/MainActivity.kt
-  - rotateLocalDelta() (line 1365)
-  - Layer drag handler (lines 1101–1133)
-  - City drag handler (~lines 1195–1260)
-  - Text drag handler (~lines 1275–1340)
-  - snapRotation() (line 1390)
+  - Layer rotation handle
+  - City rotation handle
+  - Text rotation handle
+  - angleBetween(), unwrapAngleDelta(), snapRotation()
+  - RotationHandleUnified()
 
 Acceptance tests:
+- Touch target easy to acquire reliably (e.g. 36–44dp touch area)
 - Drag right at 0°  → object moves right
 - Drag right at 90° → object moves right
 - Drag right at 180° → object moves right
 - Drag right at 270° → object moves right
 - Drag right at 450° → object moves right
+- Continuous tracking works accurately through 0°..360°+ without drifting or lagging beyond 45°-60°
 - Negative rotation also works
 - Project can be saved/reopened correctly
 - assembleDebug passes
+- Physical device verification passes
 
 
 ### TASK-010 — Multiline text spacing
