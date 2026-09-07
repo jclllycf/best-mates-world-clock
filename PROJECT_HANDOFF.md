@@ -2,7 +2,7 @@
 
 ## 1. PROJECT OVERVIEW
 
-Best Mates is intended to be an open, creator-friendly Android world-clock widget editor. Users create a widget inside the app, choose cities, shape, colors, text, fonts and day/night icons, preview the result, and add it to the Android home screen. The long-term product goal includes many cities, local time/date, solar day/night state and optional weather. The current repository is an Android-only v0.8 public preview; iOS is not implemented.
+Best Mates is intended to be an open, creator-friendly Android world-clock widget editor. Users create a widget inside the app, choose cities, shape, colors, text, fonts and day/night icons, preview the result, and add it to the Android home screen. The long-term product goal includes many cities, local time/date, solar day/night state and optional weather. The current repository is an Android-only v0.1 public preview; iOS is not implemented.
 
 ## 2. TECH STACK
 

@@ -1,16 +1,16 @@
 # Changelog
 
-## 0.8.0 — Public preview
+## 0.1.0 — Public preview
 
 First public testing release of the standalone Android editor and widget.
 
 ### Included
 
 - Local project workspace with create, copy, paste, rename and delete flows.
-- Canvas-based editor for backgrounds, city blocks and custom text.
+- Canvas editor for backgrounds, city blocks and custom text.
 - Per-city IANA time zones, time/date display and local solar day/night state.
-- A bundled global city database with continent, country and city selection.
-- Multiple widget provider sizes from 1×1 to 4×6.
+- Bundled global city database with continent, country and city selection.
+- Multiple declared widget sizes from 1×1 to 4×6.
 - Day/night palette controls, shapes, font choices and recolourable solar symbols.
 - Cloud, Dream, Midnight and Mono app themes, plus an in-progress language system.
 
@@ -24,10 +24,10 @@ First public testing release of the standalone Android editor and widget.
 
 ## Release policy
 
-Each public preview will receive a GitHub Release with its source tag, changelog and a directly installable testing APK. Earlier internal builds are intentionally not published because they were not verified for public testing.
+Each public preview receives a GitHub Release with its source tag, changelog and directly installable testing APK. Earlier internal builds are intentionally not published because they were not verified for public testing.
 
-## v0.8.0 APK verification
+## v0.1.0 APK verification
 
-`BestMates-v0.8.0-debug.apk` SHA-256:
+`BestMates-v0.1.0-debug.apk` SHA-256:
 
-`6D1826D836D6F0661C660A40352A46628B79263BE908B4C9A9EF8130FDF2DC5B`
+`E170865FA82CAE21E57E311B45519C4BD70C55E9033D8BB64F61808867075D68`

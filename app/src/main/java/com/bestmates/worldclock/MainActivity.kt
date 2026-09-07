@@ -147,7 +147,7 @@ private fun editorLanguageOverride(language: AppLanguage, key: String): String? 
             "choose" to "Auswählen", "palette" to "Tag-/Nachtpalette", "custom" to "Benutzerdefiniert",
             "day_color" to "Tagesfarbe", "night_color" to "Nachtfarbe", "text_content" to "Textinhalt",
             "text_color" to "Textfarbe", "sun_moon" to "Sonne und Mond", "tap_edit" to "Zum Bearbeiten tippen",
-            "version" to "Best Mates · v0.8", "theme_cloud_description" to "Warmes Weiß · Lavendel",
+            "version" to "Best Mates · v0.1", "theme_cloud_description" to "Warmes Weiß · Lavendel",
             "theme_dream_description" to "Rosiger Dunst · Blauviolett", "theme_midnight_description" to "Blaugrau · weiches Violett",
             "theme_mono_description" to "Ruhiges Monochrom"
         )
@@ -161,7 +161,7 @@ private fun editorLanguageOverride(language: AppLanguage, key: String): String? 
             "theme" to "Оформление", "shape_library" to "Форма фона", "choose" to "Выбрать",
             "palette" to "Палитра дня и ночи", "custom" to "Свой вариант", "day_color" to "Цвет дня",
             "night_color" to "Цвет ночи", "text_content" to "Текст", "text_color" to "Цвет текста",
-            "sun_moon" to "Солнце и луна", "tap_edit" to "Нажмите для настройки", "version" to "Best Mates · v0.8"
+            "sun_moon" to "Солнце и луна", "tap_edit" to "Нажмите для настройки", "version" to "Best Mates · v0.1"
         )
         AppLanguage.TURKISH -> mapOf(
             "editor" to "Düzenleyici", "follow_system" to "Sistemi izle",
@@ -173,7 +173,7 @@ private fun editorLanguageOverride(language: AppLanguage, key: String): String? 
             "theme" to "Görünüm", "shape_library" to "Arka plan şekli", "choose" to "Seç",
             "palette" to "Gündüz/gece paleti", "custom" to "Özel", "day_color" to "Gündüz rengi",
             "night_color" to "Gece rengi", "text_content" to "Metin içeriği", "text_color" to "Metin rengi",
-            "sun_moon" to "Güneş ve ay", "tap_edit" to "Düzenlemek için dokunun", "version" to "Best Mates · v0.8"
+            "sun_moon" to "Güneş ve ay", "tap_edit" to "Düzenlemek için dokunun", "version" to "Best Mates · v0.1"
         )
         AppLanguage.ARABIC -> mapOf(
             "editor" to "المحرر", "follow_system" to "اتباع النظام",
@@ -185,7 +185,7 @@ private fun editorLanguageOverride(language: AppLanguage, key: String): String? 
             "theme" to "المظهر", "shape_library" to "شكل الخلفية", "choose" to "اختيار",
             "palette" to "ألوان النهار والليل", "custom" to "مخصص", "day_color" to "لون النهار",
             "night_color" to "لون الليل", "text_content" to "محتوى النص", "text_color" to "لون النص",
-            "sun_moon" to "الشمس والقمر", "tap_edit" to "اضغط للتحرير", "version" to "Best Mates · v0.8"
+            "sun_moon" to "الشمس والقمر", "tap_edit" to "اضغط للتحرير", "version" to "Best Mates · v0.1"
         )
         AppLanguage.FRENCH -> mapOf(
             "editor" to "Éditeur", "follow_system" to "Suivre le système",
@@ -197,7 +197,7 @@ private fun editorLanguageOverride(language: AppLanguage, key: String): String? 
             "theme" to "Apparence", "shape_library" to "Forme d’arrière-plan", "choose" to "Choisir",
             "palette" to "Palette jour / nuit", "custom" to "Personnalisé", "day_color" to "Couleur du jour",
             "night_color" to "Couleur de nuit", "text_content" to "Contenu du texte", "text_color" to "Couleur du texte",
-            "sun_moon" to "Soleil et lune", "tap_edit" to "Touchez pour modifier", "version" to "Best Mates · v0.8"
+            "sun_moon" to "Soleil et lune", "tap_edit" to "Touchez pour modifier", "version" to "Best Mates · v0.1"
         )
         else -> emptyMap()
     }
@@ -465,7 +465,7 @@ class MainActivity : ComponentActivity() {
         OutlinedButton(onClick = { fontPicker.launch(arrayOf("font/ttf", "font/otf", "application/octet-stream")) }, Modifier.fillMaxWidth()) { Text(uiFormat("import_font", fontName.ifBlank { uiText("not_imported") })) }
         OutlinedButton(onClick = { iconPicker.launch(arrayOf("image/svg+xml", "image/png", "application/zip")) }, Modifier.fillMaxWidth()) { Text(uiFormat("import_icon", iconName.ifBlank { uiText("not_imported") })) }
         Text(uiText("import_note"), style = MaterialTheme.typography.bodySmall)
-        Spacer(Modifier.weight(1f)); Text("Best Mates v0.8\nApache-2.0 · GeoNames city data", style = MaterialTheme.typography.bodySmall)
+        Spacer(Modifier.weight(1f)); Text("Best Mates v0.1\nApache-2.0 · GeoNames city data", style = MaterialTheme.typography.bodySmall)
     } }
 }
 
