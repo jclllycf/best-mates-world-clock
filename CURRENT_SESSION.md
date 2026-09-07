@@ -4,7 +4,7 @@
 ChatGPT Work (next)
 
 ## Current task
-Repository cleanup first, then TASK-007 continuation.
+Repository cleanup completed; await user approval before resuming TASK-007.
 
 ## Current branch
 main
@@ -47,6 +47,15 @@ Device testing of commit 31c3ebb revealed the following issues:
 - **Root/canvas measured coordinate solution (UNVERIFIED):** Measuring true coordinates in a shared coordinate space (e.g. root/canvas coordinates via `onGloballyPositioned` / `LayoutCoordinates`) to get actual object center `(centerX, centerY)` and pointer touch `(pointerX, pointerY)`, then computing `atan2(pointerY - centerY, pointerX - centerX)` in a single uniform space may be more reliable than estimating from handle offsets.
 - **Touch target sizing (UNVERIFIED):** Increasing the invisible touch hit area (to ~36–44dp) while keeping the visible icon subtle/lightweight may resolve the poor grab acquisition.
 - **Unified handle component (UNVERIFIED):** Component, city, and text rotation handles should eventually share one unified, robust implementation.
+
+## Repository cleanup completed (2026-09-07)
+
+- Audited all tracked runtime assets, Android resources, documentation, Gradle inputs, manifest entries, widget XML, and dynamic asset/resource lookup paths.
+- Removed 11 confirmed-unreferenced legacy resources (10 obsolete XML drawables and one unenumerated SVG), reducing the production resource footprint by 2,974 bytes.
+- Retained the 92 enum-addressable solar SVGs, `cities.db`, widget metadata/layouts, launcher/preview assets, and third-party notices.
+- Retained `release-assets/BestMates-v0.1.0-debug.apk` pending explicit maintainer approval because it is a release-distribution policy decision, not a build-safety decision.
+- Full evidence and classification: `docs/REPOSITORY_CLEANUP_AUDIT.md`.
+- Reference folders `1/` and `2/` were not touched.
 
 ## Instructions for the next agent (ChatGPT Work)
 
