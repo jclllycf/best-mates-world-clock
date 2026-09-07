@@ -10,6 +10,8 @@ app/build/
 .kotlin/
 *.apk
 /release-assets/
+!/release-assets/
+!/release-assets/BestMates-v0.1.0-debug.apk
 
 # Local test captures and reference material. Release screenshots live in docs/.
 /.tmp_*
