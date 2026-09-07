@@ -3,7 +3,7 @@
 ## P0 — Editor stability and correctness
 
 ### TASK-007 — Unlimited rotation and correct movement
-Status: TODO
+Status: DONE
 Priority: P0
 
 Requirements:
@@ -236,3 +236,4 @@ Style:
 - no over-animation
 
 Do this after editor correctness tasks are stable.
+

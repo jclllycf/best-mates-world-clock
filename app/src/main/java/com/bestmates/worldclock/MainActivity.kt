@@ -1106,8 +1106,9 @@ private fun LayoutCanvas(
                             }, onDragEnd = { guideX = null; guideY = null; onGestureFinished() }, onDragCancel = { guideX = null; guideY = null; onGestureFinished() }) { change, drag ->
                                 change.consume()
                                 total += drag
-                                // Pointer deltas are already expressed in the canvas coordinate
-                                // space. Rotating them again reverses movement at 180 degrees.
+                                // graphicsLayer{rotationZ} is a draw modifier only; it does not
+                                // rotate the input coordinate system. Drag deltas are in canvas
+                                // (layout) space regardless of the object's visual rotation.
                                 val localDelta = with(density) { Offset(total.x.toDp().value, total.y.toDp().value) }
                                 val dx = localDelta.x / boardBounds.width()
                                 val dy = localDelta.y / boardBounds.height()
@@ -1135,14 +1136,36 @@ private fun LayoutCanvas(
                         }
                 ) {
                     if (isSelected && !layer.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                        var startRotation = layer.rotation
-                        var totalX = 0f
-                        detectDragGestures(onDragStart = { startRotation = liveLayer.rotation; totalX = 0f; onGestureStart() }, onDragEnd = { guideAngle = null; onGestureFinished() }, onDragCancel = { guideAngle = null; onGestureFinished() }) { change, drag ->
+                        var gestureStartRotation = layer.rotation
+                        var gestureStartAngle = 0f   // angle from obj-center to touch at gesture start
+                        var prevAngle = 0f            // last computed angle, for unwrapping
+                        var totalDrag = Offset.Zero
+                        var startPos = Offset.Zero
+                        // Object center in handle-local pixel coordinates:
+                        // Handle is at TopEnd+offset(1dp,-7dp), so object is to the left and below.
+                        val dPx = density.density
+                        val objCenter = Offset(-(rect.width() * dPx / 2f + dPx), 7f * dPx + rect.height() * dPx / 2f)
+                        detectDragGestures(
+                            onDragStart = { offset ->
+                                gestureStartRotation = liveLayer.rotation
+                                startPos = offset
+                                totalDrag = Offset.Zero
+                                gestureStartAngle = angleBetween(objCenter, offset)
+                                prevAngle = gestureStartAngle
+                                onGestureStart()
+                            },
+                            onDragEnd = { guideAngle = null; onGestureFinished() },
+                            onDragCancel = { guideAngle = null; onGestureFinished() }
+                        ) { change, drag ->
                             change.consume()
-                            totalX += drag.x
-                            val angle = snapRotation(startRotation + totalX * .45f, snapEnabled)
-                            guideAngle = angle.guide
-                            onLayerChange(index, liveLayer.copy(rotation = angle.value))
+                            totalDrag += drag
+                            val currentAngle = angleBetween(objCenter, startPos + totalDrag)
+                            val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
+                            prevAngle = unwrapped
+                            val rotationDelta = unwrapped - gestureStartAngle
+                            val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
+                            guideAngle = snapped.guide
+                            onLayerChange(index, liveLayer.copy(rotation = snapped.value))
                         }
                     })
                     if (isSelected && !layer.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index, canvasWidth) {
@@ -1241,8 +1264,35 @@ private fun LayoutCanvas(
                         if (config.showDate && city.showDate) Text(currentDate, color = Color(city.dateColor), fontSize = (9f * city.scale).sp, lineHeight = (11f * city.scale).sp, fontFamily = textFont(city.dateFont))
                     }
                     if (isSelected && !city.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                        var startRotation = city.rotation; var totalX = 0f
-                        detectDragGestures(onDragStart = { startRotation = liveCity.rotation; totalX = 0f; onGestureStart() }, onDragEnd = { guideAngle = null; onGestureFinished() }, onDragCancel = { guideAngle = null; onGestureFinished() }) { change, drag -> change.consume(); totalX += drag.x; val angle = snapRotation(startRotation + totalX * .45f, snapEnabled); guideAngle = angle.guide; onCityChange(index, liveCity.copy(rotation = angle.value)) }
+                        var gestureStartRotation = city.rotation
+                        var gestureStartAngle = 0f
+                        var prevAngle = 0f
+                        var totalDrag = Offset.Zero
+                        var startPos = Offset.Zero
+                        val dPx = density.density
+                        val objCenter = Offset(-(blockWidth * dPx / 2f + dPx), 7f * dPx + blockHeight * dPx / 2f)
+                        detectDragGestures(
+                            onDragStart = { offset ->
+                                gestureStartRotation = liveCity.rotation
+                                startPos = offset
+                                totalDrag = Offset.Zero
+                                gestureStartAngle = angleBetween(objCenter, offset)
+                                prevAngle = gestureStartAngle
+                                onGestureStart()
+                            },
+                            onDragEnd = { guideAngle = null; onGestureFinished() },
+                            onDragCancel = { guideAngle = null; onGestureFinished() }
+                        ) { change, drag ->
+                            change.consume()
+                            totalDrag += drag
+                            val currentAngle = angleBetween(objCenter, startPos + totalDrag)
+                            val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
+                            prevAngle = unwrapped
+                            val rotationDelta = unwrapped - gestureStartAngle
+                            val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
+                            guideAngle = snapped.guide
+                            onCityChange(index, liveCity.copy(rotation = snapped.value))
+                        }
                     })
                     if (isSelected && !city.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index, parent?.id, parent?.width, parent?.height) {
                         var start = city; var total = Offset.Zero
@@ -1316,8 +1366,35 @@ private fun LayoutCanvas(
                             softWrap = true
                         )
                         if (isSelected && !item.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                            var startRotation = item.rotation; var totalX = 0f
-                            detectDragGestures(onDragStart = { startRotation = liveText.rotation; totalX = 0f; onGestureStart() }, onDragEnd = { guideAngle = null; onGestureFinished() }, onDragCancel = { guideAngle = null; onGestureFinished() }) { change, drag -> change.consume(); totalX += drag.x; val angle = snapRotation(startRotation + totalX * .45f, snapEnabled); guideAngle = angle.guide; onTextChange(index, liveText.copy(rotation = angle.value)) }
+                            var gestureStartRotation = item.rotation
+                            var gestureStartAngle = 0f
+                            var prevAngle = 0f
+                            var totalDrag = Offset.Zero
+                            var startPos = Offset.Zero
+                            val dPx = density.density
+                            val objCenter = Offset(-(widthDp * dPx / 2f + dPx), 7f * dPx + heightDp * dPx / 2f)
+                            detectDragGestures(
+                                onDragStart = { offset ->
+                                    gestureStartRotation = liveText.rotation
+                                    startPos = offset
+                                    totalDrag = Offset.Zero
+                                    gestureStartAngle = angleBetween(objCenter, offset)
+                                    prevAngle = gestureStartAngle
+                                    onGestureStart()
+                                },
+                                onDragEnd = { guideAngle = null; onGestureFinished() },
+                                onDragCancel = { guideAngle = null; onGestureFinished() }
+                            ) { change, drag ->
+                                change.consume()
+                                totalDrag += drag
+                                val currentAngle = angleBetween(objCenter, startPos + totalDrag)
+                                val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
+                                prevAngle = unwrapped
+                                val rotationDelta = unwrapped - gestureStartAngle
+                                val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
+                                guideAngle = snapped.guide
+                                onTextChange(index, liveText.copy(rotation = snapped.value))
+                            }
                         })
                         if (isSelected && !item.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index) {
                             var startSize = item.size; var total = Offset.Zero
@@ -1358,15 +1435,38 @@ private fun freeCanvasCenter(x: Float, y: Float, halfWidth: Float, halfHeight: F
 private data class SnapResult(val value: Float, val guide: Float?)
 
 /**
- * Pointer deltas received inside a rotated graphics layer are in that layer's
- * local axes. Convert them back to the canvas axes before updating normalized
- * model coordinates, so moving an object follows the finger at every angle.
+ * NOTE: In Compose, graphicsLayer{rotationZ} is a draw-phase modifier and does NOT
+ * rotate the input coordinate system. detectDragGestures delivers deltas in the
+ * unrotated layout coordinate space (canvas space) for all elements, regardless of
+ * visual rotation. This function is therefore not used for drag, but is kept for
+ * reference.
  */
+@Suppress("unused")
 private fun rotateLocalDelta(delta: Offset, rotationDegrees: Float): Offset {
     val radians = Math.toRadians(rotationDegrees.toDouble())
     val cos = cos(radians).toFloat()
     val sin = sin(radians).toFloat()
     return Offset(delta.x * cos - delta.y * sin, delta.x * sin + delta.y * cos)
+}
+
+/**
+ * Returns the signed angle in degrees from [from] to [to], measured counter-clockwise
+ * from the positive X axis (same convention as atan2).
+ */
+private fun angleBetween(from: Offset, to: Offset): Float =
+    Math.toDegrees(atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())).toFloat()
+
+/**
+ * Continuously unwrap a raw angle delta so that a smooth gesture can exceed ±180°.
+ * [rawDelta] is the current raw angle difference (degrees). [prevDelta] is the
+ * previous unwrapped delta. Returns the new unwrapped delta.
+ */
+private fun unwrapAngleDelta(rawDelta: Float, prevDelta: Float): Float {
+    var d = rawDelta - prevDelta
+    // Fold into (-180, 180] to find the shortest arc this frame.
+    while (d > 180f) d -= 360f
+    while (d <= -180f) d += 360f
+    return prevDelta + d
 }
 
 private fun snapCoordinate(value: Float, enabled: Boolean, divisions: Int = 16, extras: List<Float> = emptyList()): SnapResult {

@@ -4,70 +4,114 @@
 Antigravity
 
 ## Current task
-Project takeover and setup only.
+TASK-007 — DONE
 
 ## Current branch
 main
 
-## Baseline commit
-98e3aae (Add v0.1.0 debug APK)
+## Last known good commit
+(pending — see below)
 
-## Current status
-Repository inspection and AI workflow setup complete. Baseline build verified PASS.
+## Task status
+DONE
 
-## Last known good build
-PASS — assembleDebug completed in ~30s (2026-09-07).
-Output: app/build/outputs/apk/debug/app-debug.apk
+## What has been completed
 
-## Files created this session
-- AI_RULES.md
-- TASKS.md
-- CURRENT_SESSION.md
+### TASK-007 — Unlimited rotation and correct movement
 
-## Do not modify yet
-Application source code.
+**Root cause (verified, not assumed):**
 
-## Next step
-1. Begin TASK-007 — Unlimited rotation and correct movement.
-2. Inspect city and text drag handlers to confirm they share the same root cause
-   as the layer drag handler.
-3. Fix rotateLocalDelta() usage in all three drag handlers.
-4. Verify snapRotation() supports continuous (unbounded) angles.
-5. Run assembleDebug after fix.
-6. Commit with message: fix(editor): support unlimited rotation and correct drag direction
+The original rotation handles for all three element types (layer, city, text) used
+`startRotation + totalX * 0.45f` to compute the rotation angle. This:
 
-## Notes for next agent
-This repository is shared between multiple AI coding agents.
-All important state must be written to files and Git commits.
-Do not rely on hidden chat history.
+1. Only accumulated horizontal (X) drag, ignoring vertical drag completely.
+2. Used a fixed linear mapping (0.45 deg/px) with no relation to the actual geometric
+   angle swept around the object center.
+3. Physically limited single-gesture rotation to ~±160° on a typical phone canvas
+   (~350px horizontal travel).
 
-### Rotation bug — confirmed root cause
+Drag movement (move gesture) was verified to be CORRECT and was NOT broken:
+- Compose `graphicsLayer{rotationZ}` is a draw modifier only; it does NOT rotate the
+  input coordinate system.
+- `detectDragGestures` always delivers `drag` in unrotated canvas-space pixels,
+  regardless of the visual rotation applied by graphicsLayer.
+- The comment at the old line 1109 ("Pointer deltas are already expressed in the
+  canvas coordinate space") was factually correct in its conclusion, though the
+  reasoning in the docstring of `rotateLocalDelta()` was wrong.
+- `rotateLocalDelta()` is NOT needed for drag and should NOT be applied to drag deltas.
 
-The background-layer drag handler (MainActivity.kt ~line 1101–1132) accumulates
-`total += drag` and converts to dp, but explicitly does NOT call rotateLocalDelta().
-A comment at line 1110 says: "Rotating them again reverses movement at 180 degrees."
-This means the developer noticed drag was wrong for rotated objects but applied a
-workaround comment rather than fixing it. The real fix is to correctly rotate the
-delta INTO canvas space.
+**Fix implemented:**
 
-rotateLocalDelta(delta, rotationDegrees) exists at line 1365 and is mathematically
-correct: it applies a 2D rotation matrix to convert local-layer delta to canvas delta.
-It should be applied before converting the pixel delta to the normalized coordinate system.
+Replaced `totalX * 0.45f` in all three rotation handles with a proper atan2-from-
+object-center computation:
 
-The current layer drag code flow:
-1. drag is accumulated as pixel delta in (probably) screen space
-2. converted to dp
-3. divided by boardBounds to get normalized fraction
-4. NO rotation compensation
+1. At `onDragStart`, record the touch start position and compute the angle from the
+   logical object center to the touch point (`gestureStartAngle`).
+2. On each drag event, accumulate `totalDrag += drag`, compute the new angle from the
+   object center to `startPos + totalDrag`, then call `unwrapAngleDelta()` to keep the
+   angle continuous (preventing ±180° wrapping artifacts during fast gestures).
+3. The rotation delta = `unwrappedCurrentAngle - gestureStartAngle`.
+4. Apply `snapRotation()` to the result (unchanged — it already handles unbounded values).
 
-The correct flow should be:
-1. accumulate drag pixels
-2. apply rotateLocalDelta(total.toDp(), layer.rotation) to convert to canvas-space dp
-3. divide by boardBounds for normalized fraction
+This allows:
+- Full 360° or more in a single uninterrupted circular gesture.
+- Correct behavior regardless of starting position of the finger.
+- Natural "spinning" feel — rotating around the object center as expected.
+- Lifting and re-dragging correctly continues from the current angle (snapRotation
+  receives `gestureStartRotation + delta` where gestureStartRotation is re-captured).
 
-snapRotation() (line 1390) already avoids clamping (comment confirms) — it operates
-on unbounded raw values. This is already correct.
+**Files changed:**
+- `app/src/main/java/com/bestmates/worldclock/MainActivity.kt`
+  - Layer rotation handle (was line 1137): replaced totalX*0.45 with atan2 approach
+  - City rotation handle (was line 1243): replaced totalX*0.45 with atan2 approach
+  - Text rotation handle (was line 1318): replaced totalX*0.45 with atan2 approach
+  - Drag comment (was line 1109): corrected to accurately describe graphicsLayer behavior
+  - rotateLocalDelta() docstring: corrected to reflect that drag is in canvas space
+  - Added @Suppress("unused") to rotateLocalDelta (retained for reference)
+  - Added angleBetween() helper
+  - Added unwrapAngleDelta() helper
 
-The ±180° limitation is an interaction artifact: if drag is in screen space and the
-object is rendered rotated, the drag direction appears "wrong" and the user experiences
-it as the object being stuck or reversed. It is NOT a clamping issue in the model.
+**No other files were changed.**
+
+## Build status
+PASS — assembleDebug successful in 46s
+Zero new errors. Zero new warnings.
+Pre-existing warnings: statusBarColor/navigationBarColor deprecation (line 309-310, unrelated, pre-existing).
+
+## Persistence implications
+None. Rotation is stored as raw Float in JSON. Unlimited angle values are persisted
+and loaded correctly with no modifications to ConfigStore.kt or Models.kt.
+Existing saved projects remain fully compatible.
+
+## What remains to verify on a physical device
+- The feel of the new rotation gesture (atan2-based vs linear heuristic)
+- Whether the object center geometry approximation (~handle at TopEnd + offset) gives
+  the expected circular feel
+- Multi-turn rotation (720°, negative angles)
+- Snap-to-angle behavior at 15° intervals still works correctly
+
+## Known remaining issue (not introduced by this fix)
+- Resize handle drag does not account for visual rotation of the object. After rotation,
+  the corner handle is visually in a different position but drag remains in canvas axes.
+  This is a separate pre-existing issue, not part of TASK-007.
+- The move gesture is in canvas-axes space (not object-local space). This is correct
+  standard design tool behavior (same as Figma). Do not "fix" this.
+
+## Do not touch
+- ConfigStore.kt — no migration needed
+- Models.kt — no schema changes needed
+- BackgroundRenderer.kt — no changes needed
+- WorldClockWidgetProvider.kt — no changes needed
+- Unrelated parts of MainActivity.kt
+
+## Next recommended step
+1. Review git diff (clean, only MainActivity.kt).
+2. Test on a physical device: rotate a component, city, and text through >360°.
+3. Approve and push, or request adjustments to rotation feel/sensitivity.
+4. Then begin TASK-010 (multiline text spacing) or TASK-003 (unified rotation handle).
+
+## Exact commit command to use when approved
+```
+git add app/src/main/java/com/bestmates/worldclock/MainActivity.kt TASKS.md CURRENT_SESSION.md
+git commit -m "fix(editor): replace heuristic rotation with atan2-from-center for unlimited rotation"
+```
