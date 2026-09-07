@@ -58,6 +58,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.zIndex
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
@@ -81,7 +84,6 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.sin
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -1018,6 +1020,10 @@ private fun LayoutCanvas(
     val canvasWidth = (LocalConfiguration.current.screenWidthDp - 32).coerceAtLeast(240).toFloat()
     val canvasHeight = canvasWidth
     val boardBounds = android.graphics.RectF(7f, 7f, canvasWidth - 7f, canvasHeight - 7f)
+    // All rotation geometry is expressed in this unrotated canvas/root coordinate
+    // space. The position is measured from Compose rather than inferred from a
+    // child handle's local offset.
+    var canvasOriginInRoot by remember { mutableStateOf(Offset.Zero) }
     var guideX by remember { mutableStateOf<Float?>(null) }
     var guideY by remember { mutableStateOf<Float?>(null) }
     var guideAngle by remember { mutableStateOf<Float?>(null) }
@@ -1037,7 +1043,9 @@ private fun LayoutCanvas(
         android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
     val previewNight = config.theme == ThemeMode.DARK || (config.theme == ThemeMode.SYSTEM && systemNight)
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        Box(Modifier.width(canvasWidth.dp).height(canvasHeight.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFE9E7EC)).pointerInput(Unit) {
+        Box(Modifier.width(canvasWidth.dp).height(canvasHeight.dp)
+            .onGloballyPositioned { canvasOriginInRoot = it.positionInRoot() }
+            .clip(RoundedCornerShape(18.dp)).background(Color(0xFFE9E7EC)).pointerInput(Unit) {
             detectTapGestures(onTap = { onSelect(null) })
         }) {
             Canvas(Modifier.fillMaxSize()) {
@@ -1135,39 +1143,6 @@ private fun LayoutCanvas(
                         .clickable { onSelect(CanvasSelection.ComponentItem(index))
                         }
                 ) {
-                    if (isSelected && !layer.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                        var gestureStartRotation = layer.rotation
-                        var gestureStartAngle = 0f   // angle from obj-center to touch at gesture start
-                        var prevAngle = 0f            // last computed angle, for unwrapping
-                        var totalDrag = Offset.Zero
-                        var startPos = Offset.Zero
-                        // Object center in handle-local pixel coordinates:
-                        // Handle is at TopEnd+offset(1dp,-7dp), so object is to the left and below.
-                        val dPx = density.density
-                        val objCenter = Offset(-(rect.width() * dPx / 2f + dPx), 7f * dPx + rect.height() * dPx / 2f)
-                        detectDragGestures(
-                            onDragStart = { offset ->
-                                gestureStartRotation = liveLayer.rotation
-                                startPos = offset
-                                totalDrag = Offset.Zero
-                                gestureStartAngle = angleBetween(objCenter, offset)
-                                prevAngle = gestureStartAngle
-                                onGestureStart()
-                            },
-                            onDragEnd = { guideAngle = null; onGestureFinished() },
-                            onDragCancel = { guideAngle = null; onGestureFinished() }
-                        ) { change, drag ->
-                            change.consume()
-                            totalDrag += drag
-                            val currentAngle = angleBetween(objCenter, startPos + totalDrag)
-                            val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
-                            prevAngle = unwrapped
-                            val rotationDelta = unwrapped - gestureStartAngle
-                            val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
-                            guideAngle = snapped.guide
-                            onLayerChange(index, liveLayer.copy(rotation = snapped.value))
-                        }
-                    })
                     if (isSelected && !layer.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index, canvasWidth) {
                         var start = layer
                         var total = Offset.Zero
@@ -1187,6 +1162,25 @@ private fun LayoutCanvas(
                             onLayerChange(index, start.copy(width = width, height = height, x = (left+width*.5f)*2f-1f, y = (top+height*.5f)*2f-1f))
                         }
                     })
+                }
+                if (isSelected && !layer.locked) {
+                    RotationHandleUnified(
+                        objectCenterOnCanvas = Offset(rect.centerX(), rect.centerY()),
+                        objectSizeOnCanvas = Offset(rect.width(), rect.height()),
+                        rotationDegrees = layer.rotation,
+                        canvasOriginInRoot = canvasOriginInRoot,
+                        canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
+                        snapEnabled = snapEnabled,
+                        onRotationChange = { snapped ->
+                            guideAngle = snapped.guide
+                            onLayerChange(index, liveLayer.copy(rotation = snapped.value))
+                        },
+                        onGestureStart = onGestureStart,
+                        onGestureFinished = {
+                            guideAngle = null
+                            onGestureFinished()
+                        }
+                    )
                 }
             }
 
@@ -1263,37 +1257,6 @@ private fun LayoutCanvas(
                         if (config.showTime && city.showTime) Text(currentTime, color = Color(city.timeColor), fontSize = (22f * city.scale).sp, lineHeight = (24f * city.scale).sp, fontFamily = textFont(city.timeFont), fontWeight = FontWeight.Bold)
                         if (config.showDate && city.showDate) Text(currentDate, color = Color(city.dateColor), fontSize = (9f * city.scale).sp, lineHeight = (11f * city.scale).sp, fontFamily = textFont(city.dateFont))
                     }
-                    if (isSelected && !city.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                        var gestureStartRotation = city.rotation
-                        var gestureStartAngle = 0f
-                        var prevAngle = 0f
-                        var totalDrag = Offset.Zero
-                        var startPos = Offset.Zero
-                        val dPx = density.density
-                        val objCenter = Offset(-(blockWidth * dPx / 2f + dPx), 7f * dPx + blockHeight * dPx / 2f)
-                        detectDragGestures(
-                            onDragStart = { offset ->
-                                gestureStartRotation = liveCity.rotation
-                                startPos = offset
-                                totalDrag = Offset.Zero
-                                gestureStartAngle = angleBetween(objCenter, offset)
-                                prevAngle = gestureStartAngle
-                                onGestureStart()
-                            },
-                            onDragEnd = { guideAngle = null; onGestureFinished() },
-                            onDragCancel = { guideAngle = null; onGestureFinished() }
-                        ) { change, drag ->
-                            change.consume()
-                            totalDrag += drag
-                            val currentAngle = angleBetween(objCenter, startPos + totalDrag)
-                            val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
-                            prevAngle = unwrapped
-                            val rotationDelta = unwrapped - gestureStartAngle
-                            val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
-                            guideAngle = snapped.guide
-                            onCityChange(index, liveCity.copy(rotation = snapped.value))
-                        }
-                    })
                     if (isSelected && !city.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index, parent?.id, parent?.width, parent?.height) {
                         var start = city; var total = Offset.Zero
                         detectDragGestures(onDragStart = { start = liveCity; total = Offset.Zero; sizeGuide = null; sizeGuideTarget = null; onGestureStart() }, onDragEnd = { sizeGuide = null; sizeGuideTarget = null; onGestureFinished() }, onDragCancel = { sizeGuide = null; sizeGuideTarget = null; onGestureFinished() }) { change, drag ->
@@ -1316,6 +1279,25 @@ private fun LayoutCanvas(
                                 y = ((safe.y - shapeBounds.centerY()) / (shapeBounds.height() * .5f)).coerceIn(-1f, 1f)))
                         }
                     })
+                }
+                if (isSelected && !city.locked) {
+                    RotationHandleUnified(
+                        objectCenterOnCanvas = Offset(centre.x, centre.y),
+                        objectSizeOnCanvas = Offset(blockWidth, blockHeight),
+                        rotationDegrees = city.rotation,
+                        canvasOriginInRoot = canvasOriginInRoot,
+                        canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
+                        snapEnabled = snapEnabled,
+                        onRotationChange = { snapped ->
+                            guideAngle = snapped.guide
+                            onCityChange(index, liveCity.copy(rotation = snapped.value))
+                        },
+                        onGestureStart = onGestureStart,
+                        onGestureFinished = {
+                            guideAngle = null
+                            onGestureFinished()
+                        }
+                    )
                 }
             }
             config.texts.forEachIndexed { index, item ->
@@ -1365,37 +1347,6 @@ private fun LayoutCanvas(
                             fontFamily = textFont(item.font),
                             softWrap = true
                         )
-                        if (isSelected && !item.locked) RotationHandleUnified(Modifier.align(Alignment.TopEnd).offset(x = 1.dp, y = (-7).dp).pointerInput(index) {
-                            var gestureStartRotation = item.rotation
-                            var gestureStartAngle = 0f
-                            var prevAngle = 0f
-                            var totalDrag = Offset.Zero
-                            var startPos = Offset.Zero
-                            val dPx = density.density
-                            val objCenter = Offset(-(widthDp * dPx / 2f + dPx), 7f * dPx + heightDp * dPx / 2f)
-                            detectDragGestures(
-                                onDragStart = { offset ->
-                                    gestureStartRotation = liveText.rotation
-                                    startPos = offset
-                                    totalDrag = Offset.Zero
-                                    gestureStartAngle = angleBetween(objCenter, offset)
-                                    prevAngle = gestureStartAngle
-                                    onGestureStart()
-                                },
-                                onDragEnd = { guideAngle = null; onGestureFinished() },
-                                onDragCancel = { guideAngle = null; onGestureFinished() }
-                            ) { change, drag ->
-                                change.consume()
-                                totalDrag += drag
-                                val currentAngle = angleBetween(objCenter, startPos + totalDrag)
-                                val unwrapped = unwrapAngleDelta(currentAngle, prevAngle)
-                                prevAngle = unwrapped
-                                val rotationDelta = unwrapped - gestureStartAngle
-                                val snapped = snapRotation(gestureStartRotation + rotationDelta, snapEnabled)
-                                guideAngle = snapped.guide
-                                onTextChange(index, liveText.copy(rotation = snapped.value))
-                            }
-                        })
                         if (isSelected && !item.locked) ResizeHandle(Modifier.align(Alignment.BottomEnd).pointerInput(index) {
                             var startSize = item.size; var total = Offset.Zero
                             detectDragGestures(onDragStart = { startSize = liveText.size; total = Offset.Zero; sizeGuide = null; sizeGuideTarget = null; onGestureStart() }, onDragEnd = { sizeGuide = null; sizeGuideTarget = null; onGestureFinished() }, onDragCancel = { sizeGuide = null; sizeGuideTarget = null; onGestureFinished() }) { change, drag ->
@@ -1409,6 +1360,25 @@ private fun LayoutCanvas(
                                 onTextChange(index, liveText.copy(size = newSize))
                             }
                         })
+                    }
+                    if (isSelected && !item.locked) {
+                        RotationHandleUnified(
+                            objectCenterOnCanvas = Offset(centre.x, centre.y),
+                            objectSizeOnCanvas = Offset(widthDp, heightDp),
+                            rotationDegrees = item.rotation,
+                            canvasOriginInRoot = canvasOriginInRoot,
+                            canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
+                            snapEnabled = snapEnabled,
+                            onRotationChange = { snapped ->
+                                guideAngle = snapped.guide
+                                onTextChange(index, liveText.copy(rotation = snapped.value))
+                            },
+                            onGestureStart = onGestureStart,
+                            onGestureFinished = {
+                                guideAngle = null
+                                onGestureFinished()
+                            }
+                        )
                     }
                 }
             }
@@ -1435,26 +1405,22 @@ private fun freeCanvasCenter(x: Float, y: Float, halfWidth: Float, halfHeight: F
 private data class SnapResult(val value: Float, val guide: Float?)
 
 /**
- * NOTE: In Compose, graphicsLayer{rotationZ} is a draw-phase modifier and does NOT
- * rotate the input coordinate system. detectDragGestures delivers deltas in the
- * unrotated layout coordinate space (canvas space) for all elements, regardless of
- * visual rotation. This function is therefore not used for drag, but is kept for
- * reference.
- */
-@Suppress("unused")
-private fun rotateLocalDelta(delta: Offset, rotationDegrees: Float): Offset {
-    val radians = Math.toRadians(rotationDegrees.toDouble())
-    val cos = cos(radians).toFloat()
-    val sin = sin(radians).toFloat()
-    return Offset(delta.x * cos - delta.y * sin, delta.x * sin + delta.y * cos)
-}
-
-/**
  * Returns the signed angle in degrees from [from] to [to], measured counter-clockwise
  * from the positive X axis (same convention as atan2).
  */
 private fun angleBetween(from: Offset, to: Offset): Float =
     Math.toDegrees(atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())).toFloat()
+
+/** Rotates a canvas-space vector using Compose's clockwise-on-screen degree convention. */
+private fun rotateCanvasVector(vector: Offset, rotationDegrees: Float): Offset {
+    val radians = Math.toRadians(rotationDegrees.toDouble())
+    val cosine = cos(radians).toFloat()
+    val sine = sin(radians).toFloat()
+    return Offset(
+        x = vector.x * cosine - vector.y * sine,
+        y = vector.x * sine + vector.y * cosine
+    )
+}
 
 /**
  * Continuously unwrap a raw angle delta so that a smooth gesture can exceed ±180°.
@@ -1507,25 +1473,105 @@ private fun snapRotation(value: Float, enabled: Boolean): SnapResult {
     }
 }
 
-@Composable private fun RotationHandleUnified(modifier: Modifier = Modifier) {
-    Canvas(modifier.size(17.dp)) {
-        // One deliberately quiet circular arrow for components, cities and text.
-        // It sits outside the selected corner, so it stays recognisable without
-        // covering the content it controls.
-        val tint = Color(0xFF7655AF).copy(alpha = .42f)
-        val stroke = 1.2.dp.toPx()
-        drawArc(
-            color = tint,
-            startAngle = -58f,
-            sweepAngle = 254f,
-            useCenter = false,
-            topLeft = Offset(size.width*.12f, size.height*.12f),
-            size = androidx.compose.ui.geometry.Size(size.width*.76f, size.height*.76f),
-            style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-        )
-        val tip = Offset(size.width*.79f, size.height*.25f)
-        drawLine(tint, tip, Offset(size.width*.57f, size.height*.19f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-        drawLine(tint, tip, Offset(size.width*.71f, size.height*.47f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+/**
+ * A single rotation control for backgrounds, cities and text.
+ *
+ * The handle is deliberately a sibling of the rotated object, rather than its child.
+ * Its pointer position, its measured position and the object's centre are therefore
+ * all converted to root coordinates before the angle is calculated.
+ */
+@Composable
+private fun RotationHandleUnified(
+    objectCenterOnCanvas: Offset,
+    objectSizeOnCanvas: Offset,
+    rotationDegrees: Float,
+    canvasOriginInRoot: Offset,
+    canvasSizeOnCanvas: Offset,
+    snapEnabled: Boolean,
+    onRotationChange: (SnapResult) -> Unit,
+    onGestureStart: () -> Unit,
+    onGestureFinished: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+    val latestObjectCenter by rememberUpdatedState(objectCenterOnCanvas)
+    val latestCanvasOrigin by rememberUpdatedState(canvasOriginInRoot)
+    val latestRotation by rememberUpdatedState(rotationDegrees)
+    val latestSnapEnabled by rememberUpdatedState(snapEnabled)
+    val latestOnRotationChange by rememberUpdatedState(onRotationChange)
+    val latestOnGestureStart by rememberUpdatedState(onGestureStart)
+    val latestOnGestureFinished by rememberUpdatedState(onGestureFinished)
+    var handleOriginInRoot by remember { mutableStateOf(Offset.Zero) }
+
+    // The icon remains quiet at 17dp, while the surrounding 42dp target is easy to grab.
+    val touchTargetDp = 42f
+    val handleRadiusDp = touchTargetDp / 2f
+    val handleAnchor = objectCenterOnCanvas + rotateCanvasVector(
+        Offset(objectSizeOnCanvas.x / 2f + 7f, -objectSizeOnCanvas.y / 2f - 7f),
+        rotationDegrees
+    )
+    val handleCenter = Offset(
+        handleAnchor.x.coerceIn(handleRadiusDp, canvasSizeOnCanvas.x - handleRadiusDp),
+        handleAnchor.y.coerceIn(handleRadiusDp, canvasSizeOnCanvas.y - handleRadiusDp)
+    )
+
+    fun objectCenterInRoot(): Offset = Offset(
+        latestCanvasOrigin.x + latestObjectCenter.x * density.density,
+        latestCanvasOrigin.y + latestObjectCenter.y * density.density
+    )
+
+    Box(
+        modifier = modifier
+            .offset((handleCenter.x - handleRadiusDp).dp, (handleCenter.y - handleRadiusDp).dp)
+            .size(touchTargetDp.dp)
+            .zIndex(20f)
+            .onGloballyPositioned { handleOriginInRoot = it.positionInRoot() }
+            .pointerInput(Unit) {
+                var gestureStartAngle = 0f
+                var previousAngle = 0f
+                var startingRotation = 0f
+                detectDragGestures(
+                    onDragStart = { startPosition ->
+                        val pointerInRoot = handleOriginInRoot + startPosition
+                        gestureStartAngle = angleBetween(objectCenterInRoot(), pointerInRoot)
+                        previousAngle = gestureStartAngle
+                        startingRotation = latestRotation
+                        latestOnGestureStart()
+                    },
+                    onDragEnd = latestOnGestureFinished,
+                    onDragCancel = latestOnGestureFinished
+                ) { change, _ ->
+                    val pointerInRoot = handleOriginInRoot + change.position
+                    val rawAngle = angleBetween(objectCenterInRoot(), pointerInRoot)
+                    val continuousAngle = unwrapAngleDelta(rawAngle, previousAngle)
+                    previousAngle = continuousAngle
+
+                    // Four percent compensates for short touch arcs without changing
+                    // the circular geometry or introducing a discontinuity.
+                    val responsiveRotation = startingRotation +
+                        (continuousAngle - gestureStartAngle) * 1.04f
+                    latestOnRotationChange(snapRotation(responsiveRotation, latestSnapEnabled))
+                    change.consume()
+                }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(Modifier.size(17.dp)) {
+            val tint = Color(0xFF7655AF).copy(alpha = .46f)
+            val stroke = 1.25.dp.toPx()
+            drawArc(
+                color = tint,
+                startAngle = -58f,
+                sweepAngle = 254f,
+                useCenter = false,
+                topLeft = Offset(size.width * .12f, size.height * .12f),
+                size = androidx.compose.ui.geometry.Size(size.width * .76f, size.height * .76f),
+                style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            )
+            val tip = Offset(size.width * .79f, size.height * .25f)
+            drawLine(tint, tip, Offset(size.width * .57f, size.height * .19f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(tint, tip, Offset(size.width * .71f, size.height * .47f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+        }
     }
 }
 

@@ -25,6 +25,12 @@ Physical-device verification feedback (Reopened 2026-09-07):
 - Beyond roughly 60°, rotation no longer follows the finger correctly.
 - Note: Do NOT mark TASK-007 as DONE until physical-device verification passes.
 
+Implementation awaiting verification (2026-09-08):
+- Rotation is now calculated in root coordinates: the canvas origin and rotation-control origin are measured, and the object's canvas centre is converted to the same root-pixel space before `atan2`.
+- The rotation control is an unrotated sibling of the rotated object, removing the previous moving-reference-frame feedback loop.
+- All component, city, and text calls share `RotationHandleUnified`: 17dp visible control, 42dp touch target, same icon/opacity/anchor, 15-degree snapping, guide feedback, and existing haptics.
+- A modest 1.04x response adjustment is applied only after the coordinate-space correction. `assembleDebug` passes; physical-device verification is still required.
+
 Files involved:
 - app/src/main/java/com/bestmates/worldclock/MainActivity.kt
   - Layer rotation handle
