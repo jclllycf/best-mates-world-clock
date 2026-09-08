@@ -2,7 +2,7 @@
 
 Status: **SPECIFICATION COMPLETE — AWAITING MAINTAINER REVIEW**  
 Date: 2026-09-08  
-Inspected application baseline: `f9beacd` (`feat(editor): unify action icon system`). Documentation finalized on `main` after the separate checkpoint/audit commits through `3417f42`; production app files remain unchanged from the inspected baseline.
+Inspected application baseline: `f9beacd` (`feat(editor): unify action icon system`). Documentation finalized on `maintenance/repository-cleanup` after the separate checkpoint/audit commits through `3417f42`; production app files remain unchanged from the inspected baseline.
 
 Scope: design decisions and proposed architecture only. No application implementation is included. Phase 2 has not started.
 

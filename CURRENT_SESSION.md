@@ -7,7 +7,7 @@ Codex — Phase 1 documentation prepared for maintainer review
 Best Mates 2.0 — Phase 1: Design Foundation. The specification is complete and awaiting maintainer review. Stop before Phase 2; do not resume the previous UI-polish implementation queue automatically.
 
 ## Current branch
-main
+`maintenance/repository-cleanup` at Phase 1 finalization (`34203f5`). The session began on `main`; the shared checkout changed branches during preparation. Re-check git branch/status before resuming.
 
 ## Last known good commit
 Application baseline: f9beacd (feat(editor): unify action icon system). The existing TASK-004/005 entry below records its successful build; this documentation-only phase does not rerun or claim a new build.
