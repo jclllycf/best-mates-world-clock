@@ -1,19 +1,33 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-ChatGPT Work (next)
+Codex — Phase 1 documentation prepared for maintainer review
 
 ## Current task
-TASK-007 is partially complete and deferred. The next development priority is TASK-004, followed by TASK-005, TASK-009, and TASK-003.
+Best Mates 2.0 — Phase 1: Design Foundation. The specification is complete and awaiting maintainer review. Stop before Phase 2; do not resume the previous UI-polish implementation queue automatically.
 
 ## Current branch
 main
 
 ## Last known good commit
-60a9bb5 (fix(editor): stabilize rotation handle tracking)
+Application baseline: f9beacd (feat(editor): unify action icon system). The existing TASK-004/005 entry below records its successful build; this documentation-only phase does not rerun or claim a new build.
 
 ## Task status
+BM2-P1: SPECIFICATION_COMPLETE / AWAITING_REVIEW
+
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 1 result (2026-09-08)
+
+- Read AI_RULES.md, PROJECT_HANDOFF.md, TASKS.md, CURRENT_SESSION.md, the repository cleanup audit, recent git history, and relevant source before making changes. Repository evidence, not previous chat context, informed the specification.
+- Created [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md): current-state audit, complete design tokens, light/dark theme variants, UI/UX rules, Settings IA and compatibility contract, proposed future files/components, and review criteria.
+- Direction: Soft Orbit; Warm Pearl + Lavender Atmosphere; Orbit Softline; Quiet Motion; Soft Halo; Floating Creation Space; Fixed Canvas + Scrolling Soft Inspector; Visual Theme Gallery; Mates Orbit.
+- Global app theme mode and 24-hour/12-hour format belong in Settings. Current editor controls write to saved widget config, so their later relocation must preserve existing saved values and explicitly design inheritance/migration before implementation.
+- Keep the canvas fixed above the independently scrolling inspector. No core interaction, rendering, persistence, Android resources, or broad application UI changes were made.
+- Reference folders `1/` and `2/` were not inspected or modified by this task. `2/` was untracked at session start; the separate recovery checkpoint `bacd712` subsequently tracked it. No tracking/cleanup changes are made here.
+- Separate checkpoint/audit commits through `3417f42` arrived during preparation and are preserved, including `PROJECT_AUDIT.md`. Production app files remain unchanged from `f9beacd`; no audit cleanup was resumed.
+- Static palette contrast and documentation checks are recorded in the specification. No `assembleDebug` or physical-device test was run for these documentation-only changes.
+- Next action: maintainer review of the design foundation. Phase 2 has not started. TASK-007 still has the known post-rotation drag issue and remains deferred; TASK-004/005 still await visual review.
 
 ## What has been completed
 - Initial project takeover, baseline build validation (passed), and workflow files creation (AI_RULES.md, TASKS.md, CURRENT_SESSION.md).
@@ -62,19 +76,18 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. TASK-004 — editor action icons.
-2. TASK-005 — editor top-right functional icons.
-3. TASK-009 — UI animation and overall interface polish.
-4. TASK-003 — unified rotation-handle visual treatment.
+1. Review `docs/BEST_MATES_UI_2_SPEC.md` and its Settings/persistence boundary.
+2. After explicit review approval, choose a small Phase 2 scope; the recommendation is token scaffolding and an isolated foundation preview.
+3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog; do not begin them during the Phase 1 review gate.
 
-The product goal for this stage is a visually polished, warm, modern, coherent, and pleasant editor. Do not begin unrelated architecture work.
+The product goal for this stage is a formal, coherent design foundation for the whole app. Do not begin broad UI implementation, unrelated architecture work, or TASK-007 investigation.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
 - Persistence contracts: `ConfigStore.kt`, `ProjectStore.kt`, `Models.kt` (do not break saved projects or migrations)
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
-## Build status
+## Build status (historical application work)
 PASS — `assembleDebug` verified after the pending TASK-007 coordinate correction (28s).
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 

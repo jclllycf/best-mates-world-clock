@@ -2,12 +2,31 @@
 
 ## Current development priority (2026-09-08)
 
-1. TASK-004 — editor action icons
-2. TASK-005 — editor top-right functional icons
-3. TASK-009 — UI animation and overall interface polish
-4. TASK-003 — unified rotation-handle visual treatment
+1. Best Mates 2.0 — Phase 1: Design Foundation — specification complete, awaiting maintainer review.
+2. Stop before Phase 2. Token/component implementation and screen integration require the next approved scope.
+
+Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
+
+The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during design review. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+
+### BM2-P1 — Design Foundation
+Status: SPECIFICATION_COMPLETE / AWAITING_REVIEW
+Scope: Documentation only
+
+Completed:
+- Inspected the current Compose theme, shared controls, Settings/editor ownership, scattered visual constants, and recent git history.
+- Defined Soft Orbit / Warm Pearl + Lavender, Orbit Softline, Quiet Motion, Soft Halo, Floating Creation Space, Scrolling Soft Inspector, Visual Theme Gallery, and Mates Orbit branding.
+- Specified semantic token architecture, concrete palettes for all four theme identities in light/dark, typography, dimensions, states, accessibility, surfaces, controls, overlays, and motion.
+- Defined Settings ownership of global theme mode and time format, with explicit preservation of existing saved widget display values and a separately scoped future migration.
+- Listed proposed token files, shared components, and later screen/settings integration boundaries.
+
+Review gate:
+- Review the specification before authorizing Phase 2.
+- Preserve fixed top canvas + vertically scrolling inspector below.
+- Do not change core editor interaction logic or reference folders `1/` and `2/`.
+- No application code or persistence was changed. No new build/device validation is claimed for this documentation task.
 
 ## P0 — Editor stability and correctness
 

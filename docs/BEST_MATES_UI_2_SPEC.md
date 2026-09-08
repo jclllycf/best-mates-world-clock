@@ -2,7 +2,8 @@
 
 Status: **SPECIFICATION COMPLETE — AWAITING MAINTAINER REVIEW**  
 Date: 2026-09-08  
-Repository baseline: `main` at `f9beacd` (`feat(editor): unify action icon system`).  
+Inspected application baseline: `f9beacd` (`feat(editor): unify action icon system`). Documentation finalized on `main` after the separate checkpoint/audit commits through `3417f42`; production app files remain unchanged from the inspected baseline.
+
 Scope: design decisions and proposed architecture only. No application implementation is included. Phase 2 has not started.
 
 ## 1. Direction and boundaries
@@ -38,6 +39,8 @@ Non-negotiable boundaries:
 Read before authoring: [AI_RULES.md](../AI_RULES.md), [PROJECT_HANDOFF.md](../PROJECT_HANDOFF.md), [TASKS.md](../TASKS.md), [CURRENT_SESSION.md](../CURRENT_SESSION.md), and [cleanup audit](REPOSITORY_CLEANUP_AUDIT.md), plus recent git history and the relevant source.
 
 History resolves stale handoff statements: `31c3ebb` introduced continuous angle tracking; `60a9bb5` corrected the rotation control's coordinate frame; `cce5d13` explicitly deferred the remaining movement defect; `f9beacd` unified action icons. The older handoff's statement that rotation remains clamped to ±180° is not the current implementation. TASK-004/005 are implemented and awaiting visual review, not approved as finished.
+
+During document preparation, a separate recovery checkpoint (`bacd712`) captured the draft, followed by audit commits `49c0853` and `3417f42`. These commits and [PROJECT_AUDIT.md](../PROJECT_AUDIT.md) are preserved. A comparison from `f9beacd` through `3417f42` confirmed that production application files and the required handoff/rules files were unchanged. The audit's cleanup recommendations are outside Phase 1.
 
 Line references below are to the baseline above; function names remain the primary search anchors.
 
@@ -133,7 +136,7 @@ All hex values below are opaque sRGB (`#RRGGBB`) unless an alpha is explicitly s
 | `onAccent` | `#FFFFFF` | `#3B2655` | Text/icon on a filled primary control |
 | `accentContainer` | `#ECE1F7` | `#49345F` | Selected card/chip and tonal button fill |
 | `onAccentContainer` | `#493361` | `#EFDCFF` | Content on selected/tonal fills |
-| `secondary` / `onSecondary` | `#78616E` / `#FFFFFF` | `#D9BDC9` / `#412D37` | Supporting accent, sparingly |
+| `secondary` / `onSecondary` | `#755E6B` / `#FFFFFF` | `#D9BDC9` / `#412D37` | Supporting accent, sparingly |
 | `secondaryContainer` / `onSecondaryContainer` | `#F3E2EA` / `#503943` | `#4A3541` / `#F5DFEA` | Soft rose support |
 | `tertiary` / `onTertiary` | `#536880` / `#FFFFFF` | `#B7CAE3` / `#24364C` | Informational accent |
 | `tertiaryContainer` / `onTertiaryContainer` | `#DFE8F3` / `#2F435B` | `#304157` / `#DAE7FA` | Informational message fill |
@@ -162,7 +165,7 @@ Use §4.1 as the base for every identity. Replace only the following accent fami
 | Cloud / Dark | `#D3BAF3` | `#3B2655` | `#49345F` | `#EFDCFF` |
 | Dream / Light | `#825274` | `#FFFFFF` | `#F2E1ED` | `#5B3553` |
 | Dream / Dark | `#E5B4D5` | `#4C2643` | `#57334E` | `#F9DBEF` |
-| Midnight / Light | `#57668E` | `#FFFFFF` | `#E2E8F7` | `#354365` |
+| Midnight / Light | `#505F86` | `#FFFFFF` | `#E2E8F7` | `#354365` |
 | Midnight / Dark | `#B8C7F1` | `#283858` | `#303F5E` | `#DCE5FF` |
 | Mono / Light | `#62616B` | `#FFFFFF` | `#E8E5EA` | `#41404A` |
 | Mono / Dark | `#C9C5CF` | `#323038` | `#3D3943` | `#EEEBF0` |
@@ -568,7 +571,20 @@ Recommended **Phase 2 review scope**, only after maintainer approval: token type
 - No Kotlin, Android XML, Gradle, model, renderer, interaction code, or reference assets changed. No build or device verification is claimed for Phase 1; `assembleDebug` is not rerun for documentation-only changes.
 - [TASKS.md](../TASKS.md) and [CURRENT_SESSION.md](../CURRENT_SESSION.md) record the review gate. TASK-004/005 remain awaiting visual review; TASK-007 remains deferred.
 
-Static palette verification results will be recorded below after the final document check.
+Static palette check: **744 comparisons passed** across eight resolved theme/brightness variants. This includes active text/status colors on the six working surfaces, control outlines, on-color/container pairs, primary and semantic filled-button pressed states, neutral text/action pressed states, and canvas mat pairs. Pressed samples composite the specified `.10` foreground layer in sRGB and round to 8-bit channels before measuring.
+
+| Theme / mode | Minimum UI text on working surfaces | Minimum control outline | Primary label | Primary label while pressed | Selected-container label |
+| --- | --- | --- | --- | --- | --- |
+| Cloud / Light | 4.65:1 | 3.38:1 | 6.05:1 | 4.84:1 | 8.64:1 |
+| Cloud / Dark | 5.58:1 | 3.52:1 | 7.58:1 | 6.45:1 | 8.43:1 |
+| Dream / Light | 4.65:1 | 3.38:1 | 6.16:1 | 4.91:1 | 8.07:1 |
+| Dream / Dark | 5.58:1 | 3.52:1 | 7.10:1 | 6.08:1 | 8.25:1 |
+| Midnight / Light | 4.65:1 | 3.38:1 | 6.32:1 | 4.99:1 | 7.99:1 |
+| Midnight / Dark | 5.58:1 | 3.52:1 | 6.94:1 | 5.98:1 | 8.35:1 |
+| Mono / Light | 4.65:1 | 3.38:1 | 6.10:1 | 4.82:1 | 8.18:1 |
+| Mono / Dark | 5.58:1 | 3.52:1 | 7.66:1 | 6.52:1 | 9.53:1 |
+
+These are calculated reference-color results, not a rendered-state audit. Gradient compositing, anti-aliased strokes, keyboard focus, disabled presentation, arbitrary widget artwork, actual touch regions, and device rendering still require visual/accessibility verification during their approved implementation scope.
 
 ### Acceptance criteria for later implementation
 
