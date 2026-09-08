@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 2C.1: Soft Button Depth Polish — implemented and awaiting maintainer review.
-2. Review the Design Lab Resting/Pressed references, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2C.2: Crystal Atelier Final Foundation Polish — implemented and awaiting maintainer review.
+2. Review the final Soft Crystal Design Lab, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,8 +11,26 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
-### BM2-P2C.1 — Soft Button Depth Polish
+### BM2-P2C.2 — Crystal Atelier Final Foundation Polish
 Status: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+Scope: Soft Crystal tokens, isolated Design Lab treatments, Orbit Charm cleanup, and production-behavior audit only
+
+Completed:
+- Replaced the preview-only pressable-depth recipe with typed Pearl Glass, Milk Crystal, and Jelly Crystal families covering fill alpha, light/dark elevation and shadow, tonal shifts, translucent edge, upper highlight, lower refraction, optional warm reflection, and highlight length.
+- Applied the hierarchy to Design Lab actions, icon controls, chips, toggles with a lavender-resin track and pearl-white thumb, slider thumb/value tags, project/theme cards, inspector controls, picker rows, text fields, color-swatch frames, and icon/shape studies. Direct sample colors remain untinted and all interactive studies retain 48dp targets.
+- Implemented Quiet Motion press compression at 80ms in / 120ms out: 0.75dp movement, `.987` scale, 0.5dp elevation, 22% resting shadow, 48% highlight, 72% refraction, and a 1.25dp toggle-thumb expansion. The 160ms token remains available for small state settling; no spring or bounce was added.
+- Cleaned non-semantic dots from normal utility icons. Restrained ornament is reserved for Theme, Sun, Moon, and Confirm. Rebuilt Font as separated vector `A` + lowercase `a`, and Pin as a soft rounded tack with a short needle.
+- Audited production Pin/Lock behavior without changing it: only Pin exists; its `locked` flag blocks position/resize/rotation manipulation while property editing remains available. There is no separate full-edit Lock command; foundation Lock artwork remains reserved for a future explicit behavior contract.
+- Audited production color capability without changing it: the existing picker supports continuous HSV hue/saturation/value plus independent opacity and writes arbitrary ARGB colors. The Lab now shows a continuous hue/saturation study, separate brightness/opacity controls, and a separate recommended palette.
+- Used gradients, alpha, borders, shadows, and `drawWithCache`; no backdrop blur, per-frame brush churn, production component extraction, or production UI adoption was added.
+- Verified `assembleDebug` passes. All eight variants rendered on the attached phone; Cloud Light, Dream Light, and Midnight Dark were inspected for icon cleanliness, Font/Pin balance, actions, chips, switches, picker rows, and icon actions.
+- Production `MainActivity.kt`, navigation, Workspace, Settings, Editor, persistence, models, widget rendering, canvas behavior, gestures, TASK-007, resources/manifests, and reference folders remain unchanged.
+
+Review gate:
+- Stop for maintainer review. Do not begin Phase 3 or extract/migrate these foundation recipes into production components until explicitly authorized.
+
+### BM2-P2C.1 — Soft Button Depth Polish
+Status: IMPLEMENTED / SUPERSEDED BY BM2-P2C.2
 Scope: Pressable-depth tokens and isolated Design Lab button/icon-action recipes only
 
 Completed:
@@ -25,7 +43,7 @@ Completed:
 - Verified `assembleDebug` passes. Production navigation, app-root theme, Workspace, Settings, Editor, persistence, widgets, gestures, real canvas, TASK-007, manifests/resources, and reference folders remain unchanged.
 
 Review gate:
-- Stop for maintainer review. Do not begin Phase 3 or extract these recipes into production components until explicitly authorized.
+- This recipe was superseded by BM2-P2C.2. Use the Phase 2C.2 review gate; do not extract the historical recipe into production components.
 
 ### BM2-P2C — Cute Atelier Visual Refinement
 Status: APPROVED / COMPLETE

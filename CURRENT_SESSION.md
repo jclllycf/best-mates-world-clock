@@ -1,19 +1,21 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2C.1 Soft Button Depth Polish implemented for maintainer review
+Codex — Phase 2C.2 Soft Crystal Atelier foundation implemented for maintainer review
 
 ## Current task
-Best Mates 2.0 — Phase 2C.1: Soft Button Depth Polish. The isolated Design Lab implementation and physical-device validation are complete. Stop for maintainer review; do not start Phase 3 or migrate production UI.
+Best Mates 2.0 — Phase 2C.2: Crystal Atelier Final Foundation Polish. The isolated Design Lab implementation and validation are complete. Stop for maintainer review; do not start Phase 3 or migrate production UI.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2C.1's focused button-depth commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the Cute Atelier foundation, and this button-depth refinement.
+Phase 2C.2's focused Soft Crystal foundation commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the approved Cute Atelier foundation, and isolated visual refinements.
 
 ## Task status
-BM2-P2C.1: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+BM2-P2C.2: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+
+BM2-P2C.1: IMPLEMENTED / SUPERSEDED BY BM2-P2C.2
 
 BM2-P2C: APPROVED / COMPLETE
 
@@ -27,6 +29,21 @@ BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
 
+## Best Mates 2.0 — Phase 2C.2 result (2026-09-08)
+
+- Finalized the approved direction as Cute Atelier + Soft Crystal + Orbit Charm without changing its palette, typography, layout hierarchy, app structure, or production theme adoption.
+- Replaced the preview-only Phase 2C.1 depth recipe with typed Pearl Glass, Milk Crystal, and Jelly Crystal surface recipes. They define light/dark fill alpha, elevation, shadow, tonal shift, translucent edge, upper highlight, lower refraction, warm reflection, and highlight length.
+- Pearl Glass serves chips, toolbar/icon actions, compact tags, fields, small controls, and the pearl-white toggle thumb. Milk Crystal serves cards, inspector/picker shells and rows, selection tiles, and shape studies. Jelly Crystal serves primary actions; its action body stays opaque so text contrast is independent of the surface behind it.
+- Press feedback uses 80ms in / 120ms out, 0.75dp downward movement, `.987` scale, 0.5dp pressed elevation, collapsed shadow, shortened highlight, reduced refraction, and no spring/bounce. Toggle thumbs grow by 1.25dp while pressed. Dark variants use weaker external shadow and stronger tonal edges than Light.
+- Removed non-semantic appended dots from normal Orbit Charm utility icons. Theme, Sun, Moon, and Confirm alone may use restrained identity ornament; functional centres/loops/hubs remain part of their icon semantics. Font is now stable vector artwork with a separated large `A` and smaller lowercase `a`. Pin is a friendly rounded tack with a short needle.
+- Production semantics audit: only `EditorAction.PIN` exists. Its `locked` flag prevents positional canvas manipulation and removes resize/rotation handles while property editing remains available. This matches the intended Pin meaning. There is no independent full-edit Lock command; the foundation Lock artwork is reserved for a future explicit Lock contract and must not masquerade as duplicate behavior.
+- Production color audit: `VisualColorPickerDialog` supports continuous hue 0–360, saturation 0–1, brightness/value 0–1, and opacity 0–1, converting through ARGB/HSV. The Design Lab now shows a representative continuous hue/saturation disc, separate brightness and opacity controls, and a clearly separate recommended palette. Future migration must preserve arbitrary sRGB + alpha capability.
+- The Design Lab applies crystal hierarchy to actions, icon buttons, chips, toggles, slider thumb/value tags, project/theme cards, inspector controls, picker rows, color-swatch frames, fields, and shape/icon studies. Direct color samples remain untinted inside neutral frames, all interactive studies retain 48dp targets, and selected/disabled/destructive states retain non-color semantics.
+- The implementation uses stable token data and `drawWithCache` for gradients/highlights/refraction; no realtime backdrop blur or production component migration was added.
+- `assembleDebug` passes. All eight identity × brightness variants rendered on the attached device; Cloud Light, Dream Light, and Midnight Dark were inspected for icons, Font, Pin, actions, chips, switches, picker rows, and icon actions.
+- Production `MainActivity.kt`, navigation, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, real canvas, TASK-007, manifests/resources, and reference folders `1/` and `2/` remain unchanged.
+- Next action: maintainer review of this final foundation-polish pass. Do not begin Phase 3 until explicitly authorized.
+
 ## Best Mates 2.0 — Phase 2C.1 result (2026-09-08)
 
 - Added a typed pressable-depth recipe to `BestMatesElevation.kt` without changing the approved palette, typography, radii, icon artwork, surface hierarchy, or production theme adoption.
@@ -37,7 +54,7 @@ TASK-007: PARTIALLY_COMPLETE / DEFERRED
 - The Design Lab now compares Resting and Pressed references for primary, secondary, outlined, and icon actions. All eight identity × brightness combinations rendered after installing the refreshed debug APK on the attached 1080 × 2340 phone; Cloud Light, Dream Light, and Midnight Dark button sections were inspected directly.
 - Midnight Dark uses less external shadow and more tonal highlight/lower-edge definition. The review showed no neon glow, metallic gloss, stacked shadow, or excessive elevation.
 - `assembleDebug` passes. Production `MainActivity.kt`, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, real canvas, TASK-007, resources, manifests, and reference folders `1/` and `2/` remain unchanged.
-- Next action: maintainer review of Phase 2C.1. Do not begin Phase 3 until explicitly authorized.
+- Historical result: BM2-P2C.2 supersedes this recipe and owns the current maintainer review gate.
 
 ## Best Mates 2.0 — Phase 2C result (2026-09-08)
 
@@ -51,7 +68,7 @@ TASK-007: PARTIALLY_COMPLETE / DEFERRED
 - `assembleDebug` and `:app:processReleaseMainManifest` pass. Generated-manifest inspection finds the Lab Activity only in debug outputs. The refreshed APK was installed on the attached 1080 × 2340 phone; all eight selector combinations and representative long-scroll checkpoints were inspected successfully. Maintainer visual approval remains pending.
 - Production `MainActivity.kt`, Workspace, Settings, Editor, persistence, models, widgets, renderer, gestures, real canvas, TASK-007, Gradle, resources, and reference folders `1/` and `2/` remain unchanged.
 - Review command after installing the debug APK: `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
-- The overall Cute Atelier / Cozy Orbit direction and commit `16f19ba` are the approved visual baseline. Phase 2C.1 refines only button depth; do not begin Phase 3 until explicitly authorized.
+- The overall Cute Atelier / Cozy Orbit direction and commit `16f19ba` are the approved visual baseline. BM2-P2C.2 now owns the final foundation-polish gate; do not begin Phase 3 until explicitly authorized.
 
 ## Best Mates 2.0 — Phase 2B.1 result (2026-09-08)
 
@@ -140,11 +157,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review the Phase 2C.1 Soft Button Depth Polish in the installed debug Design Lab; the device command remains `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
+1. Review the Phase 2C.2 Soft Crystal Atelier foundation in the installed debug Design Lab; the device command remains `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
 2. Do not begin Phase 3, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
 3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
 
-The current goal is maintainer review of the isolated Design Lab button-depth refinement. Production behavior remains unchanged.
+The current goal is maintainer review of the isolated final Soft Crystal foundation. Production behavior remains unchanged.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -152,7 +169,7 @@ The current goal is maintainer review of the isolated Design Lab button-depth re
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug` verified after the Phase 2C.1 button-depth refinement. The debug APK installed and launched successfully on the attached device; all eight variants rendered and Cloud Light, Dream Light, and Midnight Dark button sections were inspected. No manifest or production file changed in Phase 2C.1.
+PASS — `assembleDebug` verified after the Phase 2C.2 final foundation refinement. The debug APK installed and launched successfully on the attached device; all eight variants rendered and Cloud Light, Dream Light, and Midnight Dark were inspected across icons, Font/Pin, actions, chips, switches, picker rows, color controls, and icon actions. No manifest or production file changed in Phase 2C.2.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,7 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -181,7 +182,7 @@ private fun CuteAtelierLabPage(
             ShowcaseSection("Future canvas language", "A neutral working mat with precise, quiet guidance.") {
                 CanvasLanguageSample(colors, dimensions)
             }
-            ShowcaseSection("Color atelier", "A compact future picker study; production remains unchanged.") {
+            ShowcaseSection("Color atelier", "Continuous HSV + opacity, with a separate recommended palette.") {
                 ColorPickerSample(colors, dimensions)
             }
             ShowcaseSection("Atelier controls", "Custom recipes replace the stock Material sample appearance.") {
@@ -358,18 +359,31 @@ private fun ChoiceChip(
     dimensions: BestMatesDimensionTokens,
 ) {
     val shape = dimensions.radii.radiusFull
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
     Box(
         modifier = Modifier
             .heightIn(min = dimensions.shared.minimumTouchTarget)
-            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = onClick,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
                 .height(34.dp)
-                .clip(shape)
-                .background(if (selected) colors.accentContainer else colors.surfaceInset)
-                .border(1.dp, if (selected) colors.selectionOutline else colors.borderSubtle, shape)
+                .atelierCrystalSurface(
+                    baseColor = if (selected) colors.accentContainer else colors.surfaceInset,
+                    shape = shape,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    pressed = pressed,
+                    borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                    intensity = if (selected) 0.92f else 0.58f,
+                )
                 .padding(horizontal = dimensions.spacing.space4),
             horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
             verticalAlignment = Alignment.CenterVertically,
@@ -436,11 +450,20 @@ private fun AtelierSurface(
     elevation: Dp = 0.dp,
     padding: Dp = dimensions.spacing.space5,
     borderColor: Color = colors.borderSubtle,
+    crystalLevel: AtelierCrystalLevel? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val shape = RoundedCornerShape(radius)
-    Column(
-        modifier = modifier
+    val surfaceTreatment = if (crystalLevel != null) {
+        Modifier.atelierCrystalSurface(
+            baseColor = color,
+            shape = shape,
+            level = crystalLevel,
+            borderColor = borderColor,
+            intensity = 0.72f,
+        )
+    } else {
+        Modifier
             .then(
                 if (elevation > 0.dp) {
                     Modifier.shadow(
@@ -457,6 +480,10 @@ private fun AtelierSurface(
             .clip(shape)
             .background(color)
             .border(1.dp, borderColor, shape)
+    }
+    Column(
+        modifier = modifier
+            .then(surfaceTreatment)
             .padding(padding),
         verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space3),
         content = content,
@@ -471,6 +498,7 @@ private fun WelcomeSample(colors: BestMatesColors, dimensions: BestMatesDimensio
         color = colors.surfaceRaised,
         radius = dimensions.radii.radius2xl,
         elevation = BestMatesDesign.elevation.depth1.elevation,
+        crystalLevel = AtelierCrystalLevel.MilkCrystal,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -520,12 +548,20 @@ private fun MiniProjectCard(
     dimensions: BestMatesDimensionTokens,
 ) {
     val shape = RoundedCornerShape(dimensions.radii.radiusLg)
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(shape)
-            .background(if (selected) colors.selectionFill else colors.surfaceRaised)
-            .border(if (selected) 1.5.dp else 1.dp, if (selected) colors.selectionOutline else colors.borderSubtle, shape)
+            .clickable(interactionSource = interactionSource, indication = null, role = Role.Button, onClick = {})
+            .atelierCrystalSurface(
+                baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
+                shape = shape,
+                level = AtelierCrystalLevel.MilkCrystal,
+                pressed = pressed,
+                borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                intensity = if (selected) 0.92f else 0.68f,
+            )
             .padding(dimensions.spacing.space4),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -557,13 +593,20 @@ private fun ThemeCardSample(
     dimensions: BestMatesDimensionTokens,
 ) {
     val shape = RoundedCornerShape(dimensions.radii.radius2xl)
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(6.dp, shape, false, colors.accent.copy(alpha = 0.18f), colors.accent.copy(alpha = 0.18f))
-            .clip(shape)
-            .background(colors.surfaceRaised)
-            .border(1.5.dp, colors.selectionOutline, shape)
+            .clickable(interactionSource = interactionSource, indication = null, role = Role.RadioButton, onClick = {})
+            .atelierCrystalSurface(
+                baseColor = colors.surfaceRaised,
+                shape = shape,
+                level = AtelierCrystalLevel.MilkCrystal,
+                pressed = pressed,
+                borderColor = colors.selectionOutline,
+                intensity = 0.96f,
+            )
             .padding(dimensions.spacing.space5),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space3)) {
@@ -593,7 +636,7 @@ private fun ThemeCardSample(
 
 @Composable
 private fun EditorToolbarSample(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
-    AtelierSurface(colors, dimensions, color = colors.surfaceRaised, radius = dimensions.radii.radiusXl, padding = dimensions.spacing.space3) {
+    AtelierSurface(colors, dimensions, color = colors.surfaceRaised, radius = dimensions.radii.radiusXl, padding = dimensions.spacing.space3, crystalLevel = AtelierCrystalLevel.MilkCrystal) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -624,7 +667,7 @@ private fun OrbitAction(
     val pressed = pressedReference || isPressed
     val shape = RoundedCornerShape(if (prominent) dimensions.radii.radiusMd else dimensions.radii.radiusSm)
     val container = if (prominent) colors.accentContainer else colors.surfaceInset
-    val border = if (prominent) colors.accent.copy(alpha = 0.28f) else colors.borderSubtle
+    val border = if (prominent) colors.accent else colors.borderSubtle
     Box(
         modifier = Modifier
             .requiredSize(dimensions.shared.minimumTouchTarget)
@@ -639,13 +682,13 @@ private fun OrbitAction(
         Box(
             modifier = Modifier
                 .size(if (prominent) 38.dp else 34.dp)
-                .atelierPressableDepth(
+                .atelierCrystalSurface(
                     baseColor = container,
                     shape = shape,
-                    depthKind = AtelierDepthKind.Icon,
+                    level = AtelierCrystalLevel.PearlGlass,
                     pressed = pressed,
                     borderColor = border,
-                    borderWidth = 1.dp,
+                    intensity = if (prominent) 0.88f else 0.62f,
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -656,7 +699,7 @@ private fun OrbitAction(
 
 @Composable
 private fun InspectorSample(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
-    AtelierSurface(colors, dimensions, color = colors.surfaceRaised, radius = dimensions.radii.radiusXl) {
+    AtelierSurface(colors, dimensions, color = colors.surfaceRaised, radius = dimensions.radii.radiusXl, crystalLevel = AtelierCrystalLevel.MilkCrystal) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(8.dp).clip(CircleShape).background(colors.secondary))
             Text("Selected city", modifier = Modifier.padding(start = dimensions.spacing.space2), style = MaterialTheme.typography.labelMedium, color = colors.textMuted)
@@ -683,6 +726,7 @@ private fun PickerSample(colors: BestMatesColors, dimensions: BestMatesDimension
         radius = dimensions.radii.radius3xl,
         elevation = BestMatesDesign.elevation.depth3.elevation,
         padding = dimensions.spacing.space6,
+        crystalLevel = AtelierCrystalLevel.MilkCrystal,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -707,12 +751,21 @@ private fun PickerRow(
     dimensions: BestMatesDimensionTokens,
 ) {
     val shape = RoundedCornerShape(dimensions.radii.radiusMd)
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(shape)
-            .background(if (selected) colors.selectionFill else colors.surfaceRaised)
-            .border(1.dp, if (selected) colors.selectionOutline else colors.borderSubtle, shape)
+            .heightIn(min = dimensions.shared.minimumTouchTarget)
+            .clickable(interactionSource = interactionSource, indication = null, role = Role.RadioButton, onClick = {})
+            .atelierCrystalSurface(
+                baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
+                shape = shape,
+                level = AtelierCrystalLevel.MilkCrystal,
+                pressed = pressed,
+                borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                intensity = if (selected) 0.88f else 0.60f,
+            )
             .padding(dimensions.spacing.space3),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -746,6 +799,7 @@ private fun IconFamilySample(
 
 @Composable
 private fun IconFamilyCell(spec: OrbitIconSpec, colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
+    val iconShape = RoundedCornerShape(dimensions.radii.radiusMd)
     Column(
         modifier = Modifier.width(74.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -754,9 +808,13 @@ private fun IconFamilyCell(spec: OrbitIconSpec, colors: BestMatesColors, dimensi
         Box(
             modifier = Modifier
                 .requiredSize(dimensions.shared.minimumTouchTarget)
-                .clip(RoundedCornerShape(dimensions.radii.radiusMd))
-                .background(colors.surfaceRaised)
-                .border(1.dp, colors.borderSubtle, RoundedCornerShape(dimensions.radii.radiusMd)),
+                .atelierCrystalSurface(
+                    baseColor = colors.surfaceRaised,
+                    shape = iconShape,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    borderColor = colors.borderSubtle,
+                    intensity = 0.42f,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(spec.icon, spec.label, tint = colors.textPrimary, modifier = Modifier.size(20.dp))
@@ -882,9 +940,13 @@ private fun CanvasLanguageSample(colors: BestMatesColors, dimensions: BestMatesD
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = dimensions.spacing.space4, bottom = dimensions.spacing.space4)
-                .clip(RoundedCornerShape(dimensions.radii.radiusSm))
-                .background(colors.surfaceOverlay)
-                .border(1.dp, colors.borderSubtle, RoundedCornerShape(dimensions.radii.radiusSm))
+                .atelierCrystalSurface(
+                    baseColor = colors.surfaceOverlay,
+                    shape = RoundedCornerShape(dimensions.radii.radiusSm),
+                    level = AtelierCrystalLevel.PearlGlass,
+                    borderColor = colors.borderSubtle,
+                    intensity = 0.66f,
+                )
                 .padding(horizontal = dimensions.spacing.space3, vertical = dimensions.spacing.space2),
             horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
             verticalAlignment = Alignment.CenterVertically,
@@ -908,9 +970,13 @@ private fun CanvasHandle(
             Box(
                 Modifier
                     .size(30.dp)
-                    .clip(CircleShape)
-                    .background(colors.surfaceOverlay)
-                    .border(1.dp, colors.borderControl, CircleShape),
+                    .atelierCrystalSurface(
+                        baseColor = colors.surfaceOverlay,
+                        shape = CircleShape,
+                        level = AtelierCrystalLevel.PearlGlass,
+                        borderColor = colors.borderControl,
+                        intensity = 0.86f,
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(icon, null, tint = colors.accent, modifier = Modifier.size(17.dp))
@@ -927,8 +993,10 @@ private fun ColorPickerSample(colors: BestMatesColors, dimensions: BestMatesDime
         color = colors.surfaceOverlay,
         radius = dimensions.radii.radius3xl,
         elevation = BestMatesDesign.elevation.depth2.elevation,
+        crystalLevel = AtelierCrystalLevel.MilkCrystal,
     ) {
         Text("Color atelier", style = MaterialTheme.typography.titleLarge, color = colors.textPrimary)
+        Text("Full spectrum HSV · separate brightness · independent opacity", style = MaterialTheme.typography.bodySmall, color = colors.textMuted)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space5),
@@ -939,15 +1007,16 @@ private fun ColorPickerSample(colors: BestMatesColors, dimensions: BestMatesDime
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space3),
             ) {
-                Text("Current", style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
+                Text("Recommended", style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
                 Row(horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2)) {
                     ColorSwatch(colors.accent, true, colors, dimensions)
                     ColorSwatch(colors.secondary, false, colors, dimensions)
                 }
                 Text("Plum veil", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
-                Text("#8F60AD", style = MaterialTheme.typography.bodySmall, color = colors.textSecondary)
+                Text("Palette shortcut", style = MaterialTheme.typography.bodySmall, color = colors.textSecondary)
             }
         }
+        AtelierSlider("Brightness", "86%", 0.86f, colors, dimensions)
         AtelierSlider("Opacity", "72%", 0.72f, colors, dimensions)
         AtelierButton("Apply color", AtelierButtonKind.Primary, OrbitIcons.Confirm, colors, dimensions)
     }
@@ -955,19 +1024,21 @@ private fun ColorPickerSample(colors: BestMatesColors, dimensions: BestMatesDime
 
 @Composable
 private fun ColorWheel(colors: BestMatesColors) {
-    val palette = listOf(colors.accent, colors.secondary, colors.tertiary, colors.warning, colors.success, colors.destructive)
+    val hueSweep = remember {
+        listOf(Color.Red, Color.Magenta, Color.Blue, Color.Cyan, Color.Green, Color.Yellow, Color.Red)
+    }
     Canvas(Modifier.size(126.dp)) {
-        val stroke = 18.dp.toPx()
-        palette.forEachIndexed { index, color ->
-            drawArc(
-                color = color,
-                startAngle = index * 60f - 90f,
-                sweepAngle = 61f,
-                useCenter = false,
-                style = Stroke(width = stroke),
-            )
-        }
-        drawCircle(colors.surfaceOverlay, radius = size.minDimension * 0.28f)
+        val radius = size.minDimension / 2f
+        drawCircle(brush = Brush.sweepGradient(hueSweep), radius = radius)
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(Color.White, Color.White.copy(alpha = 0.72f), Color.Transparent),
+                center = center,
+                radius = radius,
+            ),
+            radius = radius,
+        )
+        drawCircle(colors.borderControl.copy(alpha = 0.72f), radius = radius, style = Stroke(1.dp.toPx()))
         drawCircle(colors.accent, radius = 5.dp.toPx(), center = Offset(size.width * 0.76f, size.height * 0.21f))
         drawCircle(colors.surfaceOverlay, radius = 2.2.dp.toPx(), center = Offset(size.width * 0.76f, size.height * 0.21f))
     }
@@ -981,15 +1052,38 @@ private fun ColorSwatch(
     dimensions: BestMatesDimensionTokens,
 ) {
     Box(Modifier.requiredSize(dimensions.shared.minimumTouchTarget), contentAlignment = Alignment.Center) {
+        val shape = RoundedCornerShape(dimensions.radii.radiusSm)
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(dimensions.radii.radiusSm))
-                .background(color)
-                .border(if (selected) 2.dp else 1.dp, if (selected) colors.selectionOutline else colors.borderControl, RoundedCornerShape(dimensions.radii.radiusSm)),
-            contentAlignment = Alignment.Center,
+                .size(36.dp)
+                .atelierCrystalSurface(
+                    baseColor = colors.surfaceRaised,
+                    shape = shape,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    borderColor = if (selected) colors.selectionOutline else colors.borderControl,
+                    intensity = if (selected) 0.92f else 0.56f,
+                ),
         ) {
-            if (selected) Icon(OrbitIcons.Confirm, null, tint = colors.onAccent, modifier = Modifier.size(15.dp))
+            Box(
+                Modifier
+                    .padding(3.dp)
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(dimensions.radii.radiusXs))
+                    .background(color),
+            )
+            if (selected) {
+                Box(
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .size(17.dp)
+                        .clip(CircleShape)
+                        .background(colors.accentContainer)
+                        .border(1.dp, colors.selectionOutline, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(OrbitIcons.Confirm, null, tint = colors.onAccentContainer, modifier = Modifier.size(11.dp))
+                }
+            }
         }
     }
 }
@@ -997,7 +1091,7 @@ private fun ColorSwatch(
 @Composable
 private fun ControlShowcase(colors: BestMatesColors, dimensions: BestMatesDimensionTokens, states: BestMatesStateTokens) {
     AtelierSurface(colors, dimensions, color = colors.surfaceBase, radius = dimensions.radii.radius2xl) {
-        Text("Soft button depth", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
+        Text("Soft Crystal action depth", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
         Text("Resting / Pressed reference", style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
         ButtonDepthPair("Primary", "Create", AtelierButtonKind.Primary, OrbitIcons.CreateWidget, colors, dimensions)
         ButtonDepthPair("Secondary", "Add", AtelierButtonKind.Secondary, OrbitIcons.AddComponent, colors, dimensions)
@@ -1093,7 +1187,7 @@ private fun DepthStateColumn(
 }
 
 private enum class AtelierButtonKind { Primary, Secondary, Outlined, Text, Destructive }
-private enum class AtelierDepthKind { Primary, Secondary, Outlined, Icon, Destructive }
+private enum class AtelierCrystalLevel { PearlGlass, MilkCrystal, JellyCrystal }
 
 @Composable
 private fun AtelierButton(
@@ -1124,11 +1218,11 @@ private fun AtelierButton(
         AtelierButtonKind.Destructive -> colors.onDestructiveContainer
     }
     val borderColor = when (kind) {
-        AtelierButtonKind.Primary -> Color.Transparent
-        AtelierButtonKind.Secondary -> colors.secondary.copy(alpha = 0.20f)
+        AtelierButtonKind.Primary -> colors.secondary
+        AtelierButtonKind.Secondary -> colors.secondary
         AtelierButtonKind.Outlined -> colors.borderControl
         AtelierButtonKind.Text -> Color.Transparent
-        AtelierButtonKind.Destructive -> colors.destructive.copy(alpha = 0.30f)
+        AtelierButtonKind.Destructive -> colors.destructive
     }
     val shape = RoundedCornerShape(if (kind == AtelierButtonKind.Text) dimensions.radii.radiusMd else dimensions.radii.radiusXl)
     val textPressedAlpha by animateFloatAsState(
@@ -1139,25 +1233,30 @@ private fun AtelierButton(
         ),
         label = "text button pressed fill",
     )
-    val depthKind = when (kind) {
-        AtelierButtonKind.Primary -> AtelierDepthKind.Primary
-        AtelierButtonKind.Secondary -> AtelierDepthKind.Secondary
-        AtelierButtonKind.Outlined -> AtelierDepthKind.Outlined
+    val crystalLevel = when (kind) {
+        AtelierButtonKind.Primary -> AtelierCrystalLevel.JellyCrystal
+        AtelierButtonKind.Secondary -> AtelierCrystalLevel.MilkCrystal
+        AtelierButtonKind.Outlined -> AtelierCrystalLevel.PearlGlass
         AtelierButtonKind.Text -> null
-        AtelierButtonKind.Destructive -> AtelierDepthKind.Destructive
+        AtelierButtonKind.Destructive -> AtelierCrystalLevel.MilkCrystal
     }
-    val surfaceModifier = if (depthKind == null) {
+    val surfaceModifier = if (crystalLevel == null) {
         Modifier
             .clip(shape)
             .background(colors.accentContainer.copy(alpha = textPressedAlpha))
     } else {
-        Modifier.atelierPressableDepth(
+        Modifier.atelierCrystalSurface(
             baseColor = container,
             shape = shape,
-            depthKind = depthKind,
+            level = crystalLevel,
             pressed = pressed,
             borderColor = borderColor,
-            borderWidth = if (kind == AtelierButtonKind.Primary) 0.dp else 1.dp,
+            intensity = when (kind) {
+                AtelierButtonKind.Primary -> 1f
+                AtelierButtonKind.Secondary, AtelierButtonKind.Destructive -> 0.82f
+                AtelierButtonKind.Outlined -> 0.62f
+                AtelierButtonKind.Text -> 0f
+            },
         )
     }
     Row(
@@ -1184,81 +1283,75 @@ private fun AtelierButton(
 }
 
 @Composable
-private fun Modifier.atelierPressableDepth(
+private fun Modifier.atelierCrystalSurface(
     baseColor: Color,
     shape: Shape,
-    depthKind: AtelierDepthKind,
-    pressed: Boolean,
-    borderColor: Color,
-    borderWidth: Dp,
+    level: AtelierCrystalLevel,
+    pressed: Boolean = false,
+    borderColor: Color = Color.Unspecified,
+    intensity: Float = 1f,
 ): Modifier {
     val colors = BestMatesDesign.colors
     val motion = BestMatesDesign.motion
-    val recipe = BestMatesDesign.elevation.pressableDepth
-    val restElevation = when (depthKind) {
-        AtelierDepthKind.Primary -> recipe.primaryElevation
-        AtelierDepthKind.Secondary -> recipe.secondaryElevation
-        AtelierDepthKind.Outlined -> recipe.outlinedElevation
-        AtelierDepthKind.Icon -> recipe.iconElevation
-        AtelierDepthKind.Destructive -> recipe.destructiveElevation
-    }
-    val shadowMultiplier = when (depthKind) {
-        AtelierDepthKind.Primary -> 1f
-        AtelierDepthKind.Secondary, AtelierDepthKind.Destructive -> recipe.supportingShadowMultiplier
-        AtelierDepthKind.Outlined -> recipe.outlinedShadowMultiplier
-        AtelierDepthKind.Icon -> recipe.iconShadowMultiplier
-    }
-    val toneMultiplier = when (depthKind) {
-        AtelierDepthKind.Primary -> 1f
-        AtelierDepthKind.Secondary -> 0.75f
-        AtelierDepthKind.Outlined -> 0.28f
-        AtelierDepthKind.Icon, AtelierDepthKind.Destructive -> 0.55f
+    val crystal = BestMatesDesign.elevation.crystalDepth
+    val recipe = when (level) {
+        AtelierCrystalLevel.PearlGlass -> crystal.pearlGlass
+        AtelierCrystalLevel.MilkCrystal -> crystal.milkCrystal
+        AtelierCrystalLevel.JellyCrystal -> crystal.jellyCrystal
     }
     val duration = if (pressed) motion.durations.motionPress else motion.durations.motionRelease
     val easing = motion.easings.easeStandard
     val elevation by animateDpAsState(
-        targetValue = if (pressed) recipe.pressedElevation else restElevation,
+        targetValue = if (pressed) crystal.pressedElevation else recipe.elevation * intensity,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button elevation",
     )
     val translationY by animateDpAsState(
-        targetValue = if (pressed && motion.spatialMotionEnabled) recipe.pressedTranslationY else 0.dp,
+        targetValue = if (pressed && motion.spatialMotionEnabled) crystal.pressedTranslationY else 0.dp,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button translation",
     )
     val scale by animateFloatAsState(
-        targetValue = if (pressed && motion.spatialMotionEnabled) recipe.pressedScale else 1f,
+        targetValue = if (pressed && motion.spatialMotionEnabled) crystal.pressedScale else 1f,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button scale",
     )
     val pressedDarken by animateFloatAsState(
-        targetValue = if (pressed) recipe.pressedDarkenMix else 0f,
+        targetValue = if (pressed) crystal.pressedDarkenMix else 0f,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button pressed tone",
     )
     val shadowAlpha by animateFloatAsState(
-        targetValue = recipe.outerShadowAlpha * shadowMultiplier * if (pressed) 0.24f else 1f,
+        targetValue = recipe.shadowAlpha * intensity * if (pressed) crystal.pressedShadowMultiplier else 1f,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button shadow",
     )
     val highlightAlpha by animateFloatAsState(
-        targetValue = recipe.innerHighlightAlpha * toneMultiplier * if (pressed) 0.52f else 1f,
+        targetValue = recipe.upperHighlightAlpha * intensity * if (pressed) crystal.pressedHighlightMultiplier else 1f,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button highlight",
     )
     val highlightLength by animateFloatAsState(
-        targetValue = if (pressed) recipe.pressedHighlightLength else recipe.restingHighlightLength,
+        targetValue = if (pressed) crystal.pressedHighlightLength else recipe.highlightLength,
         animationSpec = tween(durationMillis = duration, easing = easing),
         label = "button highlight length",
     )
-    val topColor = lerp(baseColor, Color.White, recipe.topToneMix * toneMultiplier * if (pressed) 0.55f else 1f)
-    val middleColor = lerp(baseColor, Color.Black, pressedDarken)
+    val refractionAlpha by animateFloatAsState(
+        targetValue = recipe.lowerRefractionAlpha * intensity * if (pressed) crystal.pressedRefractionMultiplier else 1f,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button lower refraction",
+    )
+    val topColor = lerp(baseColor, Color.White, recipe.topToneMix * intensity * if (pressed) 0.55f else 1f)
+        .copy(alpha = recipe.fillAlpha)
+    val middleColor = lerp(baseColor, Color.Black, pressedDarken).copy(alpha = recipe.fillAlpha)
     val bottomColor = lerp(
         baseColor,
         Color.Black,
-        recipe.bottomToneMix * toneMultiplier + pressedDarken,
-    )
-    val lowerEdgeAlpha = recipe.lowerEdgeAlpha * toneMultiplier * if (pressed) 1.12f else 1f
+        recipe.bottomToneMix * intensity + pressedDarken,
+    ).copy(alpha = recipe.fillAlpha)
+    val resolvedBorder = if (borderColor == Color.Unspecified) colors.borderSubtle else borderColor
+    val borderAlpha = (recipe.edgeAlpha * (0.72f + intensity * 0.28f)).coerceIn(0f, 1f)
+    val warmReflectionAlpha = recipe.warmReflectionAlpha * intensity
 
     return this
         .graphicsLayer {
@@ -1274,27 +1367,38 @@ private fun Modifier.atelierPressableDepth(
             spotColor = colors.shadowColor.copy(alpha = shadowAlpha),
         )
         .clip(shape)
-        .background(Brush.verticalGradient(listOf(topColor, middleColor, bottomColor)))
-        .then(if (borderWidth > 0.dp) Modifier.border(borderWidth, borderColor, shape) else Modifier)
-        .drawWithContent {
-            drawContent()
-            val lineInset = 12.dp.toPx().coerceAtMost(size.width * 0.22f)
+        .drawWithCache {
+            val body = Brush.verticalGradient(listOf(topColor, middleColor, bottomColor))
+            val lineInset = 10.dp.toPx().coerceAtMost(size.width * 0.20f)
             val highlightEnd = (size.width * highlightLength).coerceAtLeast(lineInset)
-            drawLine(
-                color = Color.White.copy(alpha = highlightAlpha),
-                start = Offset(lineInset, 1.dp.toPx()),
-                end = Offset(highlightEnd, 1.dp.toPx()),
-                strokeWidth = 1.dp.toPx(),
-                cap = StrokeCap.Round,
-            )
-            drawLine(
-                color = colors.shadowColor.copy(alpha = lowerEdgeAlpha),
-                start = Offset(lineInset, size.height - 1.dp.toPx()),
-                end = Offset(size.width - lineInset, size.height - 1.dp.toPx()),
-                strokeWidth = 1.dp.toPx(),
-                cap = StrokeCap.Round,
-            )
+            val lineWidth = 1.dp.toPx()
+            onDrawWithContent {
+                drawRect(body)
+                drawContent()
+                drawLine(
+                    color = Color.White.copy(alpha = highlightAlpha),
+                    start = Offset(lineInset, lineWidth),
+                    end = Offset(highlightEnd, lineWidth),
+                    strokeWidth = lineWidth,
+                    cap = StrokeCap.Round,
+                )
+                drawLine(
+                    color = lerp(baseColor, colors.secondary, 0.36f).copy(alpha = refractionAlpha),
+                    start = Offset(lineInset, size.height - lineWidth),
+                    end = Offset(size.width - lineInset, size.height - lineWidth),
+                    strokeWidth = lineWidth,
+                    cap = StrokeCap.Round,
+                )
+                drawLine(
+                    color = colors.tertiary.copy(alpha = warmReflectionAlpha),
+                    start = Offset(size.width * 0.62f, size.height - lineWidth * 2f),
+                    end = Offset(size.width * 0.82f, size.height - lineWidth * 2f),
+                    strokeWidth = lineWidth,
+                    cap = StrokeCap.Round,
+                )
+            }
         }
+        .border(1.dp, resolvedBorder.copy(alpha = borderAlpha), shape)
 }
 
 @Composable
@@ -1328,7 +1432,29 @@ private fun AtelierToggle(
     colors: BestMatesColors,
     dimensions: BestMatesDimensionTokens,
 ) {
-    Box(Modifier.requiredSize(dimensions.shared.minimumTouchTarget), contentAlignment = Alignment.Center) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val thumbExpansion by animateDpAsState(
+        targetValue = if (pressed && enabled) BestMatesDesign.elevation.crystalDepth.pressedThumbExpansion else 0.dp,
+        animationSpec = tween(
+            durationMillis = if (pressed) BestMatesDesign.motion.durations.motionPress else BestMatesDesign.motion.durations.motionRelease,
+            easing = BestMatesDesign.motion.easings.easeStandard,
+        ),
+        label = "crystal toggle thumb press",
+    )
+    Box(
+        Modifier
+            .requiredSize(dimensions.shared.minimumTouchTarget)
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Switch,
+                onValueChange = {},
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
         val track = when {
             !enabled -> colors.surfaceInset.copy(alpha = 0.58f)
             checked -> colors.accentContainer
@@ -1337,32 +1463,34 @@ private fun AtelierToggle(
         Box(
             modifier = Modifier
                 .width(44.dp)
-                .height(24.dp)
-                .clip(dimensions.radii.radiusFull)
-                .background(track)
-                .border(1.dp, if (checked) colors.accent.copy(alpha = 0.55f) else colors.borderControl.copy(alpha = 0.68f), dimensions.radii.radiusFull)
+                .height(26.dp)
+                .atelierCrystalSurface(
+                    baseColor = track,
+                    shape = dimensions.radii.radiusFull,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    pressed = pressed,
+                    borderColor = if (checked) colors.accent else colors.borderControl,
+                    intensity = if (enabled) 0.82f else 0.25f,
+                )
                 .padding(3.dp),
         ) {
             Box(
                 modifier = Modifier
                     .align(if (checked) Alignment.CenterEnd else Alignment.CenterStart)
-                    .then(
-                        if (checked && enabled) {
-                            Modifier.shadow(4.dp, CircleShape, false, colors.accent.copy(alpha = 0.16f), colors.accent.copy(alpha = 0.16f))
-                        } else {
-                            Modifier
-                        },
-                    )
-                    .size(18.dp)
-                    .clip(CircleShape)
-                    .background(
-                        when {
+                    .size(17.dp + thumbExpansion)
+                    .atelierCrystalSurface(
+                        baseColor = when {
                             !enabled -> colors.textMuted.copy(alpha = 0.48f)
-                            checked -> colors.accent
+                            colors.isDark && checked -> lerp(colors.textPrimary, colors.accentContainer, 0.10f)
+                            colors.isDark -> lerp(colors.textPrimary, colors.surfaceRaised, 0.34f)
                             else -> colors.surfaceRaised
                         },
+                        shape = CircleShape,
+                        level = AtelierCrystalLevel.PearlGlass,
+                        pressed = pressed,
+                        borderColor = if (checked) colors.accent else colors.borderControl,
+                        intensity = if (enabled) 0.78f else 0.20f,
                     )
-                    .border(1.dp, if (checked) colors.accent else colors.borderControl, CircleShape),
             )
         }
     }
@@ -1390,22 +1518,51 @@ private fun AtelierSlider(
             val end = size.width - start
             val y = size.height / 2f
             val activeEnd = start + (end - start) * value
-            drawLine(colors.borderSubtle, Offset(start, y), Offset(end, y), 3.dp.toPx())
-            drawLine(colors.secondary, Offset(start, y), Offset(activeEnd, y), 3.dp.toPx())
-            drawCircle(colors.accent.copy(alpha = 0.12f), 11.dp.toPx(), Offset(activeEnd, y))
-            drawCircle(colors.surfaceRaised, 7.dp.toPx(), Offset(activeEnd, y))
-            drawCircle(colors.accent, 7.dp.toPx(), Offset(activeEnd, y), style = Stroke(1.5.dp.toPx()))
+            val thumbLight = lerp(colors.surfaceRaised, Color.White, if (colors.isDark) 0.14f else 0.62f)
+            drawLine(colors.borderSubtle.copy(alpha = 0.78f), Offset(start, y), Offset(end, y), 5.dp.toPx(), StrokeCap.Round)
+            drawLine(
+                brush = Brush.horizontalGradient(listOf(colors.secondary, colors.accent)),
+                start = Offset(start, y),
+                end = Offset(activeEnd, y),
+                strokeWidth = 5.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+            drawCircle(colors.shadowColor.copy(alpha = 0.08f), 11.dp.toPx(), Offset(activeEnd, y + 1.dp.toPx()))
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(thumbLight, colors.surfaceRaised, colors.accentContainer),
+                    center = Offset(activeEnd - 2.dp.toPx(), y - 3.dp.toPx()),
+                    radius = 10.dp.toPx(),
+                ),
+                radius = 9.dp.toPx(),
+                center = Offset(activeEnd, y),
+            )
+            drawCircle(colors.accent.copy(alpha = 0.58f), 9.dp.toPx(), Offset(activeEnd, y), style = Stroke(1.dp.toPx()))
+            drawArc(
+                color = Color.White.copy(alpha = if (colors.isDark) 0.18f else 0.42f),
+                startAngle = 205f,
+                sweepAngle = 105f,
+                useCenter = false,
+                topLeft = Offset(activeEnd - 6.dp.toPx(), y - 6.dp.toPx()),
+                size = androidx.compose.ui.geometry.Size(12.dp.toPx(), 12.dp.toPx()),
+                style = Stroke(1.dp.toPx(), cap = StrokeCap.Round),
+            )
         }
     }
 }
 
 @Composable
 private fun MiniTag(text: String, colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
+    val shape = RoundedCornerShape(dimensions.radii.radiusSm)
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(dimensions.radii.radiusSm))
-            .background(colors.surfaceInset)
-            .border(1.dp, colors.borderSubtle, RoundedCornerShape(dimensions.radii.radiusSm))
+            .atelierCrystalSurface(
+                baseColor = colors.surfaceInset,
+                shape = shape,
+                level = AtelierCrystalLevel.PearlGlass,
+                borderColor = colors.borderSubtle,
+                intensity = 0.42f,
+            )
             .padding(horizontal = dimensions.spacing.space3, vertical = dimensions.spacing.space1),
     ) {
         Text(text, style = MaterialTheme.typography.labelSmall, color = colors.textSecondary)
@@ -1420,16 +1577,36 @@ private fun AtelierChip(
     dimensions: BestMatesDimensionTokens,
     enabled: Boolean = true,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
     Box(
-        modifier = Modifier.heightIn(min = dimensions.shared.minimumTouchTarget),
+        modifier = Modifier
+            .heightIn(min = dimensions.shared.minimumTouchTarget)
+            .selectable(
+                selected = selected,
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Checkbox,
+                onClick = {},
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
                 .height(34.dp)
-                .clip(dimensions.radii.radiusFull)
-                .background(if (selected) colors.selectionFill else colors.surfaceRaised)
-                .border(1.dp, if (selected) colors.selectionOutline else colors.borderSubtle, dimensions.radii.radiusFull)
+                .atelierCrystalSurface(
+                    baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
+                    shape = dimensions.radii.radiusFull,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    pressed = pressed,
+                    borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                    intensity = when {
+                        !enabled -> 0.20f
+                        selected -> 0.92f
+                        else -> 0.54f
+                    },
+                )
                 .padding(horizontal = dimensions.spacing.space3),
             horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
             verticalAlignment = Alignment.CenterVertically,
@@ -1466,23 +1643,25 @@ private fun AtelierField(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(
-                    if (state == AtelierFieldState.Focused) {
-                        Modifier.shadow(5.dp, shape, false, colors.accent.copy(alpha = 0.12f), colors.accent.copy(alpha = 0.12f))
-                    } else {
-                        Modifier
+                .atelierCrystalSurface(
+                    baseColor = container,
+                    shape = shape,
+                    level = AtelierCrystalLevel.PearlGlass,
+                    borderColor = outline,
+                    intensity = when (state) {
+                        AtelierFieldState.Resting -> 0.46f
+                        AtelierFieldState.Focused -> 0.94f
+                        AtelierFieldState.Error -> 0.74f
                     },
                 )
-                .clip(shape)
-                .background(container)
-                .border(
-                    when (state) {
-                        AtelierFieldState.Resting -> 1.dp
-                        AtelierFieldState.Focused -> BestMatesDesign.states.focusRingWidth
-                        AtelierFieldState.Error -> BestMatesDesign.states.errorOutlineWidth
-                    },
-                    outline,
-                    shape,
+                .then(
+                    if (state == AtelierFieldState.Focused || state == AtelierFieldState.Error) {
+                        Modifier.border(
+                            if (state == AtelierFieldState.Focused) BestMatesDesign.states.focusRingWidth else BestMatesDesign.states.errorOutlineWidth,
+                            outline.copy(alpha = 0.82f),
+                            shape,
+                        )
+                    } else Modifier,
                 )
                 .padding(horizontal = dimensions.spacing.space4, vertical = dimensions.spacing.space3),
         ) {
@@ -1625,7 +1804,17 @@ private fun SpacingAndRadiusDiagnostic(colors: BestMatesColors, dimensions: Best
 @Composable
 private fun RadiusCell(name: String, shape: Shape, colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
     Column(Modifier.width(56.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.size(44.dp).clip(shape).background(colors.accentContainer).border(1.dp, colors.accent, shape))
+        Box(
+            Modifier
+                .size(44.dp)
+                .atelierCrystalSurface(
+                    baseColor = colors.accentContainer,
+                    shape = shape,
+                    level = AtelierCrystalLevel.MilkCrystal,
+                    borderColor = colors.accent,
+                    intensity = 0.62f,
+                ),
+        )
         Text(name, style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
     }
 }

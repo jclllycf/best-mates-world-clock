@@ -39,7 +39,6 @@ object OrbitIcons {
             curveTo(8f, 7.8f, 12f, 6.8f, 15.5f, 8.4f)
             curveTo(18.4f, 9.8f, 19.5f, 13.3f, 18.2f, 16.3f)
             curveTo(17.5f, 18f, 15.9f, 19.1f, 14f, 19.4f)
-            orbitDot(18.7f, 6f, 0.8f)
         }
     }
 
@@ -50,7 +49,6 @@ object OrbitIcons {
             curveTo(16f, 7.8f, 12f, 6.8f, 8.5f, 8.4f)
             curveTo(5.6f, 9.8f, 4.5f, 13.3f, 5.8f, 16.3f)
             curveTo(6.5f, 18f, 8.1f, 19.1f, 10f, 19.4f)
-            orbitDot(5.3f, 6f, 0.8f)
         }
     }
 
@@ -59,7 +57,6 @@ object OrbitIcons {
             roundedBox(4f, 5f, 20f, 19f, 2.5f)
             moveTo(12f, 9f); lineTo(12f, 15f)
             moveTo(9f, 12f); lineTo(15f, 12f)
-            orbitDot(18.7f, 4.2f, 0.8f)
         }
     }
 
@@ -68,7 +65,6 @@ object OrbitIcons {
             roundedBox(4f, 4f, 14.5f, 14.5f, 2.2f)
             moveTo(17.5f, 13f); lineTo(17.5f, 20f)
             moveTo(14f, 16.5f); lineTo(21f, 16.5f)
-            orbitDot(6.1f, 17.8f, 0.75f)
         }
     }
 
@@ -92,7 +88,6 @@ object OrbitIcons {
             moveTo(6.5f, 19f); lineTo(12.5f, 19f)
             moveTo(18f, 11f); lineTo(18f, 19f)
             moveTo(14f, 15f); lineTo(22f, 15f)
-            orbitDot(19.7f, 6f, 0.75f)
         }
     }
 
@@ -104,7 +99,6 @@ object OrbitIcons {
             curveTo(19.7f, 6.7f, 19.7f, 7.9f, 18.9f, 8.7f)
             lineTo(9.8f, 17.8f); close()
             moveTo(5f, 20f); lineTo(11.5f, 20f)
-            orbitDot(19.5f, 17.8f, 0.8f)
         }
     }
 
@@ -118,7 +112,6 @@ object OrbitIcons {
             lineTo(4f, 15f)
             curveTo(4f, 16.1f, 4.9f, 17f, 6f, 17f)
             lineTo(8f, 17f)
-            orbitDot(18.8f, 5f, 0.75f)
         }
     }
 
@@ -128,7 +121,6 @@ object OrbitIcons {
             roundedBox(8f, 3f, 16f, 7.5f, 1.5f)
             moveTo(8.5f, 12f); lineTo(15.5f, 12f)
             moveTo(8.5f, 16f); lineTo(14f, 16f)
-            orbitDot(18.8f, 10f, 0.75f)
         }
     }
 
@@ -138,17 +130,17 @@ object OrbitIcons {
             orbitDot(6.5f, 17f, 2.5f)
             moveTo(8.5f, 8.5f); lineTo(20f, 18.5f)
             moveTo(8.5f, 15.5f); lineTo(20f, 5.5f)
-            orbitDot(20f, 12f, 0.7f)
         }
     }
 
     val Pin: ImageVector by lazy {
         orbitIcon("OrbitPin") {
-            moveTo(9f, 4f); lineTo(16.5f, 4f)
-            lineTo(15f, 9f); lineTo(18f, 12f); lineTo(6f, 12f)
-            lineTo(9f, 9f); close()
-            moveTo(12f, 12f); lineTo(12f, 21f)
-            orbitDot(18.8f, 5.2f, 0.75f)
+            roundedBox(8f, 4.5f, 16f, 8.5f, 1.8f)
+            moveTo(9.5f, 8.5f)
+            curveTo(9.5f, 10.8f, 8.6f, 12.4f, 7.2f, 14f)
+            lineTo(16.8f, 14f)
+            curveTo(15.4f, 12.4f, 14.5f, 10.8f, 14.5f, 8.5f)
+            moveTo(12f, 14f); lineTo(12f, 19.5f)
         }
     }
 
@@ -160,7 +152,6 @@ object OrbitIcons {
             curveTo(14.2f, 3.5f, 16f, 4.8f, 16f, 7.5f)
             lineTo(16f, 10f)
             moveTo(12f, 14f); lineTo(12f, 16.5f)
-            orbitDot(18.8f, 7f, 0.7f)
         }
     }
 
@@ -182,7 +173,6 @@ object OrbitIcons {
             curveTo(6f, 18.2f, 10.2f, 20.5f, 14.2f, 19.4f)
             curveTo(16.5f, 18.8f, 18.4f, 17.1f, 19.3f, 15f)
             moveTo(14.8f, 7.8f); lineTo(19f, 8.5f); lineTo(18.5f, 4.3f)
-            orbitDot(19.3f, 15f, 1f)
         }
     }
 
@@ -192,7 +182,6 @@ object OrbitIcons {
             moveTo(14f, 18f); lineTo(18f, 18f); lineTo(18f, 14f)
             moveTo(7f, 7f); lineTo(17f, 17f)
             moveTo(13.5f, 5f); lineTo(19f, 5f); lineTo(19f, 10.5f)
-            orbitDot(5f, 18.8f, 0.8f)
         }
     }
 
@@ -204,7 +193,6 @@ object OrbitIcons {
             lineTo(19f, 5f)
             moveTo(5f, 9f); lineTo(9f, 9f)
             moveTo(15f, 9f); lineTo(19f, 9f)
-            orbitDot(12f, 7f, 1f)
         }
     }
 
@@ -213,7 +201,6 @@ object OrbitIcons {
             moveTo(12f, 3.5f); lineTo(12f, 20.5f)
             moveTo(3.5f, 12f); lineTo(20.5f, 12f)
             roundedBox(7f, 7f, 17f, 17f, 1.5f)
-            orbitDot(12f, 12f, 1f)
         }
     }
 
@@ -230,14 +217,13 @@ object OrbitIcons {
 
     val Font: ImageVector by lazy {
         orbitIcon("OrbitFont") {
-            moveTo(4.5f, 19f); lineTo(10f, 5f); lineTo(15.5f, 19f)
-            moveTo(6.5f, 14f); lineTo(13.5f, 14f)
-            moveTo(15f, 11f)
-            curveTo(16.5f, 9.8f, 19.5f, 10.2f, 19.5f, 12.5f)
-            lineTo(19.5f, 19f)
-            moveTo(19.5f, 15f)
-            curveTo(17f, 14f, 14.8f, 15.1f, 15f, 17f)
-            curveTo(15.2f, 19f, 18f, 19.4f, 19.5f, 17.5f)
+            moveTo(3.5f, 19.5f); lineTo(8.2f, 4.5f); lineTo(13f, 19.5f)
+            moveTo(5.3f, 14f); lineTo(11.2f, 14f)
+            moveTo(19.5f, 13f); lineTo(19.5f, 19f)
+            moveTo(19.5f, 15.2f)
+            curveTo(18.7f, 13.7f, 16f, 13.3f, 14.8f, 14.7f)
+            curveTo(13.5f, 16.2f, 14.3f, 18.5f, 16.4f, 18.7f)
+            curveTo(17.8f, 18.9f, 19f, 18.2f, 19.5f, 17.3f)
         }
     }
 
@@ -249,7 +235,6 @@ object OrbitIcons {
             curveTo(15.3f, 20.5f, 18f, 17.7f, 18f, 14f)
             curveTo(18f, 10.7f, 15f, 7.3f, 12f, 3.5f)
             moveTo(9.3f, 16.2f); curveTo(10.7f, 17.3f, 12.8f, 17.5f, 14.5f, 16f)
-            orbitDot(18.8f, 7f, 0.75f)
         }
     }
 
@@ -284,7 +269,6 @@ object OrbitIcons {
         orbitIcon("OrbitSearch") {
             orbitDot(10.5f, 10.5f, 6f)
             moveTo(15f, 15f); lineTo(20f, 20f)
-            orbitDot(19.5f, 5.2f, 0.75f)
         }
     }
 
