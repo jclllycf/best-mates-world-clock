@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -139,6 +140,7 @@ private fun CuteAtelierLabPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .safeDrawingPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(
                     horizontal = dimensions.shared.compactScreenGutter,
@@ -382,6 +384,7 @@ private fun ChoiceChip(
                     level = AtelierCrystalLevel.PearlGlass,
                     pressed = pressed,
                     borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                    borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                     intensity = if (selected) 0.92f else 0.58f,
                 )
                 .padding(horizontal = dimensions.spacing.space4),
@@ -389,7 +392,12 @@ private fun ChoiceChip(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (selected) {
-                Box(Modifier.size(6.dp).clip(CircleShape).background(colors.accent))
+                Box(
+                    Modifier
+                        .size(BestMatesDesign.states.selectionIndicatorDotSize)
+                        .clip(CircleShape)
+                        .background(colors.accent),
+                )
             }
             Text(
                 label,
@@ -553,13 +561,20 @@ private fun MiniProjectCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(interactionSource = interactionSource, indication = null, role = Role.Button, onClick = {})
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = {},
+            )
             .atelierCrystalSurface(
                 baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
                 shape = shape,
                 level = AtelierCrystalLevel.MilkCrystal,
                 pressed = pressed,
                 borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                 intensity = if (selected) 0.92f else 0.68f,
             )
             .padding(dimensions.spacing.space4),
@@ -582,7 +597,14 @@ private fun MiniProjectCard(
             Text(title, style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = colors.textMuted)
         }
-        if (selected) Icon(OrbitIcons.Confirm, null, tint = colors.accent, modifier = Modifier.size(18.dp))
+        if (selected) {
+            Icon(
+                OrbitIcons.Confirm,
+                null,
+                tint = colors.accent,
+                modifier = Modifier.size(BestMatesDesign.states.selectionCheckIconSize),
+            )
+        }
     }
 }
 
@@ -598,13 +620,20 @@ private fun ThemeCardSample(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(interactionSource = interactionSource, indication = null, role = Role.RadioButton, onClick = {})
+            .selectable(
+                selected = true,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = {},
+            )
             .atelierCrystalSurface(
-                baseColor = colors.surfaceRaised,
+                baseColor = colors.selectionFill,
                 shape = shape,
                 level = AtelierCrystalLevel.MilkCrystal,
                 pressed = pressed,
                 borderColor = colors.selectionOutline,
+                borderWidth = BestMatesDesign.states.selectedOutlineWidth,
                 intensity = 0.96f,
             )
             .padding(dimensions.spacing.space5),
@@ -622,7 +651,12 @@ private fun ThemeCardSample(
                         .background(colors.accentContainer),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(OrbitIcons.Confirm, null, tint = colors.accent, modifier = Modifier.size(15.dp))
+                    Icon(
+                        OrbitIcons.Confirm,
+                        null,
+                        tint = colors.accent,
+                        modifier = Modifier.size(BestMatesDesign.states.selectionCheckCompactIconSize),
+                    )
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2)) {
@@ -701,7 +735,12 @@ private fun OrbitAction(
 private fun InspectorSample(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
     AtelierSurface(colors, dimensions, color = colors.surfaceRaised, radius = dimensions.radii.radiusXl, crystalLevel = AtelierCrystalLevel.MilkCrystal) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(8.dp).clip(CircleShape).background(colors.secondary))
+            Box(
+                Modifier
+                    .size(BestMatesDesign.states.selectionIndicatorDotSize)
+                    .clip(CircleShape)
+                    .background(colors.secondary),
+            )
             Text("Selected city", modifier = Modifier.padding(start = dimensions.spacing.space2), style = MaterialTheme.typography.labelMedium, color = colors.textMuted)
             Spacer(Modifier.weight(1f))
             Icon(OrbitIcons.Rename, null, tint = colors.textSecondary, modifier = Modifier.size(18.dp))
@@ -757,13 +796,20 @@ private fun PickerRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = dimensions.shared.minimumTouchTarget)
-            .clickable(interactionSource = interactionSource, indication = null, role = Role.RadioButton, onClick = {})
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = {},
+            )
             .atelierCrystalSurface(
                 baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
                 shape = shape,
                 level = AtelierCrystalLevel.MilkCrystal,
                 pressed = pressed,
                 borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                 intensity = if (selected) 0.88f else 0.60f,
             )
             .padding(dimensions.spacing.space3),
@@ -771,7 +817,14 @@ private fun PickerRow(
     ) {
         Box(Modifier.size(34.dp).clip(RoundedCornerShape(dimensions.radii.radiusSm)).background(swatch))
         Text(label, modifier = Modifier.weight(1f).padding(start = dimensions.spacing.space3), style = MaterialTheme.typography.bodyMedium, color = colors.textPrimary)
-        if (selected) Icon(OrbitIcons.Confirm, null, tint = colors.accent, modifier = Modifier.size(17.dp))
+        if (selected) {
+            Icon(
+                OrbitIcons.Confirm,
+                null,
+                tint = colors.accent,
+                modifier = Modifier.size(BestMatesDesign.states.selectionCheckIconSize),
+            )
+        }
     }
 }
 
@@ -881,13 +934,23 @@ private fun HaloCard(
                 )
                 .fillMaxWidth()
                 .height(106.dp)
-                .clip(shape)
-                .background(states.colors.selectionFill)
-                .border(states.selectedOutlineWidth, states.colors.selectionOutline, shape),
+                .atelierCrystalSurface(
+                    baseColor = states.colors.selectionFill,
+                    shape = shape,
+                    level = AtelierCrystalLevel.MilkCrystal,
+                    borderColor = states.colors.selectionOutline,
+                    borderWidth = states.selectedOutlineWidth,
+                    intensity = 0.86f,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(Modifier.size(9.dp).clip(CircleShape).background(colors.secondary))
+                Box(
+                    Modifier
+                        .size(states.selectionIndicatorDotSize)
+                        .clip(CircleShape)
+                        .background(colors.secondary),
+                )
                 Spacer(Modifier.height(dimensions.spacing.space2))
                 Text("Selected", style = MaterialTheme.typography.labelLarge, color = states.colors.selectionContent)
             }
@@ -923,10 +986,14 @@ private fun CanvasLanguageSample(colors: BestMatesColors, dimensions: BestMatesD
                 .align(Alignment.Center)
                 .width(206.dp)
                 .height(104.dp)
-                .shadow(8.dp, RoundedCornerShape(dimensions.radii.radiusLg), false, colors.accent.copy(alpha = 0.2f), colors.accent.copy(alpha = 0.2f))
-                .clip(RoundedCornerShape(dimensions.radii.radiusLg))
-                .background(colors.surfaceRaised)
-                .border(1.5.dp, colors.selectionOutline, RoundedCornerShape(dimensions.radii.radiusLg))
+                .atelierCrystalSurface(
+                    baseColor = colors.surfaceRaised,
+                    shape = RoundedCornerShape(dimensions.radii.radiusLg),
+                    level = AtelierCrystalLevel.MilkCrystal,
+                    borderColor = colors.selectionOutline,
+                    borderWidth = BestMatesDesign.states.selectedOutlineWidth,
+                    intensity = 0.90f,
+                )
                 .padding(dimensions.spacing.space4),
         ) {
             Column(Modifier.align(Alignment.CenterStart)) {
@@ -1051,7 +1118,20 @@ private fun ColorSwatch(
     colors: BestMatesColors,
     dimensions: BestMatesDimensionTokens,
 ) {
-    Box(Modifier.requiredSize(dimensions.shared.minimumTouchTarget), contentAlignment = Alignment.Center) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    Box(
+        Modifier
+            .requiredSize(dimensions.shared.minimumTouchTarget)
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = {},
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
         val shape = RoundedCornerShape(dimensions.radii.radiusSm)
         Box(
             modifier = Modifier
@@ -1060,7 +1140,9 @@ private fun ColorSwatch(
                     baseColor = colors.surfaceRaised,
                     shape = shape,
                     level = AtelierCrystalLevel.PearlGlass,
+                    pressed = pressed,
                     borderColor = if (selected) colors.selectionOutline else colors.borderControl,
+                    borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                     intensity = if (selected) 0.92f else 0.56f,
                 ),
         ) {
@@ -1075,13 +1157,18 @@ private fun ColorSwatch(
                 Box(
                     Modifier
                         .align(Alignment.TopEnd)
-                        .size(17.dp)
+                        .size(22.dp)
                         .clip(CircleShape)
                         .background(colors.accentContainer)
                         .border(1.dp, colors.selectionOutline, CircleShape),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(OrbitIcons.Confirm, null, tint = colors.onAccentContainer, modifier = Modifier.size(11.dp))
+                    Icon(
+                        OrbitIcons.Confirm,
+                        null,
+                        tint = colors.onAccentContainer,
+                        modifier = Modifier.size(BestMatesDesign.states.selectionCheckCompactIconSize),
+                    )
                 }
             }
         }
@@ -1289,6 +1376,7 @@ private fun Modifier.atelierCrystalSurface(
     level: AtelierCrystalLevel,
     pressed: Boolean = false,
     borderColor: Color = Color.Unspecified,
+    borderWidth: Dp = 1.dp,
     intensity: Float = 1f,
 ): Modifier {
     val colors = BestMatesDesign.colors
@@ -1352,6 +1440,7 @@ private fun Modifier.atelierCrystalSurface(
     val resolvedBorder = if (borderColor == Color.Unspecified) colors.borderSubtle else borderColor
     val borderAlpha = (recipe.edgeAlpha * (0.72f + intensity * 0.28f)).coerceIn(0f, 1f)
     val warmReflectionAlpha = recipe.warmReflectionAlpha * intensity
+    val themeContaminationAlpha = recipe.themeContaminationAlpha * intensity
 
     return this
         .graphicsLayer {
@@ -1369,11 +1458,29 @@ private fun Modifier.atelierCrystalSurface(
         .clip(shape)
         .drawWithCache {
             val body = Brush.verticalGradient(listOf(topColor, middleColor, bottomColor))
+            val themeContamination = Brush.linearGradient(
+                colors = listOf(
+                    colors.atmosphereA.copy(alpha = themeContaminationAlpha),
+                    Color.Transparent,
+                    colors.atmosphereB.copy(alpha = themeContaminationAlpha * 0.82f),
+                ),
+                start = Offset.Zero,
+                end = Offset(size.width, size.height),
+            )
+            val pearlVeil = Brush.verticalGradient(
+                colors = listOf(
+                    Color.White.copy(alpha = highlightAlpha * 0.16f),
+                    Color.Transparent,
+                ),
+                endY = size.height * 0.46f,
+            )
             val lineInset = 10.dp.toPx().coerceAtMost(size.width * 0.20f)
             val highlightEnd = (size.width * highlightLength).coerceAtLeast(lineInset)
             val lineWidth = 1.dp.toPx()
             onDrawWithContent {
                 drawRect(body)
+                drawRect(themeContamination)
+                drawRect(pearlVeil)
                 drawContent()
                 drawLine(
                     color = Color.White.copy(alpha = highlightAlpha),
@@ -1398,7 +1505,7 @@ private fun Modifier.atelierCrystalSurface(
                 )
             }
         }
-        .border(1.dp, resolvedBorder.copy(alpha = borderAlpha), shape)
+        .border(borderWidth, resolvedBorder.copy(alpha = borderAlpha), shape)
 }
 
 @Composable
@@ -1601,6 +1708,7 @@ private fun AtelierChip(
                     level = AtelierCrystalLevel.PearlGlass,
                     pressed = pressed,
                     borderColor = if (selected) colors.selectionOutline else colors.borderSubtle,
+                    borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                     intensity = when {
                         !enabled -> 0.20f
                         selected -> 0.92f
@@ -1611,7 +1719,14 @@ private fun AtelierChip(
             horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (selected) Box(Modifier.size(6.dp).clip(CircleShape).background(colors.secondary))
+            if (selected) {
+                Box(
+                    Modifier
+                        .size(BestMatesDesign.states.selectionIndicatorDotSize)
+                        .clip(CircleShape)
+                        .background(colors.secondary),
+                )
+            }
             Text(
                 label,
                 style = MaterialTheme.typography.labelMedium,
@@ -1648,20 +1763,16 @@ private fun AtelierField(
                     shape = shape,
                     level = AtelierCrystalLevel.PearlGlass,
                     borderColor = outline,
+                    borderWidth = when (state) {
+                        AtelierFieldState.Resting -> 1.dp
+                        AtelierFieldState.Focused -> BestMatesDesign.states.focusRingWidth
+                        AtelierFieldState.Error -> BestMatesDesign.states.errorOutlineWidth
+                    },
                     intensity = when (state) {
                         AtelierFieldState.Resting -> 0.46f
                         AtelierFieldState.Focused -> 0.94f
                         AtelierFieldState.Error -> 0.74f
                     },
-                )
-                .then(
-                    if (state == AtelierFieldState.Focused || state == AtelierFieldState.Error) {
-                        Modifier.border(
-                            if (state == AtelierFieldState.Focused) BestMatesDesign.states.focusRingWidth else BestMatesDesign.states.errorOutlineWidth,
-                            outline.copy(alpha = 0.82f),
-                            shape,
-                        )
-                    } else Modifier,
                 )
                 .padding(horizontal = dimensions.spacing.space4, vertical = dimensions.spacing.space3),
         ) {
@@ -1858,6 +1969,11 @@ private fun StateCell(
         BestMatesVisualState.DESTRUCTIVE, BestMatesVisualState.ERROR -> colors.destructive
         else -> colors.borderSubtle
     }
+    val outlineWidth = when (state) {
+        BestMatesVisualState.SELECTED -> states.selectedOutlineWidth
+        BestMatesVisualState.FOCUSED -> states.focusRingWidth
+        else -> 1.dp
+    }
     val label = when (state) {
         BestMatesVisualState.SELECTED -> "● Selected"
         BestMatesVisualState.LOADING -> "··· Loading"
@@ -1870,7 +1986,7 @@ private fun StateCell(
             .height(dimensions.shared.minimumTouchTarget)
             .clip(shape)
             .background(container)
-            .border(if (state == BestMatesVisualState.SELECTED || state == BestMatesVisualState.FOCUSED) 1.5.dp else 1.dp, outline, shape),
+            .border(outlineWidth, outline, shape),
         contentAlignment = Alignment.Center,
     ) {
         Text(

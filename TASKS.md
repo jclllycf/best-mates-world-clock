@@ -1,9 +1,9 @@
 # BEST MATES TASKS
 
-## Current development priority (2026-09-08)
+## Current development priority (2026-09-09)
 
-1. Best Mates 2.0 — Phase 2C.2: Crystal Atelier Final Foundation Polish — implemented and awaiting maintainer review.
-2. Review the final Soft Crystal Design Lab, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2C.3: Interaction Surface Closure & Visual Hygiene — implemented, physically verified, and visually frozen unless a serious regression is found.
+2. Stop for maintainer review. Do not begin Phase 2D, create shared production components, or migrate production screens until explicitly authorized.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,15 +11,34 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2C.3 — Interaction Surface Closure & Visual Hygiene
+Status: IMPLEMENTED / PHYSICALLY_VERIFIED / VISUALLY_FROZEN
+Scope: final Soft Crystal interaction materials, semantic selection hygiene, specified provisional icon corrections, Design Lab control consistency, and debug-only safe-inset behavior
+
+Completed:
+- Removed the built-in decorative dot from `OrbitIcons.Confirm`, so every Design Lab check-bearing state now uses a plain semantic check. Chips and compact selectors may retain one 6dp semantic dot only when they do not show a check.
+- Added shared 6dp dot, 18dp ordinary-check, and 16dp compact-check state tokens. Selected cards, picker rows, theme cards, swatches, and project rows use selected fill, a controlled 1.5dp edge, one semantic indicator, and only then an optional Soft Halo.
+- Rounded and rebalanced the provisional Confirm path for 16/20/24dp rendering; separated the Font `A` and `a`; rebuilt Undo/Redo as true mirrored curves with readable heads; and optically balanced Pin while keeping it distinct from Lock. Full icon-language work remains deferred to Phase 2D.
+- Froze Pearl Glass, Milk Crystal, and Jelly Crystal recipes with controlled translucency, a subtle vertical tonal body, low-alpha identity contamination, a diffuse internal pearl veil, a translucent edge, ambient shadow, upper highlight, lower refraction, and restrained warm reflection. Jelly Crystal remains opaque through its primary label band.
+- Applied the crystal depth hierarchy to selected cards and canvas-study selection in addition to the existing actions, icon controls, chips, toggles, slider, fields, picker rows, swatches, and compact controls. Selection-aware controls now expose selected semantics and keep approximately 48dp targets.
+- Preserved Quiet Motion at 80ms press, 120ms release, and 160ms state transition. Pressed controls use 0.75dp downward travel, `.987` scale, 0.5dp elevation, denser tone, 22% shadow, 48%/46% compressed highlight, and 112% lower refraction without spring, overshoot, or bounce.
+- Made the debug Activity explicitly edge to edge and applied `safeDrawingPadding()` outside the Design Lab scroll modifier. Background atmosphere can extend behind system chrome while readable/interactive content stays inside status/navigation insets.
+- Verified `assembleDebug --warning-mode all` passes with no new warnings. Installed and launched the APK on attached device `PJF110`; inspected Cloud Light, Dream Light, and Midnight Dark across editor tools, inspector, picker, icon family, Halo, canvas, color controls, actions, switches, sliders, fields, and states; and quickly reviewed all eight identity × brightness combinations. No clipping, horizontal overflow, system-bar overlap, checkmark dots, Font collision, or fused Undo/Redo geometry was observed.
+- Production Workspace, Settings, Editor, theme adoption, persistence, widget rendering/providers, gestures, canvas geometry, TASK-007, and reference folders `1/` and `2/` remain unchanged.
+
+Frozen boundary:
+- Phase 2C is visually frozen unless a serious regression is found. Stop before Phase 2D.
+- Phase 2D owns the full Orbit Charm redesign, Shape Atelier, Celestial Atelier, Type Wardrobe, and asset-picker visual language.
+
 ### BM2-P2C.2 — Crystal Atelier Final Foundation Polish
-Status: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+Status: IMPLEMENTED / SUPERSEDED BY BM2-P2C.3
 Scope: Soft Crystal tokens, isolated Design Lab treatments, Orbit Charm cleanup, and production-behavior audit only
 
 Completed:
 - Replaced the preview-only pressable-depth recipe with typed Pearl Glass, Milk Crystal, and Jelly Crystal families covering fill alpha, light/dark elevation and shadow, tonal shifts, translucent edge, upper highlight, lower refraction, optional warm reflection, and highlight length.
 - Applied the hierarchy to Design Lab actions, icon controls, chips, toggles with a lavender-resin track and pearl-white thumb, slider thumb/value tags, project/theme cards, inspector controls, picker rows, text fields, color-swatch frames, and icon/shape studies. Direct sample colors remain untinted and all interactive studies retain 48dp targets.
-- Implemented Quiet Motion press compression at 80ms in / 120ms out: 0.75dp movement, `.987` scale, 0.5dp elevation, 22% resting shadow, 48% highlight, 72% refraction, and a 1.25dp toggle-thumb expansion. The 160ms token remains available for small state settling; no spring or bounce was added.
-- Cleaned non-semantic dots from normal utility icons. Restrained ornament is reserved for Theme, Sun, Moon, and Confirm. Rebuilt Font as separated vector `A` + lowercase `a`, and Pin as a soft rounded tack with a short needle.
+- Historical Phase 2C.2 press feedback used 80ms in / 120ms out, 0.75dp movement, `.987` scale, 0.5dp elevation, 22% resting shadow, 48% highlight, 72% refraction, and a 1.25dp toggle-thumb expansion. Phase 2C.3 supersedes its refraction value with the frozen 112% compressed lower edge.
+- Phase 2C.2 removed non-semantic dots from normal utility icons and temporarily allowed Confirm ornament. Phase 2C.3 supersedes that exception: Confirm is now a plain semantic check; ornament remains limited to Theme, Sun, and Moon.
 - Audited production Pin/Lock behavior without changing it: only Pin exists; its `locked` flag blocks position/resize/rotation manipulation while property editing remains available. There is no separate full-edit Lock command; foundation Lock artwork remains reserved for a future explicit behavior contract.
 - Audited production color capability without changing it: the existing picker supports continuous HSV hue/saturation/value plus independent opacity and writes arbitrary ARGB colors. The Lab now shows a continuous hue/saturation study, separate brightness/opacity controls, and a separate recommended palette.
 - Used gradients, alpha, borders, shadows, and `drawWithCache`; no backdrop blur, per-frame brush churn, production component extraction, or production UI adoption was added.
@@ -27,7 +46,7 @@ Completed:
 - Production `MainActivity.kt`, navigation, Workspace, Settings, Editor, persistence, models, widget rendering, canvas behavior, gestures, TASK-007, resources/manifests, and reference folders remain unchanged.
 
 Review gate:
-- Stop for maintainer review. Do not begin Phase 3 or extract/migrate these foundation recipes into production components until explicitly authorized.
+- Superseded by BM2-P2C.3. Use its frozen review gate and do not extract/migrate these recipes into production components until explicitly authorized.
 
 ### BM2-P2C.1 — Soft Button Depth Polish
 Status: IMPLEMENTED / SUPERSEDED BY BM2-P2C.2
@@ -61,7 +80,7 @@ Completed:
 
 Approval record:
 - Commit `16f19ba` is the approved visual baseline for Cute Atelier / Cozy Orbit. Phase 2C.1 is limited to button-depth polish and does not reopen the broader direction.
-- Do not begin Phase 3, production component extraction, screen migration, Settings persistence work, or TASK-007 investigation until explicitly authorized.
+- Historical gate retained: no production component extraction, screen migration, Settings persistence work, or TASK-007 investigation was authorized.
 - Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, canvas behavior, and reference folders remain unchanged.
 
 ### BM2-P2B.1 — Design Lab device harness
@@ -80,7 +99,7 @@ Device access:
 - The Activity has no launcher intent and is excluded from recents. It exists only in the debug APK.
 
 Review gate:
-- Verify the Design Lab on a physical device across all eight variants, then stop. Do not begin Phase 3.
+- Historical gate retained: verify the Design Lab on a physical device across all eight variants, then stop.
 - Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, gestures, canvas behavior, TASK-007, and reference folders remain unchanged.
 
 ### BM2-P2B — Foundation Design Lab

@@ -8,10 +8,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import com.bestmates.worldclock.ui.preview.BestMatesFoundationDesignLab
 
-/** Debug APK-only host for physical-device review of the Phase 2B Design Lab. */
+/** Debug APK-only host for physical-device review of the Best Mates 2.0 Design Lab. */
 class BestMatesDesignLabActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             BestMatesFoundationDesignLab { isDark, background ->
                 updateSystemBars(isDark = isDark, background = background)

@@ -1,8 +1,8 @@
 # Best Mates 2.0 — UI Design Foundation
 
-Status: **PHASE 2C.2 SOFT CRYSTAL ATELIER FOUNDATION — IMPLEMENTED IN DESIGN LAB**
-Date: 2026-09-08
-Implementation baseline: `81f8bb0` (`feat(ui): refine Cute Atelier button depth`), with the repository-maintenance ignore rules retained. Phase 2C.2 keeps the approved Cute Atelier / Cozy Orbit palette, typography, geometry, layout, hierarchy, production isolation, and debug harness while finalizing Soft Crystal surfaces and Orbit Charm utility artwork.
+Status: **PHASE 2C.3 SOFT CRYSTAL ATELIER INTERACTION FOUNDATION — VISUALLY FROZEN**
+Date: 2026-09-09
+Implementation baseline: `ed86e9c` (`feat(ui): finalize Soft Crystal Atelier foundation`), with the repository-maintenance ignore rules retained. Phase 2C.3 keeps the approved Cute Atelier / Cozy Orbit palette, typography, geometry, layout, hierarchy, production isolation, and debug harness while closing interaction-surface, selection-indicator, icon-geometry, and system-inset defects.
 
 Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, and its debug-only device host. Production Workspace, Settings, Editor, app-root theme, persistence, widgets, rendering, gestures, canvas behavior, and TASK-007 remain unchanged.
 
@@ -12,17 +12,17 @@ This section supersedes earlier Phase 1 numeric palette, typography, radius, dep
 
 The refined personality is **Cute Atelier + Soft Crystal + Orbit Charm**: milk-pearl and blush environments, plum hierarchy, scarce charm details, clear working surfaces, and a lavender-neutral canvas. Crystal treatment is a local material cue, not a full-screen glass effect. It is warm and collectible without becoming childish, candy-saturated, glass-heavy, or a stock Material theme. One card normally has zero or one decorative signature motif.
 
-### 0.0 Phase 2C.2 final foundation contract
+### 0.0 Phase 2C.3 frozen foundation contract
 
-Phase 2C.2 introduces three typed crystal families while preserving the approved hierarchy:
+Phase 2C.3 freezes the three typed crystal families and their approved hierarchy:
 
 | Family | Intended use | Required construction |
 | --- | --- | --- |
-| Level 1 — Pearl Glass | Chips, toolbar/icon actions, snap/guides tags, compact controls | Lightly translucent pearl fill; subtle vertical luminance shift; 1dp translucent edge; short upper highlight; faint lower shadow; quiet bottom refraction |
-| Level 2 — Milk Crystal | Project/theme cards, font/shape/city tiles, inspector, picker, settings and selection tiles | Milk-semitranslucent body; local top highlight; identity tint; tonal edge refraction; floating shadow; optional short warm reflection |
-| Level 3 — Jelly Crystal | One primary action per local decision area | Rich semantic color; restrained vertical gradient; local top light; translucent colored rim; lower refraction; soft external depth |
+| Level 1 — Pearl Glass | Chips, toolbar/icon actions, snap/guides tags, compact controls | Translucent pearl body; quiet vertical tone; theme contamination; 1dp translucent edge; short internal highlight; faint ambient shadow; lower refraction |
+| Level 2 — Milk Crystal | Project/theme cards, font/shape/city tiles, inspector, picker, settings and selection tiles | Milk-translucent body; diffuse pearl veil; identity tint; defined tonal edge/refraction; medium ambient depth; optional short warm reflection |
+| Level 3 — Jelly Crystal | One primary action per local decision area | Opaque semantic body for contrast; restrained vertical tone; local pearl light; translucent colored rim; strongest lower refraction and ambient depth |
 
-The implementation uses cached Compose drawing, alpha, gradients, hairlines, and restrained shadows. It does not require backdrop blur. The effect must remain readable when rendered over every resolved identity surface, and direct color samples must keep their authored color inside a separate neutral crystal frame.
+The implementation uses cached Compose drawing, layered translucent fills, a low-alpha identity diagonal, a diffuse internal pearl veil, local top/bottom lines, hairlines, and restrained shadows. It does not require backdrop blur. The effect must remain readable when rendered over every resolved identity surface, and direct color samples must keep their authored color inside a separate neutral crystal frame.
 
 ### 0.1 Resolved neutral environments
 
@@ -75,49 +75,49 @@ The interface scale is editorial and compact: display roles are `36/44`, `32/40`
 
 Radius tokens are `6, 10, 14, 18, 20, 24, 28dp`, plus full. Full is reserved for compact chips, segmented selections, badges, circles, and swatches. Primary buttons use 20dp, ordinary cards/inspectors 18–24dp, fields 18dp, and large overlay trays 28dp.
 
-Selected, focus, and error outlines are `1.5dp`, `1.5dp`, and `1dp`; focus keeps a 2dp clear offset. Hover/pressed layers are `.06/.08`. Disabled content/container remain `.38/.08`. Soft Halo 2.0 is `accent` at `.20` light / `.24` dark with a 12dp diffuse falloff and maximum 4dp spread. It is optional decoration around the required tint, fine outline, and non-color marker.
+Selected, focus, and error outlines are `1.5dp`, `1.5dp`, and `1dp`; focus keeps a 2dp clear offset. Hover/pressed layers are `.06/.08`. Disabled content/container remain `.38/.08`. Semantic selection-marker tokens are a 6dp dot, an 18dp ordinary check, and a 16dp compact check. A selected surface resolves in this order: selected fill, controlled edge, exactly one semantic check or dot, then an optional Soft Halo. A check-bearing state never also displays a dot. The dot is allowed for a chip or compact selector only when no check is present. Soft Halo 2.0 is `accent` at `.20` light / `.24` dark with a 12dp diffuse falloff and maximum 4dp spread; it remains secondary decoration.
 
 Depth fallbacks are 0dp, 2dp, 4dp, and 8dp. Reference blur values are 0, 10, 18, and 30dp. Light/dark shadow alphas are depth1 `.08/.18`, depth2 `.10/.22`, and depth3 `.12/.20`. Surface tone and tinted 1dp hairlines carry most hierarchy; nested children normally remain depth0.
 
-Phase 2C.2 replaces the Phase 2C.1 pressable-only recipe with typed `pearlGlass`, `milkCrystal`, and `jellyCrystal` recipes. Each recipe owns fill alpha, resting elevation, shadow alpha, top/bottom tonal mixes, edge alpha, upper highlight, lower refraction, optional warm reflection, and highlight length.
+The frozen `pearlGlass`, `milkCrystal`, and `jellyCrystal` recipes own fill alpha, resting elevation, shadow alpha, top/bottom tonal mixes, theme-contamination alpha, edge alpha, upper highlight, lower refraction, optional warm reflection, and highlight length.
 
-| Family / brightness | Fill | Elevation | Shadow | Top / bottom mix | Edge | Highlight | Refraction | Warm reflection | Highlight length |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Pearl Glass / Light | `.90` | 1.5dp | `.07` | `.045 / .055` | `.42` | `.28` | `.10` | `.035` | `.68` |
-| Pearl Glass / Dark | `.82` | 1dp | `.022` | `.07 / .09` | `.56` | `.20` | `.17` | `.04` | `.68` |
-| Milk Crystal / Light | `.95` | 3dp | `.09` | `.04 / .055` | `.36` | `.24` | `.12` | `.045` | `.72` |
-| Milk Crystal / Dark | `.88` | 2dp | `.03` | `.06 / .085` | `.50` | `.18` | `.18` | `.045` | `.72` |
-| Jelly Crystal / Light | `1.00` | 4dp | `.12` | `.02 / .075` | `.42` | `.25` | `.16` | `.055` | `.62` |
-| Jelly Crystal / Dark | `1.00` | 2.5dp | `.035` | `.04 / .11` | `.58` | `.18` | `.21` | `.05` | `.62` |
+| Family / brightness | Fill | Elevation | Shadow | Top / bottom mix | Theme tint | Edge | Highlight | Refraction | Warm reflection | Highlight length |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Pearl Glass / Light | `.88` | 1.5dp | `.065` | `.045 / .055` | `.045` | `.46` | `.30` | `.14` | `.045` | `.68` |
+| Pearl Glass / Dark | `.80` | 1dp | `.018` | `.07 / .09` | `.055` | `.62` | `.15` | `.22` | `.025` | `.68` |
+| Milk Crystal / Light | `.93` | 3dp | `.085` | `.04 / .055` | `.055` | `.40` | `.26` | `.15` | `.05` | `.72` |
+| Milk Crystal / Dark | `.86` | 2dp | `.026` | `.06 / .085` | `.07` | `.58` | `.14` | `.24` | `.025` | `.72` |
+| Jelly Crystal / Light | `1.00` | 4dp | `.12` | `.02 / .075` | `.035` | `.48` | `.27` | `.19` | `.06` | `.62` |
+| Jelly Crystal / Dark | `1.00` | 2.5dp | `.035` | `.04 / .11` | `.05` | `.64` | `.14` | `.25` | `.03` | `.62` |
 
 Jelly Crystal keeps the action body opaque so label contrast cannot vary with the surface beneath it; its translucent colored rim, local light, and refraction still carry the crystal character. Dark mode uses weaker external shadow and stronger tonal edge/refraction instead of a black drop-shadow stack.
 
-Pressed feedback resolves to 0.5dp elevation, 0.75dp downward translation, `.987` visual scale, and `3.5%` light / `4.5%` dark tonal deepening. Shadow strength falls to 22% of resting, highlight alpha to 48%, refraction to 72%, and highlight length contracts to 46%. The toggle thumb grows by 1.25dp while pressed. Press/release use `motionPress` 80ms and `motionRelease` 120ms with `easeStandard`; `motionSettle` remains 160ms for a small post-state settle. There is no spring or bounce, and the layout/hit region does not shrink. Text buttons remain flat and use only a tonal pressed fill.
+Pressed feedback resolves to 0.5dp elevation, 0.75dp downward translation, `.987` visual scale, and `3.5%` light / `4.5%` dark tonal deepening. Shadow strength falls to 22% of resting, highlight alpha to 48%, highlight length contracts to 46%, and lower refraction rises to 112% so the compressed object retains a defined lower edge. The toggle thumb grows by 1.25dp while pressed. Press/release use `motionPress` 80ms and `motionRelease` 120ms with `easeStandard`; `motionState` remains 160ms for state transitions. There is no spring, overshoot, or bounce, and the layout/hit region does not shrink. Text buttons remain nearly flat and use only a tonal pressed fill.
 
-Static sRGB checks of every resting and pressed Jelly Crystal gradient endpoint in all eight variants remain at least 4.5:1 against `onAccent`. The minimum is Cloud Light's resting top at 4.55:1; the lowest dark result is Dream Dark's pressed bottom at 5.07:1.
+The Jelly Crystal label band retains the opaque `accent` / `onAccent` pair, whose eight resolved contrast values remain at least 4.5:1. Pearl highlights and identity contamination stay outside the primary label's central band; visual review must still inspect antialiased glyphs and actual device compositing.
 
 ### 0.4 Component and icon recipes
 
 - Primary actions are 54dp soft rounded rectangles with plum fill, subtle depth, and high-readability content. Secondary uses pearl/rose tint. Outlined uses a quiet filled surface plus hairline. Text actions keep only an invisible 48dp touch region. Destructive resting uses berry text/icon on a light berry container, not a large red pill.
 - The accessory toggle uses a 44×26dp Pearl Glass track inside a 48dp target, a 17dp resting crystal thumb, a fine semantic edge, and a 1.25dp pressed-thumb expansion. The slider uses a 5dp rounded tonal track, an 18dp Pearl Glass thumb, a local highlight/refraction rim, and a compact crystal value tag.
 - Stationery fields use `surfaceInset`, 18dp radius, and a 1dp resting hairline. Focus shifts the surface and uses a 1.5dp accent edge with a small halo. Error uses the soft berry container, 1dp edge, and persistent helper text.
-- Compact chips may remain pills, but use a 34dp visual body inside a 48dp target, thinner outlines, tighter text, and a bead/charm marker for selection. Avoid rows of large outlined capsules.
+- Compact chips may remain pills, but use a 34dp visual body inside a 48dp target, thinner outlines, tighter text, and a 6dp dot marker for selection when no check is present. Avoid rows of large outlined capsules.
 - Overlay/picker surfaces use `surfaceOverlay`, 28dp radius, clear title hierarchy, tinted hairline, restrained depth, and selected pearl cards. The future color picker uses a representative continuous hue/saturation disc, separate brightness and opacity controls, a distinct recommended-palette area, faithful color samples inside neutral frames, and one clear Apply action. Recommendations are shortcuts, never the complete color model.
 - The future canvas study uses the resolved lavender-neutral `canvasMat`, grid at `.09`, precise guide at `.62`, a small measurement tag, Soft Halo selection, and the Orbit Charm Rotate/Resize pair. This remains a static Design Lab mockup.
 
-**Orbit Charm** keeps a 24×24 viewport, 20dp default artwork, 48dp target, round caps/joins, and 1.8 viewport-unit stroke (about 1.7dp rendered). Normal utility commands use clean functional silhouettes without appended decorative dots. Dots, beads, petals, or sparkles are reserved for Theme, Sun, Moon, and Confirm, where they carry the approved identity cue; semantic geometry such as a location centre, scissors loop, or settings hub is not decoration. Back/Delete/Undo/Redo remain especially literal. The Font mark is drawn as a separated large `A` and smaller lowercase `a`, with vector paths rather than runtime text. Pin is a compact soft tack with a rounded head, calm body, and short needle; it remains visually distinct from the closed-shackle Lock. Production call sites are not migrated in this phase.
+**Orbit Charm** keeps a 24×24 viewport, 20dp default artwork, 48dp target, round caps/joins, and 1.8 viewport-unit stroke (about 1.7dp rendered). Normal utility commands use clean functional silhouettes without appended decorative dots. Dots, beads, petals, or sparkles remain limited to Theme, Sun, and Moon; semantic geometry such as a location centre, scissors loop, or settings hub is not decoration. Confirm is a plain semantic check with rounded terminals and bends, balanced at 16, 20, and 24dp, with no built-in ornament. Undo and Redo are exact mirrored relatives with separate readable heads and flowing curved bodies. The Font mark keeps comfortable negative space between its vector `A` and lowercase `a`. Pin remains a compact soft tack, optically distinct from the closed-shackle Lock. These corrections are provisional hygiene, not the Phase 2D Orbit Charm redesign, and production call sites are not migrated in this phase.
 
 ### 0.5 Design Lab presentation and review boundary
 
 The Design Lab now has two layers. **Experience Showcase** comes first with a branded hero, mini Workspace, theme card, toolbar, inspector, picker tray, full icon family, Halo comparison, neutral canvas study, color atelier, and custom controls. **Token Diagnostics** follows with compact surfaces, colors, typography, spacing/radii, states, and motion. The selector still exercises all eight identity × brightness combinations without storage.
 
-The debug Activity alone synchronizes status/navigation bar color and icon brightness with the selected Lab appearance. Production window behavior and production navigation are unchanged. Stop after physical-device review; no production screen migration is authorized by this specification.
+The debug Activity alone synchronizes status/navigation bar color and icon brightness with the selected Lab appearance. Its atmosphere intentionally draws edge to edge while the scroll viewport consumes `safeDrawing` insets before scrolling, keeping readable and interactive content below status icons and above navigation chrome. Production window behavior and production navigation are unchanged. Phase 2C is visually frozen after physical-device review unless a serious regression is found; no production screen migration is authorized by this specification.
 
 ### 0.6 Production Pin and Lock semantics audit
 
 The production editor currently exposes only `EditorAction.PIN`. It toggles the selected layer/city/text model's existing `locked` flag. That flag prevents canvas movement and suppresses resize/rotation handles, while the selected item's inspector and property callbacks remain available. Current behavior therefore matches the intended **Pin = prevent positional canvas manipulation while allowing property edits** meaning.
 
-There is no separate production Lock command or independent full-edit lock state. The foundation `OrbitIcons.Lock` artwork is reserved for a later **Lock = prevent all manipulation and editing** feature contract; it must not be surfaced as though this behavior already exists, and it must not alias Pin without an explicit product/data migration. Phase 2C.2 changes no production action, model, persistence field, gesture gate, or inspector behavior.
+There is no separate production Lock command or independent full-edit lock state. The foundation `OrbitIcons.Lock` artwork is reserved for a later **Lock = prevent all manipulation and editing** feature contract; it must not be surfaced as though this behavior already exists, and it must not alias Pin without an explicit product/data migration. Phase 2C.3 changes no production action, model, persistence field, gesture gate, or inspector behavior.
 
 ### 0.7 Production color capability audit
 
@@ -407,7 +407,7 @@ Semantic aliases: `selectionOutline = accent`, `selectionFill = accentContainer`
 | Resting | Component's normal surface/content | No selection glow |
 | Hover | Current foreground at `.06` over current fill | Pointer feedback only; no geometry change |
 | Pressed | Current foreground at `.08` over current fill | Bounded state layer; instant input response |
-| Selected | `selectionFill` + 1.5dp `selectionOutline` + `selectionContent` | Bead/check indicator and selected semantics; optional halo on the outer card |
+| Selected | `selectionFill` + 1.5dp `selectionOutline` + `selectionContent` | Exactly one semantic 6dp dot or 16/18dp check plus selected semantics; optional halo on the outer card |
 | Focused | Separate 1.5dp focus ring at 2dp offset | Can coexist with selection; does not select or activate by itself |
 | Disabled | `textPrimary` at `.38`; filled control base `textPrimary` at `.08` over its parent | No click, ripple, hover or halo; expose disabled semantics and an accessible reason when useful |
 | Destructive resting | `destructive` icon/label on normal surface | Reserved for delete/cut/data-loss actions, never for ordinary deselection |
@@ -448,7 +448,7 @@ Orbit Charm is the reusable Best Mates 2.0 outline family. Phase 2C establishes 
 | Optical compensation | Curves/diagonals may overshoot the normal live area by up to .5 design units; manually center visual mass within ±.5 unit |
 | Tint | `textSecondary` resting, semantic selected/destructive/disabled colors for states |
 
-Use clear silhouettes at actual 20dp size: copy uses two sheets; paste has a clipboard; cut uses scissors; pin/lock states remain distinct. Normal utility icons carry no appended dot, bead, petal, or sparkle. Reserve restrained ornament for Theme, Sun, Moon, and Confirm; do not mistake functional geometry such as location centres, scissors loops, or settings hubs for decoration. Rotate uses a partial orbit with a directional terminal instead of a generic circular arrow; Resize uses fine diagonal expansion geometry. Avoid emoji, Unicode arrows, heavy fills, multiple decorations on one command, and per-icon background bubbles in a grouped toolbar.
+Use clear silhouettes at actual 20dp size: copy uses two sheets; paste has a clipboard; cut uses scissors; pin/lock states remain distinct. Normal utility icons and the semantic Confirm check carry no appended dot, bead, petal, or sparkle. Reserve restrained ornament for Theme, Sun, and Moon; do not mistake functional geometry such as location centres, scissors loops, or settings hubs for decoration. Rotate uses a partial orbit with a directional terminal instead of a generic circular arrow; Resize uses fine diagonal expansion geometry. Avoid emoji, Unicode arrows, heavy fills, multiple decorations on one command, and per-icon background bubbles in a grouped toolbar.
 
 Single-icon buttons need localized action descriptions and a tooltip/accessible label; toggle controls announce their state. Decorative icons beside a fully labeled control do not repeat the label to TalkBack. Mirror directional navigation in RTL; do not blindly mirror text glyphs, clocks, or artwork. Review undo/redo direction consistently with navigation conventions.
 
@@ -476,7 +476,7 @@ Orbit Charm is the app command family. Sun/moon assets chosen as widget content 
 
 Recipes:
 
-- Buttons and crystal controls: use the Phase 2C.2 surface recipe above, 80ms in / 120ms out, with 160ms available for a small settle after a state change; no shrinking hit target, bounce, spring, or delayed callbacks.
+- Buttons and crystal controls: use the frozen Phase 2C.3 surface recipe above, 80ms in / 120ms out, with 160ms for state transitions; no shrinking hit target, overshoot, bounce, spring, or delayed callbacks.
 - Selection: show the solid outline/check immediately; fade optional halo over 160ms. Never spring or interpolate selected-object geometry.
 - Navigation: fade plus at most 16dp horizontal travel, 260ms `easeStandard`; back reverses direction, RTL mirrors directional movement. Do not combine routine page scale, slide, and multiple mismatched fade durations.
 - Sheet: platform sheet translation with 220ms enter / 180ms exit target behavior; dialog: fade plus at most 8dp vertical travel. Do not animate dialog text independently. Focus follows the visible surface.
@@ -508,9 +508,9 @@ Workspace project deletion should eventually show a named/count-aware confirmati
 
 - **Slider:** label and compact crystal value tag above the control; 5dp inactive rounded track in `borderSubtle`, a secondary-to-accent active track, and an 18dp Pearl Glass thumb with an accent rim and local highlight/refraction; minimum 48dp interaction height. Use existing ranges/steps and callbacks. Continuous values remain continuous; ticks only where values have a meaningful discrete interpretation. Provide accessible range/value semantics and a later numeric entry alternative for precise values. Do not alter normalized model units.
 - **Toggle:** use the Best Mates accessory recipe: 44 × 26dp Pearl Glass visual track inside at least a 48dp target, pearl-white 17dp resting thumb, 1.25dp pressed expansion, fine semantic edge, `accentContainer` lavender-resin active track, and neutral milk-glass off track. Text says what is enabled. A simple setting makes the row one semantic toggle; a row with a separate Edit action must expose two distinct, non-overlapping controls.
-- **Chip:** full radius, 12dp horizontal padding, 8dp icon gap; visual body is 34dp with a real 48dp interactive box. Selected = selected fill/1dp outline plus a bead/charm marker; unselected = `surfaceRaised` + `borderSubtle`. Single-choice sets announce radio-like selection; multi-select sets announce independent choices. Wrap chips instead of truncating localized labels or relying on hidden horizontal choices.
+- **Chip:** full radius, 12dp horizontal padding, 8dp icon gap; visual body is 34dp with a real 48dp interactive box. Selected = selected fill/1.5dp outline plus one 6dp dot when no check is used; unselected = `surfaceRaised` + `borderSubtle`. Single-choice sets announce radio-like selection; multi-select sets announce independent choices. Wrap chips instead of truncating localized labels or relying on hidden horizontal choices.
 - **Text field:** `surfaceInset`, radius18, resting 1dp hairline, focused 1.5dp `accent`, error 1dp `destructive`; persistent label, 16sp input, helper/error below. At least 56dp height; grows for multiline input. Hex input is an optional precise path in a color picker, not the primary color-selection interface.
-- **Color swatch:** 32dp visual disc inside a 48dp target, check in a contrasting opaque badge outside the sample, neutral checkerboard for alpha, label/alpha announced. App theme must not tint the sampled color.
+- **Color swatch:** 36dp visual sample inside a 48dp target, 16dp check in a contrasting badge outside the authored-color inset, neutral checkerboard for alpha, label/alpha announced. App theme must not tint the sampled color, and the check badge carries no dot.
 - **Status chip:** non-interactive if informational; do not style it like a clickable choice. Save state includes text/icon, not a color-only dot.
 
 ### 10.3 Pickers, sheets, dialogs, and feedback
@@ -671,17 +671,17 @@ The following files/components remain proposals for a separately approved produc
 
 Avoid an all-purpose constants file and a mechanical extraction of the entire activity. Existing widget renderers must not depend on Compose composition locals. Do not add a design-system module, network dependency, font pack, icon dependency, or new navigation framework merely to host these tokens. The current single app module is sufficient.
 
-Recommended next review is physical-device inspection of every identity × brightness variant in the isolated Lab. Shared production components and screen-by-screen adoption begin only after that visual approval. Settings relocation, inheritance migration, canvas target resizing, and whole-screen redesigns need explicit later scopes. TASK-007 remains deferred through all of these proposals.
+Phase 2C.3 physical-device inspection is complete and the interaction foundation is visually frozen unless a serious regression is found. Phase 2D separately owns the full Orbit Charm redesign, Shape Atelier, Celestial Atelier, Type Wardrobe, and asset-picker visual language. Shared production components and screen-by-screen adoption begin only after a separately approved scope. Settings relocation, inheritance migration, canvas target resizing, and whole-screen redesigns need explicit later scopes. TASK-007 remains deferred through all of these proposals.
 
 ## 15. Verification and review gate
 
-### Phase 2C verification
+### Phase 2C.3 verification
 
-- Source, history, task state, the Phase 2A token kernel, Phase 2B Lab, and the debug harness were re-audited before refinement. Phase 2C changes stay inside the documented foundation and debug-preview boundary.
+- Source, history, task state, the Phase 2A token kernel, Phase 2B Lab, and the debug harness were re-audited before refinement. Phase 2C.3 changes stay inside the documented foundation and debug-preview boundary.
 - Static sRGB contrast uses linearized channel luminance (`0.2126R + 0.7152G + 0.0722B`) and `(lighter + 0.05) / (darker + 0.05)`. The check covers 228 opaque pairs: three text roles and `borderControl` over all six resolved surfaces, primary and selected-container labels, and all light/dark supporting semantic pairs.
 - Every tested active text pair is at least 4.5:1, every tested control edge is at least 3:1, and every filled semantic foreground/background pair is at least 4.5:1. The Cloud Light functional accent was deepened from the visual anchor specifically to clear the primary-button threshold.
 - The Design Lab resolves all eight identity × brightness combinations locally, shows the complete Orbit Charm family, and keeps the future canvas study separate from production `LayoutCanvas`.
-- The debug Activity alone controls its status/navigation bar colors and icon brightness. Physical rendering and ergonomics remain the review gate.
+- The debug Activity alone controls its status/navigation bar colors and icon brightness. On the attached device the Compose scroll viewport resolved between the 139px status inset and 84px navigation inset, with content clipped inside that safe region while the atmosphere remained edge to edge.
 
 | Theme / mode | Minimum UI text on six working surfaces | Minimum control edge | Primary label | Selected-container label |
 | --- | --- | --- | --- | --- |
@@ -710,4 +710,4 @@ These calculations do not replace screenshot review. Atmosphere compositing, ant
 | Existing regression | Known post-rotation drag issue remains documented, not marked fixed; pin/add, empty projects and stored migrations still work |
 | Code-task checks | Scoped diff, `assembleDebug`, task/session updates, focused commit per AI_RULES; appropriate targeted validation for the actual scope |
 
-**Stop here for maintainer review.** Inspect all eight Lab variants on a physical device before approving production migration. Review surface separation, typography density, Cute Atelier controls, Soft Halo, Orbit Charm clarity, the neutral canvas study, and system-bar contrast. Do not begin Phase 3 from this document alone.
+**Stop here for maintainer review.** All eight Lab variants have been inspected on a physical device. Review the frozen surface separation, typography density, Cute Atelier controls, Soft Halo, provisional Orbit Charm clarity, neutral canvas study, and system-bar contrast before authorizing any later work. Do not begin Phase 2D or production migration from this document alone.
