@@ -4,16 +4,16 @@
 ChatGPT Work (next)
 
 ## Current task
-TASK-007 rotation-handle coordinate correction is implemented and awaits physical-device verification.
+TASK-007 is partially complete and deferred. The next development priority is TASK-004, followed by TASK-005, TASK-009, and TASK-003.
 
 ## Current branch
 main
 
 ## Last known good commit
-e5ae160 (chore(repo): remove unused assets and obsolete project files)
+60a9bb5 (fix(editor): stabilize rotation handle tracking)
 
 ## Task status
-TASK-007: IN_PROGRESS (reopened after physical-device verification)
+TASK-007: PARTIALLY_COMPLETE / DEFERRED
 
 ## What has been completed
 - Initial project takeover, baseline build validation (passed), and workflow files creation (AI_RULES.md, TASKS.md, CURRENT_SESSION.md).
@@ -41,7 +41,15 @@ Device testing of commit 31c3ebb revealed the following issues:
 - The correction renders the rotation control as an unrotated canvas sibling. The canvas origin and the control origin are measured with `onGloballyPositioned` / `positionInRoot`; both the object centre and the pointer are converted to root pixels before `atan2` runs.
 - Components, cities, and text now use the same `RotationHandleUnified` implementation: a quiet 17dp visual control inside a 42dp touch target, at a rotated top-right anchor, clamped so the target is not clipped by the canvas.
 - Angle unwrapping, raw unlimited rotation persistence, 15-degree snapping, guide feedback, and haptics remain in place. The sensitivity adjustment is deliberately small: 1.04x after geometric correction.
-- `assembleDebug` passed after the implementation. TASK-007 remains IN_PROGRESS until physical-device testing confirms tracking across full turns.
+- `assembleDebug` passed after the implementation. Rotation sensitivity is acceptable on the physical device, but TASK-007 is not DONE because the post-rotation drag issue below remains unresolved.
+
+## Deferred TASK-007 issue (physical device)
+
+- Rotation sensitivity is acceptable in the current implementation.
+- Post-rotation drag movement does not consistently follow the user's finger direction on physical device.
+- This movement issue remains unresolved and must not be treated as fixed.
+- Do not continue investigating it until TASK-007 is explicitly resumed.
+- TASK-007 must not be marked DONE.
 
 ## Repository cleanup completed (2026-09-07)
 
@@ -52,11 +60,14 @@ Device testing of commit 31c3ebb revealed the following issues:
 - Full evidence and classification: `docs/REPOSITORY_CLEANUP_AUDIT.md`.
 - Reference folders `1/` and `2/` were not touched.
 
-## Next step: physical-device verification only
+## Next development priorities
 
-- Install the pending TASK-007 debug build and test the three shared rotation controls at 0°, 45°, 60°, 90°, 180°, 360° and across a second turn / negative turn.
-- Confirm the 42dp target is easy to acquire without the visual handle looking heavy, the control stays aligned at canvas edges, and snapping/haptics still behave as expected.
-- Do not start another feature task or mark TASK-007 DONE before that verification.
+1. TASK-004 — editor action icons.
+2. TASK-005 — editor top-right functional icons.
+3. TASK-009 — UI animation and overall interface polish.
+4. TASK-003 — unified rotation-handle visual treatment.
+
+The product goal for this stage is a visually polished, warm, modern, coherent, and pleasant editor. Do not begin unrelated architecture work.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -65,4 +76,4 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Build status
 PASS — `assembleDebug` verified after the pending TASK-007 coordinate correction (28s).
-This focused TASK-007 change awaits physical-device verification before any new task begins.
+TASK-007 is partially complete and deferred with the post-rotation drag issue still open.

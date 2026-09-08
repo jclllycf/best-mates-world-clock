@@ -1,10 +1,19 @@
 # BEST MATES TASKS
 
+## Current development priority (2026-09-08)
+
+1. TASK-004 — editor action icons
+2. TASK-005 — editor top-right functional icons
+3. TASK-009 — UI animation and overall interface polish
+4. TASK-003 — unified rotation-handle visual treatment
+
+TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+
 ## P0 — Editor stability and correctness
 
 ### TASK-007 — Unlimited rotation and correct movement
-Status: IN_PROGRESS
-Priority: P0
+Status: PARTIALLY_COMPLETE / DEFERRED
+Priority: DEFERRED
 
 Requirements:
 - Remove the effective ±180° interaction limitation.
@@ -30,6 +39,12 @@ Implementation awaiting verification (2026-09-08):
 - The rotation control is an unrotated sibling of the rotated object, removing the previous moving-reference-frame feedback loop.
 - All component, city, and text calls share `RotationHandleUnified`: 17dp visible control, 42dp touch target, same icon/opacity/anchor, 15-degree snapping, guide feedback, and existing haptics.
 - A modest 1.04x response adjustment is applied only after the coordinate-space correction. `assembleDebug` passes; physical-device verification is still required.
+
+Deferred physical-device finding (2026-09-08):
+- Rotation sensitivity is acceptable in the current build.
+- Post-rotation drag movement does not consistently follow the user's finger direction on physical device.
+- Do not investigate or patch this remaining movement defect while TASK-007 is deferred.
+- TASK-007 is not DONE.
 
 Files involved:
 - app/src/main/java/com/bestmates/worldclock/MainActivity.kt
