@@ -1,23 +1,34 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2A foundation kernel prepared for maintainer review
+Codex — Phase 2B Foundation Design Lab prepared for visual review
 
 ## Current task
-Best Mates 2.0 — Phase 2A: Foundation Kernel. Implementation and verification are complete. Stop before Phase 2B; do not create the preview or migrate production UI automatically.
+Best Mates 2.0 — Phase 2B: Foundation Design Lab. Implementation and build verification are complete. Stop for visual review; do not start Phase 2C or migrate production UI.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2A foundation kernel is the current handoff HEAD after its focused commit. Application production behavior remains based on `f9beacd`; later commits through Phase 2A add documentation, audit material, and the isolated kernel only.
+Phase 2B's focused Design Lab commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, and this preview-only lab.
 
 ## Task status
-BM2-P2A: IMPLEMENTED / AWAITING_REVIEW
+BM2-P2B: IMPLEMENTED / AWAITING_VISUAL_REVIEW
+
+BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2B result (2026-09-08)
+
+- Created `app/src/main/java/com/bestmates/worldclock/ui/preview/BestMatesFoundationPreview.kt`. Its only access path is Android Studio's private `@Preview`; it has no navigation, manifest, BuildConfig, or persistence entry point.
+- The Design Lab has an in-memory identity/brightness selector for Cloud, Dream, Midnight, and Mono in both Light and Dark. It uses `BestMatesDesignTheme` only inside the preview file and saves no preference.
+- The single scrolling page renders the full required review set: atmosphere/surface hierarchy, semantic palette, every typography role, spacing/radii, button/icon/chip/switch/slider/text-field references, color swatches, static state gallery, optional Soft Halo comparison, overlay/scrim reference, Orbit icon metrics, and Quiet Motion durations/easings.
+- `assembleDebug` passed after adding the preview. The only source addition is the preview file; `MainActivity.kt`, production theme adoption, Workspace, Settings, Editor, persistence, models, widgets, renderer, gestures, canvas, resources, Gradle, and reference folders `1/` and `2/` were unchanged.
+- Compose exposes only an elevation-style `Modifier.shadow` for the optional Soft Halo. The preview maps the approved 6dp blur and 2dp spread allowance to that supported approximation, without changing the Phase 1 token recipe or adding a custom renderer.
+- Next action: inspect the Design Lab at normal phone width across all eight variants. Do not begin Phase 2C until the maintainer reviews it.
 
 ## Best Mates 2.0 — Phase 2A result (2026-09-08)
 
@@ -89,11 +100,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review the Phase 2A kernel against `docs/BEST_MATES_UI_2_SPEC.md`.
-2. After explicit approval, begin Phase 2B with the isolated `BestMatesFoundationPreview.kt` only.
-3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog; do not begin them during the Phase 2A review gate.
+1. Review the Phase 2B Design Lab against `docs/BEST_MATES_UI_2_SPEC.md` at normal phone width for every Cloud/Dream/Midnight Light/Dark variant.
+2. Do not begin Phase 2C, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
+3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
 
-The current goal is review of the isolated foundation kernel. Do not begin screen migration, shared components, broad UI implementation, unrelated architecture work, or TASK-007 investigation.
+The current goal is visual review of the isolated Design Lab. Production behavior remains unchanged.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -101,7 +112,7 @@ The current goal is review of the isolated foundation kernel. Do not begin scree
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug` verified after the Phase 2A foundation kernel (3s final run).
+PASS — `assembleDebug` verified after the Phase 2B Foundation Design Lab (16s final run).
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

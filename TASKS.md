@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 2A: Foundation Kernel — implemented and awaiting maintainer review.
-2. Stop before Phase 2B. Do not create the preview or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2B: Foundation Design Lab — implemented and awaiting visual review.
+2. Stop before Phase 2C. Do not create shared production components or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,8 +11,24 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2B — Foundation Design Lab
+Status: IMPLEMENTED / AWAITING_VISUAL_REVIEW
+Scope: One isolated Compose `@Preview` only
+
+Completed:
+- Added `ui/preview/BestMatesFoundationPreview.kt`, a private, vertically scrollable Best Mates Design Lab accessible only through Android Studio `@Preview`.
+- Added local, non-persistent selectors for all eight resolved Cloud/Dream/Midnight/Mono × Light/Dark variants.
+- Rendered the required atmosphere/surface, palette, typography, spacing, radii, controls, swatches, states, Soft Halo, overlay/scrim, Orbit metric, and Quiet Motion references from the Phase 2A foundation tokens.
+- Used compact preview-only helper composables inside that one file. No shared production UI component or icon-library migration was added.
+- Verified `assembleDebug` passes.
+
+Review gate:
+- Review the lab on a normal phone-size Compose preview across all eight variants before authorizing Phase 2C.
+- Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, gestures, canvas behavior, and TASK-007 remain unchanged.
+- The Compose `Modifier.shadow` used for the optional halo maps the approved 6dp blur to the supported elevation-shadow approximation; no custom shadow renderer or token adjustment was introduced.
+
 ### BM2-P2A — Foundation Kernel
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETE / FOUNDATION_AUTHORIZED
 Scope: Typed Compose design-system kernel only
 
 Completed:
