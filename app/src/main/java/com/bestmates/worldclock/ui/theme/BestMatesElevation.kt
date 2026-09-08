@@ -24,6 +24,29 @@ data class BestMatesHaloRecipe(
 )
 
 @Immutable
+data class BestMatesPressableDepthRecipe(
+    val primaryElevation: Dp,
+    val secondaryElevation: Dp,
+    val outlinedElevation: Dp,
+    val iconElevation: Dp,
+    val destructiveElevation: Dp,
+    val pressedElevation: Dp,
+    val pressedTranslationY: Dp,
+    val pressedScale: Float,
+    val topToneMix: Float,
+    val bottomToneMix: Float,
+    val pressedDarkenMix: Float,
+    val outerShadowAlpha: Float,
+    val innerHighlightAlpha: Float,
+    val lowerEdgeAlpha: Float,
+    val supportingShadowMultiplier: Float,
+    val outlinedShadowMultiplier: Float,
+    val iconShadowMultiplier: Float,
+    val restingHighlightLength: Float,
+    val pressedHighlightLength: Float,
+)
+
+@Immutable
 data class BestMatesElevationTokens(
     val depth0: BestMatesDepthRecipe,
     val depth1: BestMatesDepthRecipe,
@@ -32,6 +55,7 @@ data class BestMatesElevationTokens(
     val modalScrimAlpha: Float,
     val atmospherePeakAlpha: Float,
     val softHalo: BestMatesHaloRecipe,
+    val pressableDepth: BestMatesPressableDepthRecipe,
     val automaticTonalElevationEnabled: Boolean,
 )
 
@@ -69,6 +93,27 @@ internal fun resolveBestMatesElevation(isDark: Boolean) = BestMatesElevationToke
         offsetY = 0.dp,
         blur = 12.dp,
         maximumSpread = 4.dp,
+    ),
+    pressableDepth = BestMatesPressableDepthRecipe(
+        primaryElevation = 3.dp,
+        secondaryElevation = 2.dp,
+        outlinedElevation = 1.dp,
+        iconElevation = 1.5.dp,
+        destructiveElevation = 1.5.dp,
+        pressedElevation = 0.5.dp,
+        pressedTranslationY = 1.dp,
+        pressedScale = 0.988f,
+        topToneMix = if (isDark) 0.04f else 0.025f,
+        bottomToneMix = if (isDark) 0.07f else 0.04f,
+        pressedDarkenMix = if (isDark) 0.04f else 0.03f,
+        outerShadowAlpha = if (isDark) 0.055f else 0.10f,
+        innerHighlightAlpha = if (isDark) 0.14f else 0.18f,
+        lowerEdgeAlpha = if (isDark) 0.16f else 0.08f,
+        supportingShadowMultiplier = 0.68f,
+        outlinedShadowMultiplier = 0.32f,
+        iconShadowMultiplier = 0.50f,
+        restingHighlightLength = 0.74f,
+        pressedHighlightLength = 0.52f,
     ),
     automaticTonalElevationEnabled = false,
 )

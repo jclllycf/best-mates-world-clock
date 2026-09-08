@@ -2,9 +2,15 @@
 
 package com.bestmates.worldclock.ui.preview
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,18 +40,23 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -606,17 +617,36 @@ private fun OrbitAction(
     colors: BestMatesColors,
     dimensions: BestMatesDimensionTokens,
     prominent: Boolean = false,
+    pressedReference: Boolean = false,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val pressed = pressedReference || isPressed
+    val shape = RoundedCornerShape(if (prominent) dimensions.radii.radiusMd else dimensions.radii.radiusSm)
+    val container = if (prominent) colors.accentContainer else colors.surfaceInset
+    val border = if (prominent) colors.accent.copy(alpha = 0.28f) else colors.borderSubtle
     Box(
-        modifier = Modifier.requiredSize(dimensions.shared.minimumTouchTarget),
+        modifier = Modifier
+            .requiredSize(dimensions.shared.minimumTouchTarget)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Button,
+                onClick = {},
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
                 .size(if (prominent) 38.dp else 34.dp)
-                .clip(RoundedCornerShape(if (prominent) dimensions.radii.radiusMd else dimensions.radii.radiusSm))
-                .background(if (prominent) colors.accentContainer else colors.surfaceInset)
-                .border(1.dp, if (prominent) colors.accent.copy(alpha = 0.45f) else colors.borderSubtle, RoundedCornerShape(if (prominent) dimensions.radii.radiusMd else dimensions.radii.radiusSm)),
+                .atelierPressableDepth(
+                    baseColor = container,
+                    shape = shape,
+                    depthKind = AtelierDepthKind.Icon,
+                    pressed = pressed,
+                    borderColor = border,
+                    borderWidth = 1.dp,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(icon, description, tint = if (prominent) colors.accent else colors.textSecondary, modifier = Modifier.size(20.dp))
@@ -967,10 +997,13 @@ private fun ColorSwatch(
 @Composable
 private fun ControlShowcase(colors: BestMatesColors, dimensions: BestMatesDimensionTokens, states: BestMatesStateTokens) {
     AtelierSurface(colors, dimensions, color = colors.surfaceBase, radius = dimensions.radii.radius2xl) {
-        Text("Buttons", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
-        AtelierButton("Create widget", AtelierButtonKind.Primary, OrbitIcons.CreateWidget, colors, dimensions)
-        AtelierButton("Add to Home", AtelierButtonKind.Secondary, OrbitIcons.AddComponent, colors, dimensions)
-        AtelierButton("Import font", AtelierButtonKind.Outlined, OrbitIcons.Font, colors, dimensions)
+        Text("Soft button depth", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
+        Text("Resting / Pressed reference", style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
+        ButtonDepthPair("Primary", "Create", AtelierButtonKind.Primary, OrbitIcons.CreateWidget, colors, dimensions)
+        ButtonDepthPair("Secondary", "Add", AtelierButtonKind.Secondary, OrbitIcons.AddComponent, colors, dimensions)
+        ButtonDepthPair("Outlined", "Import", AtelierButtonKind.Outlined, OrbitIcons.Font, colors, dimensions)
+        IconDepthPair(colors, dimensions)
+        Text("Quiet actions", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
         AtelierButton("Cancel", AtelierButtonKind.Text, null, colors, dimensions)
         AtelierButton("Delete", AtelierButtonKind.Destructive, OrbitIcons.Delete, colors, dimensions)
         Text("Accessory toggles", style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
@@ -996,7 +1029,71 @@ private fun ControlShowcase(colors: BestMatesColors, dimensions: BestMatesDimens
     }
 }
 
+@Composable
+private fun ButtonDepthPair(
+    title: String,
+    label: String,
+    kind: AtelierButtonKind,
+    icon: ImageVector,
+    colors: BestMatesColors,
+    dimensions: BestMatesDimensionTokens,
+) {
+    Text(title, style = MaterialTheme.typography.labelMedium, color = colors.textSecondary)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
+    ) {
+        DepthStateColumn("Resting", colors, Modifier.weight(1f)) {
+            AtelierButton(label, kind, icon, colors, dimensions, compact = true)
+        }
+        DepthStateColumn("Pressed", colors, Modifier.weight(1f)) {
+            AtelierButton(label, kind, icon, colors, dimensions, pressedReference = true, compact = true)
+        }
+    }
+}
+
+@Composable
+private fun IconDepthPair(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
+    Text("Icon action", style = MaterialTheme.typography.labelMedium, color = colors.textSecondary)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
+    ) {
+        DepthStateColumn("Resting", colors, Modifier.weight(1f)) {
+            OrbitAction(OrbitIcons.AddComponent, "Resting icon action", colors, dimensions, prominent = true)
+        }
+        DepthStateColumn("Pressed", colors, Modifier.weight(1f)) {
+            OrbitAction(
+                OrbitIcons.AddComponent,
+                "Pressed icon action",
+                colors,
+                dimensions,
+                prominent = true,
+                pressedReference = true,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DepthStateColumn(
+    label: String,
+    colors: BestMatesColors,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(label, style = MaterialTheme.typography.labelSmall, color = colors.textMuted)
+        content()
+    }
+}
+
 private enum class AtelierButtonKind { Primary, Secondary, Outlined, Text, Destructive }
+private enum class AtelierDepthKind { Primary, Secondary, Outlined, Icon, Destructive }
 
 @Composable
 private fun AtelierButton(
@@ -1006,7 +1103,12 @@ private fun AtelierButton(
     colors: BestMatesColors,
     dimensions: BestMatesDimensionTokens,
     modifier: Modifier = Modifier,
+    pressedReference: Boolean = false,
+    compact: Boolean = false,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val pressed = pressedReference || isPressed
     val container = when (kind) {
         AtelierButtonKind.Primary -> colors.accent
         AtelierButtonKind.Secondary -> colors.secondaryContainer
@@ -1021,29 +1123,55 @@ private fun AtelierButton(
         AtelierButtonKind.Text -> colors.accent
         AtelierButtonKind.Destructive -> colors.onDestructiveContainer
     }
-    val border = when (kind) {
-        AtelierButtonKind.Primary -> colors.accent
-        AtelierButtonKind.Secondary -> colors.secondary.copy(alpha = 0.28f)
+    val borderColor = when (kind) {
+        AtelierButtonKind.Primary -> Color.Transparent
+        AtelierButtonKind.Secondary -> colors.secondary.copy(alpha = 0.20f)
         AtelierButtonKind.Outlined -> colors.borderControl
         AtelierButtonKind.Text -> Color.Transparent
-        AtelierButtonKind.Destructive -> colors.destructive.copy(alpha = 0.34f)
+        AtelierButtonKind.Destructive -> colors.destructive.copy(alpha = 0.30f)
     }
     val shape = RoundedCornerShape(if (kind == AtelierButtonKind.Text) dimensions.radii.radiusMd else dimensions.radii.radiusXl)
+    val textPressedAlpha by animateFloatAsState(
+        targetValue = if (pressed) 0.42f else 0f,
+        animationSpec = tween(
+            durationMillis = if (pressed) BestMatesDesign.motion.durations.motionPress else BestMatesDesign.motion.durations.motionRelease,
+            easing = BestMatesDesign.motion.easings.easeStandard,
+        ),
+        label = "text button pressed fill",
+    )
+    val depthKind = when (kind) {
+        AtelierButtonKind.Primary -> AtelierDepthKind.Primary
+        AtelierButtonKind.Secondary -> AtelierDepthKind.Secondary
+        AtelierButtonKind.Outlined -> AtelierDepthKind.Outlined
+        AtelierButtonKind.Text -> null
+        AtelierButtonKind.Destructive -> AtelierDepthKind.Destructive
+    }
+    val surfaceModifier = if (depthKind == null) {
+        Modifier
+            .clip(shape)
+            .background(colors.accentContainer.copy(alpha = textPressedAlpha))
+    } else {
+        Modifier.atelierPressableDepth(
+            baseColor = container,
+            shape = shape,
+            depthKind = depthKind,
+            pressed = pressed,
+            borderColor = borderColor,
+            borderWidth = if (kind == AtelierButtonKind.Primary) 0.dp else 1.dp,
+        )
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = if (kind == AtelierButtonKind.Text) dimensions.shared.minimumTouchTarget else 54.dp)
-            .then(
-                if (kind == AtelierButtonKind.Primary) {
-                    Modifier.shadow(4.dp, shape, false, colors.shadowColor.copy(alpha = 0.16f), colors.shadowColor.copy(alpha = 0.16f))
-                } else {
-                    Modifier
-                },
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Button,
+                onClick = {},
             )
-            .clip(shape)
-            .background(container)
-            .border(if (kind == AtelierButtonKind.Text) 0.dp else 1.dp, border, shape)
-            .padding(horizontal = dimensions.spacing.space5),
+            .then(surfaceModifier)
+            .padding(horizontal = if (compact) dimensions.spacing.space3 else dimensions.spacing.space5),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -1053,6 +1181,120 @@ private fun AtelierButton(
         }
         Text(label, style = MaterialTheme.typography.labelLarge, color = content)
     }
+}
+
+@Composable
+private fun Modifier.atelierPressableDepth(
+    baseColor: Color,
+    shape: Shape,
+    depthKind: AtelierDepthKind,
+    pressed: Boolean,
+    borderColor: Color,
+    borderWidth: Dp,
+): Modifier {
+    val colors = BestMatesDesign.colors
+    val motion = BestMatesDesign.motion
+    val recipe = BestMatesDesign.elevation.pressableDepth
+    val restElevation = when (depthKind) {
+        AtelierDepthKind.Primary -> recipe.primaryElevation
+        AtelierDepthKind.Secondary -> recipe.secondaryElevation
+        AtelierDepthKind.Outlined -> recipe.outlinedElevation
+        AtelierDepthKind.Icon -> recipe.iconElevation
+        AtelierDepthKind.Destructive -> recipe.destructiveElevation
+    }
+    val shadowMultiplier = when (depthKind) {
+        AtelierDepthKind.Primary -> 1f
+        AtelierDepthKind.Secondary, AtelierDepthKind.Destructive -> recipe.supportingShadowMultiplier
+        AtelierDepthKind.Outlined -> recipe.outlinedShadowMultiplier
+        AtelierDepthKind.Icon -> recipe.iconShadowMultiplier
+    }
+    val toneMultiplier = when (depthKind) {
+        AtelierDepthKind.Primary -> 1f
+        AtelierDepthKind.Secondary -> 0.75f
+        AtelierDepthKind.Outlined -> 0.28f
+        AtelierDepthKind.Icon, AtelierDepthKind.Destructive -> 0.55f
+    }
+    val duration = if (pressed) motion.durations.motionPress else motion.durations.motionRelease
+    val easing = motion.easings.easeStandard
+    val elevation by animateDpAsState(
+        targetValue = if (pressed) recipe.pressedElevation else restElevation,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button elevation",
+    )
+    val translationY by animateDpAsState(
+        targetValue = if (pressed && motion.spatialMotionEnabled) recipe.pressedTranslationY else 0.dp,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button translation",
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (pressed && motion.spatialMotionEnabled) recipe.pressedScale else 1f,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button scale",
+    )
+    val pressedDarken by animateFloatAsState(
+        targetValue = if (pressed) recipe.pressedDarkenMix else 0f,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button pressed tone",
+    )
+    val shadowAlpha by animateFloatAsState(
+        targetValue = recipe.outerShadowAlpha * shadowMultiplier * if (pressed) 0.24f else 1f,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button shadow",
+    )
+    val highlightAlpha by animateFloatAsState(
+        targetValue = recipe.innerHighlightAlpha * toneMultiplier * if (pressed) 0.52f else 1f,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button highlight",
+    )
+    val highlightLength by animateFloatAsState(
+        targetValue = if (pressed) recipe.pressedHighlightLength else recipe.restingHighlightLength,
+        animationSpec = tween(durationMillis = duration, easing = easing),
+        label = "button highlight length",
+    )
+    val topColor = lerp(baseColor, Color.White, recipe.topToneMix * toneMultiplier * if (pressed) 0.55f else 1f)
+    val middleColor = lerp(baseColor, Color.Black, pressedDarken)
+    val bottomColor = lerp(
+        baseColor,
+        Color.Black,
+        recipe.bottomToneMix * toneMultiplier + pressedDarken,
+    )
+    val lowerEdgeAlpha = recipe.lowerEdgeAlpha * toneMultiplier * if (pressed) 1.12f else 1f
+
+    return this
+        .graphicsLayer {
+            this.translationY = translationY.toPx()
+            scaleX = scale
+            scaleY = scale
+        }
+        .shadow(
+            elevation = elevation,
+            shape = shape,
+            clip = false,
+            ambientColor = colors.shadowColor.copy(alpha = shadowAlpha),
+            spotColor = colors.shadowColor.copy(alpha = shadowAlpha),
+        )
+        .clip(shape)
+        .background(Brush.verticalGradient(listOf(topColor, middleColor, bottomColor)))
+        .then(if (borderWidth > 0.dp) Modifier.border(borderWidth, borderColor, shape) else Modifier)
+        .drawWithContent {
+            drawContent()
+            val lineInset = 12.dp.toPx().coerceAtMost(size.width * 0.22f)
+            val highlightEnd = (size.width * highlightLength).coerceAtLeast(lineInset)
+            drawLine(
+                color = Color.White.copy(alpha = highlightAlpha),
+                start = Offset(lineInset, 1.dp.toPx()),
+                end = Offset(highlightEnd, 1.dp.toPx()),
+                strokeWidth = 1.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+            drawLine(
+                color = colors.shadowColor.copy(alpha = lowerEdgeAlpha),
+                start = Offset(lineInset, size.height - 1.dp.toPx()),
+                end = Offset(size.width - lineInset, size.height - 1.dp.toPx()),
+                strokeWidth = 1.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+        }
 }
 
 @Composable

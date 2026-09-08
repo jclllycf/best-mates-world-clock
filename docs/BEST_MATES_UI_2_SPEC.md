@@ -1,8 +1,8 @@
 # Best Mates 2.0 — UI Design Foundation
 
-Status: **PHASE 2C CUTE ATELIER REFINEMENT — IMPLEMENTED / AWAITING DEVICE REVIEW**
+Status: **PHASE 2C.1 SOFT BUTTON DEPTH POLISH — IMPLEMENTED IN DESIGN LAB**
 Date: 2026-09-08
-Implementation baseline: `592f54a` (`feat(debug): add design lab device harness`). The Phase 2C foundation keeps the Phase 2A resolver, semantic-token architecture, Material bridge, production isolation, and debug harness while replacing the rejected Phase 2B visual expression.
+Implementation baseline: `16f19ba` (`feat(ui): add Best Mates Cute Atelier visual foundation`). Phase 2C.1 keeps the approved Phase 2C palette, typography, geometry, icon family, layout, hierarchy, production isolation, and debug harness while refining only button and icon-action depth.
 
 Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, and its debug-only device host. Production Workspace, Settings, Editor, app-root theme, persistence, widgets, rendering, gestures, canvas behavior, and TASK-007 remain unchanged.
 
@@ -66,6 +66,12 @@ Radius tokens are `6, 10, 14, 18, 20, 24, 28dp`, plus full. Full is reserved for
 Selected, focus, and error outlines are `1.5dp`, `1.5dp`, and `1dp`; focus keeps a 2dp clear offset. Hover/pressed layers are `.06/.08`. Disabled content/container remain `.38/.08`. Soft Halo 2.0 is `accent` at `.20` light / `.24` dark with a 12dp diffuse falloff and maximum 4dp spread. It is optional decoration around the required tint, fine outline, and non-color marker.
 
 Depth fallbacks are 0dp, 2dp, 4dp, and 8dp. Reference blur values are 0, 10, 18, and 30dp. Light/dark shadow alphas are depth1 `.08/.18`, depth2 `.10/.22`, and depth3 `.12/.20`. Surface tone and tinted 1dp hairlines carry most hierarchy; nested children normally remain depth0.
+
+Phase 2C.1 adds a dedicated pressable-depth recipe for validation in the Design Lab. Resting elevation is 3dp primary, 2dp secondary, 1dp outlined, and 1.5dp icon/destructive. Light mode blends the top/bottom by `2.5%` white / `4%` black, uses `.10` maximum outer-shadow alpha, `.18` upper inner-highlight alpha, and `.08` lower-edge alpha. Dark mode uses `4%` / `7%` tonal blends, reduces maximum outer-shadow alpha to `.055`, and shifts definition to `.14` highlight and `.16` lower edge. Supporting, outlined, and icon recipes multiply the base shadow by `.68`, `.32`, and `.50`; their tonal shift is also reduced so outlined controls stay nearly flat.
+
+Pressed feedback resolves to 0.5dp elevation, 1dp downward translation, `.988` visual scale, and `3%` light / `4%` dark tonal deepening. Shadow strength falls to 24% of resting, highlight alpha to 52%, and highlight length contracts from 74% to 52%. Press/release use `motionPress` 80ms and `motionRelease` 120ms with `easeStandard`; there is no spring or bounce, and the layout/hit region does not shrink. Text buttons remain flat and use only a tonal pressed fill.
+
+Static sRGB checks of the resting and pressed primary-gradient endpoints across all eight variants remain at least 4.5:1 against `onAccent`; the minimum is the Cloud Light resting top at 4.51:1.
 
 ### 0.4 Component and icon recipes
 
@@ -435,7 +441,7 @@ Orbit Charm is the app command family. Sun/moon assets chosen as widget content 
 
 Recipes:
 
-- Buttons: state-layer alpha only, 80ms in / 120ms out; no shrinking hit target, bounce, or delayed callbacks.
+- Buttons: use the Phase 2C.1 tonal/depth compression above, 80ms in / 120ms out; no shrinking hit target, bounce, spring, or delayed callbacks.
 - Selection: show the solid outline/check immediately; fade optional halo over 160ms. Never spring or interpolate selected-object geometry.
 - Navigation: fade plus at most 16dp horizontal travel, 260ms `easeStandard`; back reverses direction, RTL mirrors directional movement. Do not combine routine page scale, slide, and multiple mismatched fade durations.
 - Sheet: platform sheet translation with 220ms enter / 180ms exit target behavior; dialog: fade plus at most 8dp vertical travel. Do not animate dialog text independently. Focus follows the visible surface.
@@ -452,11 +458,11 @@ Respect system animation duration settings, including disabled animations. A fut
 
 | Hierarchy | Recipe | Typical use |
 | --- | --- | --- |
-| Primary filled | `accent` / `onAccent`, 54dp height, radius20, depth1 | Create widget; Save; Apply in a draft picker |
-| Secondary tonal | `secondaryContainer` / `onSecondaryContainer`, radius18 | Important supporting action |
-| Secondary outlined | `surfaceRaised`, `borderControl`, `textPrimary`, radius18 | Add to Home; import; change city |
+| Primary filled | `accent` / `onAccent`, 54dp height, radius20, 3dp soft depth, no hard border | Create widget; Save; Apply in a draft picker |
+| Secondary tonal | `secondaryContainer` / `onSecondaryContainer`, radius18, 2dp porcelain depth | Important supporting action |
+| Secondary outlined | `surfaceRaised`, `borderControl`, `textPrimary`, radius18, 1dp nearly-flat depth | Add to Home; import; change city |
 | Tertiary text | No persistent fill/border, `accent` | Cancel, Close, supporting navigation |
-| Icon action | 20dp art, 48dp target, bounded state layer, no elevation | Undo/redo and frequent toolbar commands |
+| Icon action | 20dp art, 48dp target, bounded state layer, 1.5dp shallow base | Undo/redo and frequent toolbar commands |
 | Destructive | Quiet `destructive` text/icon; filled only for confirmation | Delete project, irreversible removal |
 
 At most one filled primary action per local decision area. Buttons have minimum 48dp height, 20dp horizontal padding and 8dp icon/text gap; let labels wrap or stack adjacent actions at large text sizes. Preserve current actions and enablement during token extraction. Toolbars that cannot fit real 48dp targets need a later layout review (wrapping or labeled overflow), not squeezed targets or overlapping invisible hit regions.

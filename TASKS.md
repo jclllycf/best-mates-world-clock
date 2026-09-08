@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 2C: Cute Atelier Visual Refinement — implemented and awaiting physical-device visual review.
-2. Inspect all eight identity × brightness variants in the debug Design Lab, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2C.1: Soft Button Depth Polish — implemented and awaiting maintainer review.
+2. Review the Design Lab Resting/Pressed references, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,8 +11,24 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2C.1 — Soft Button Depth Polish
+Status: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+Scope: Pressable-depth tokens and isolated Design Lab button/icon-action recipes only
+
+Completed:
+- Added a typed light/dark pressable-depth recipe with restrained elevation, tonal vertical shift, outer shadow, 1dp upper inner highlight, lower edge, and compressed pressed-state values.
+- Applied the recipe only to preview-local primary, secondary, outlined, destructive, and Orbit Charm icon-action surfaces. Primary has no hard border; text actions remain flat.
+- Added side-by-side Resting/Pressed references for primary, secondary, outlined, and icon actions while keeping the Design Lab compact and interactive.
+- Reused Quiet Motion at 80ms press / 120ms release with 1dp downward translation, `.988` visual scale, reduced shadow, and shortened highlight; touch targets remain unchanged.
+- Checked all primary-gradient endpoints across the eight variants; the minimum text contrast is 4.51:1 at the Cloud Light resting top.
+- Installed and launched the refreshed debug APK on the attached 1080 × 2340 phone. All eight theme combinations rendered; Cloud Light, Dream Light, and Midnight Dark button sections were inspected directly.
+- Verified `assembleDebug` passes. Production navigation, app-root theme, Workspace, Settings, Editor, persistence, widgets, gestures, real canvas, TASK-007, manifests/resources, and reference folders remain unchanged.
+
+Review gate:
+- Stop for maintainer review. Do not begin Phase 3 or extract these recipes into production components until explicitly authorized.
+
 ### BM2-P2C — Cute Atelier Visual Refinement
-Status: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_VISUAL_REVIEW
+Status: APPROVED / COMPLETE
 Scope: Foundation tokens, reusable Orbit Charm vectors, isolated Design Lab, debug-only system bars, and the design specification
 
 Completed:
@@ -25,8 +41,8 @@ Completed:
 - Updated `docs/BEST_MATES_UI_2_SPEC.md` as the authoritative Cute Atelier / Cozy Orbit target and recorded the current contrast evidence and future component boundary.
 - `assembleDebug` and `:app:processReleaseMainManifest` pass. Generated-manifest inspection finds the Lab Activity only in debug outputs. The refreshed APK was installed and all eight selector combinations plus representative long-scroll checkpoints were inspected on the attached 1080 × 2340 device.
 
-Review gate:
-- Install the debug APK and inspect every Cloud/Dream/Midnight/Mono × Light/Dark variant on a physical phone, including long-scroll rhythm, surface separation, primary-button contrast, dark themes, Soft Halo, icon clarity, canvas neutrality, and system bars.
+Approval record:
+- Commit `16f19ba` is the approved visual baseline for Cute Atelier / Cozy Orbit. Phase 2C.1 is limited to button-depth polish and does not reopen the broader direction.
 - Do not begin Phase 3, production component extraction, screen migration, Settings persistence work, or TASK-007 investigation until explicitly authorized.
 - Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, canvas behavior, and reference folders remain unchanged.
 

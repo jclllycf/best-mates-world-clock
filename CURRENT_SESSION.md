@@ -1,19 +1,21 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2C Cute Atelier foundation prepared for physical-device visual review
+Codex — Phase 2C.1 Soft Button Depth Polish implemented for maintainer review
 
 ## Current task
-Best Mates 2.0 — Phase 2C: Cute Atelier Visual Refinement. Foundation implementation and isolated Lab refinement are complete. Stop for physical-device review; do not start Phase 3 or migrate production UI.
+Best Mates 2.0 — Phase 2C.1: Soft Button Depth Polish. The isolated Design Lab implementation and physical-device validation are complete. Stop for maintainer review; do not start Phase 3 or migrate production UI.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2C's focused Cute Atelier foundation commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, and this visual refinement.
+Phase 2C.1's focused button-depth commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the Cute Atelier foundation, and this button-depth refinement.
 
 ## Task status
-BM2-P2C: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_VISUAL_REVIEW
+BM2-P2C.1: IMPLEMENTED / AWAITING_MAINTAINER_REVIEW
+
+BM2-P2C: APPROVED / COMPLETE
 
 BM2-P2B.1: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_REVIEW
 
@@ -24,6 +26,18 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2C.1 result (2026-09-08)
+
+- Added a typed pressable-depth recipe to `BestMatesElevation.kt` without changing the approved palette, typography, radii, icon artwork, surface hierarchy, or production theme adoption.
+- Resting elevation is 3dp primary, 2dp secondary, 1dp outlined, and 1.5dp icon/destructive. Light mode uses 2.5%/4% top/bottom tonal blends with `.10` maximum shadow alpha; dark mode uses 4%/7% blends and reduces the maximum shadow alpha to `.055` while increasing lower-edge definition.
+- Pressed controls resolve to 0.5dp elevation, 1dp downward translation, `.988` visual scale, 3% light / 4% dark deepening, 24% resting shadow strength, and a shorter/fainter upper highlight. Motion uses the existing 80ms press and 120ms release tokens with `easeStandard` and no spring/bounce.
+- Primary actions have no hard border. Secondary, outlined, destructive, and Orbit Charm icon actions retain subtle semantic edges. Text actions remain visually flat and use only a pressed tonal fill. Button rows retain 54dp visuals and icon actions retain 48dp targets.
+- Static sRGB checks of every primary-gradient endpoint in all eight variants remain at or above 4.5:1; the minimum is Cloud Light's resting top at 4.51:1.
+- The Design Lab now compares Resting and Pressed references for primary, secondary, outlined, and icon actions. All eight identity × brightness combinations rendered after installing the refreshed debug APK on the attached 1080 × 2340 phone; Cloud Light, Dream Light, and Midnight Dark button sections were inspected directly.
+- Midnight Dark uses less external shadow and more tonal highlight/lower-edge definition. The review showed no neon glow, metallic gloss, stacked shadow, or excessive elevation.
+- `assembleDebug` passes. Production `MainActivity.kt`, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, real canvas, TASK-007, resources, manifests, and reference folders `1/` and `2/` remain unchanged.
+- Next action: maintainer review of Phase 2C.1. Do not begin Phase 3 until explicitly authorized.
 
 ## Best Mates 2.0 — Phase 2C result (2026-09-08)
 
@@ -37,7 +51,7 @@ TASK-007: PARTIALLY_COMPLETE / DEFERRED
 - `assembleDebug` and `:app:processReleaseMainManifest` pass. Generated-manifest inspection finds the Lab Activity only in debug outputs. The refreshed APK was installed on the attached 1080 × 2340 phone; all eight selector combinations and representative long-scroll checkpoints were inspected successfully. Maintainer visual approval remains pending.
 - Production `MainActivity.kt`, Workspace, Settings, Editor, persistence, models, widgets, renderer, gestures, real canvas, TASK-007, Gradle, resources, and reference folders `1/` and `2/` remain unchanged.
 - Review command after installing the debug APK: `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
-- Next action: inspect all eight variants on a physical phone, then stop. Do not begin Phase 3 until explicitly authorized.
+- The overall Cute Atelier / Cozy Orbit direction and commit `16f19ba` are the approved visual baseline. Phase 2C.1 refines only button depth; do not begin Phase 3 until explicitly authorized.
 
 ## Best Mates 2.0 — Phase 2B.1 result (2026-09-08)
 
@@ -126,11 +140,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Install the debug APK and open the Phase 2C Cute Atelier Design Lab with `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`; inspect every Cloud/Dream/Midnight/Mono × Light/Dark variant at normal phone width.
+1. Review the Phase 2C.1 Soft Button Depth Polish in the installed debug Design Lab; the device command remains `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
 2. Do not begin Phase 3, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
 3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
 
-The current goal is physical-device visual review of the isolated Design Lab. Production behavior remains unchanged.
+The current goal is maintainer review of the isolated Design Lab button-depth refinement. Production behavior remains unchanged.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -138,7 +152,7 @@ The current goal is physical-device visual review of the isolated Design Lab. Pr
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug` and `:app:processReleaseMainManifest` verified after the Phase 2C Cute Atelier refinement. Generated-manifest inspection confirms the debug Activity remains absent from release outputs. The debug APK installed and launched successfully on the attached device.
+PASS — `assembleDebug` verified after the Phase 2C.1 button-depth refinement. The debug APK installed and launched successfully on the attached device; all eight variants rendered and Cloud Light, Dream Light, and Midnight Dark button sections were inspected. No manifest or production file changed in Phase 2C.1.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)
