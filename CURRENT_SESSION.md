@@ -1,18 +1,20 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2B Foundation Design Lab prepared for visual review
+Codex — Phase 2B.1 Design Lab device harness prepared for physical-device review
 
 ## Current task
-Best Mates 2.0 — Phase 2B: Foundation Design Lab. Implementation and build verification are complete. Stop for visual review; do not start Phase 2C or migrate production UI.
+Best Mates 2.0 — Phase 2B.1: Design Lab device harness. Implementation and build verification are complete. Stop for physical-device review; do not start Phase 3 or migrate production UI.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2B's focused Design Lab commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, and this preview-only lab.
+Phase 2B.1's focused debug-harness commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, the preview-only lab, and this debug-only entry point.
 
 ## Task status
+BM2-P2B.1: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_REVIEW
+
 BM2-P2B: IMPLEMENTED / AWAITING_VISUAL_REVIEW
 
 BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
@@ -20,6 +22,14 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2B.1 result (2026-09-08)
+
+- Added the debug-only `BestMatesDesignLabActivity` and its `src/debug/AndroidManifest.xml` declaration. The Activity has no launcher intent, is excluded from recents, and does not exist in release source or release manifest output.
+- The Activity uses the existing `BestMatesFoundationDesignLab()` composable directly. That host is now module-internal only to make this reuse possible; the actual `@Preview` remains private and the production app has no caller.
+- Open the installed debug APK through ADB: `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`. The on-device page retains its in-memory selector for all eight Cloud/Dream/Midnight Light/Dark variants and writes no preference.
+- `assembleDebug` passed. `:app:processReleaseMainManifest` passed, and generated-manifest inspection confirms the Activity is present for debug and absent for release. No device was attached in this environment, so no physical launch was claimed.
+- Production navigation, root theme adoption, Workspace, Settings, Editor, persistence, widgets, renderer, gestures, canvas, TASK-007, Gradle, main manifest, resources, and reference folders `1/` and `2/` remain unchanged.
 
 ## Best Mates 2.0 — Phase 2B result (2026-09-08)
 
@@ -100,11 +110,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review the Phase 2B Design Lab against `docs/BEST_MATES_UI_2_SPEC.md` at normal phone width for every Cloud/Dream/Midnight Light/Dark variant.
-2. Do not begin Phase 2C, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
+1. Install the debug APK and open the Phase 2B Design Lab with `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`; inspect every Cloud/Dream/Midnight Light/Dark variant at normal phone width.
+2. Do not begin Phase 3, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
 3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
 
-The current goal is visual review of the isolated Design Lab. Production behavior remains unchanged.
+The current goal is physical-device visual review of the isolated Design Lab. Production behavior remains unchanged.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -112,7 +122,7 @@ The current goal is visual review of the isolated Design Lab. Production behavio
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug` verified after the Phase 2B Foundation Design Lab (16s final run).
+PASS — `assembleDebug` verified after the Phase 2B.1 debug device harness. `:app:processReleaseMainManifest` also passed; the merged release manifest excludes the harness.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

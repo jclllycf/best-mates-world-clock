@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Explicit debug entry point with no launcher intent. This manifest exists only in debug builds. -->
+        <activity
+            android:name=".debug.BestMatesDesignLabActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="Best Mates Design Lab" />
+    </application>
+</manifest>

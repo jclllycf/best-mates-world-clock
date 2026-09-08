@@ -2,14 +2,33 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 2B: Foundation Design Lab — implemented and awaiting visual review.
-2. Stop before Phase 2C. Do not create shared production components or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2B.1: Design Lab device harness — implemented and awaiting physical-device review.
+2. Stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2A review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+
+### BM2-P2B.1 — Design Lab device harness
+Status: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_REVIEW
+Scope: Debug source set only, plus the existing Design Lab host visibility
+
+Completed:
+- Added `app/src/debug/AndroidManifest.xml` with a debug-only, non-launcher `BestMatesDesignLabActivity` entry.
+- Added `app/src/debug/java/com/bestmates/worldclock/debug/BestMatesDesignLabActivity.kt`, which renders the existing `BestMatesFoundationDesignLab()` without duplicating its UI.
+- Changed only that existing host composable from file-private to module-internal so the debug source set can reuse it. The `@Preview` remains private and production has no caller.
+- The local Design Lab identity/brightness selector remains available on device for all eight Cloud/Dream/Midnight × Light/Dark variants; it writes no preference.
+- `assembleDebug` and `:app:processReleaseMainManifest` pass. The merged debug manifest contains the harness; the merged release manifest does not.
+
+Device access:
+- Install the debug APK, then run: `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`
+- The Activity has no launcher intent and is excluded from recents. It exists only in the debug APK.
+
+Review gate:
+- Verify the Design Lab on a physical device across all eight variants, then stop. Do not begin Phase 3.
+- Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, gestures, canvas behavior, TASK-007, and reference folders remain unchanged.
 
 ### BM2-P2B — Foundation Design Lab
 Status: IMPLEMENTED / AWAITING_VISUAL_REVIEW

@@ -70,8 +70,8 @@ import com.bestmates.worldclock.ui.theme.BestMatesVisualIdentity
 import com.bestmates.worldclock.ui.theme.BestMatesVisualState
 
 /**
- * Phase 2B only: an isolated token-review surface. It is intentionally private so
- * production navigation cannot reach it; Android Studio's @Preview is its access path.
+ * Phase 2B only: an isolated token-review surface. Android Studio's @Preview and the
+ * debug-only device harness are its only access paths; production navigation cannot reach it.
  */
 @Preview(
     name = "Best Mates 2.0 — Design Lab",
@@ -86,7 +86,7 @@ private fun BestMatesFoundationPreview() {
 }
 
 @Composable
-private fun BestMatesFoundationDesignLab() {
+internal fun BestMatesFoundationDesignLab() {
     var identityIndex by rememberSaveable { mutableIntStateOf(0) }
     var isDark by rememberSaveable { mutableStateOf(false) }
     val identities = BestMatesVisualIdentity.entries
