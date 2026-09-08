@@ -143,7 +143,7 @@ Do not implement separate disconnected snapping systems.
 
 
 ### TASK-004 — Editor action icons
-Status: TODO
+Status: IMPLEMENTED — awaiting visual review (2026-09-08)
 
 Rework:
 - rename
@@ -155,9 +155,14 @@ Rework:
 Use reference images from folder "2" when available.
 Keep icon style consistent with the rest of the app.
 
+Implementation:
+- Rebuilt rename, undo, redo, pin and paste as one custom rounded-outline Canvas family.
+- Uses a 20dp visual canvas with 1.6dp rounded strokes inside a 40dp accessible touch target.
+- Redrawn from the visual language of the references in `2/`; no external icon library is mixed into the editor toolbar.
+
 
 ### TASK-005 — Editor top-right icons
-Status: TODO
+Status: IMPLEMENTED — awaiting visual review (2026-09-08)
 
 Rework:
 - autosave
@@ -170,6 +175,10 @@ Icons must be:
 - visually lightweight
 - consistent with Best Mates
 - theme compatible
+
+Implementation:
+- Rebuilt autosave, add component, add city and add text with the same stroke, spacing, roundness and theme-aware tint system as TASK-004.
+- Existing actions and editor layout remain unchanged; only their visual marks and touch target consistency changed.
 
 
 ## P1 — Shape library

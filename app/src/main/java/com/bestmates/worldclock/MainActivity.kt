@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -60,6 +61,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.zIndex
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
@@ -782,109 +785,149 @@ private fun EditorActionButton(
     enabled: Boolean = true,
     destructive: Boolean = false
 ) {
-    val tint = when {
+    val baseTint = when {
         destructive -> Color(0xFF9B4D64)
         selected -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
-    IconButton(onClick = onClick, enabled = enabled, modifier = Modifier.size(36.dp)) {
-        Canvas(Modifier.size(22.dp)) {
-            // All editor actions deliberately use the same light, rounded outline.
-            // It keeps the toolbar calm instead of looking like a collection of
-            // unrelated system glyphs.
-            val stroke = 1.55.dp.toPx()
-            val center = Offset(size.width / 2f, size.height / 2f)
-            fun line(a: Offset, b: Offset) = drawLine(tint, a, b, stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+    val tint = baseTint.copy(alpha = if (enabled) 1f else .35f)
+    // The visible mark stays modest, while the 40dp button keeps the compact
+    // toolbars comfortably tappable.  Every mark below is drawn on the same
+    // 20dp optical canvas with rounded terminals and joins.
+    IconButton(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier
+            .size(40.dp)
+            .semantics { contentDescription = description }
+    ) {
+        Canvas(Modifier.size(20.dp)) {
+            val stroke = 1.6.dp.toPx()
+            val roundCap = androidx.compose.ui.graphics.StrokeCap.Round
+            val roundJoin = androidx.compose.ui.graphics.StrokeJoin.Round
+            fun outline() = Stroke(stroke, cap = roundCap, join = roundJoin)
+            fun line(a: Offset, b: Offset) = drawLine(tint, a, b, stroke, cap = roundCap)
+            fun p(x: Float, y: Float) = Offset(size.width * x, size.height * y)
+            fun plus(x: Float, y: Float, radius: Float = .13f) {
+                line(p(x - radius, y), p(x + radius, y))
+                line(p(x, y - radius), p(x, y + radius))
+            }
+            fun roundRect(left: Float, top: Float, width: Float, height: Float, radius: Float = .12f) =
+                drawRoundRect(
+                    color = tint,
+                    topLeft = p(left, top),
+                    size = androidx.compose.ui.geometry.Size(size.width * width, size.height * height),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * radius, size.width * radius),
+                    style = outline()
+                )
             when (action) {
                 EditorAction.CLEAR -> {
-                    drawCircle(tint.copy(alpha = .15f), size.minDimension * .42f, center)
-                    line(Offset(size.width*.33f, size.height*.33f), Offset(size.width*.67f, size.height*.67f))
-                    line(Offset(size.width*.67f, size.height*.33f), Offset(size.width*.33f, size.height*.67f))
+                    drawCircle(tint.copy(alpha = .12f), size.minDimension * .34f, p(.50f, .50f))
+                    line(p(.35f, .35f), p(.65f, .65f))
+                    line(p(.65f, .35f), p(.35f, .65f))
                 }
                 EditorAction.COPY -> {
-                    drawRoundRect(tint, Offset(size.width*.18f, size.height*.12f), androidx.compose.ui.geometry.Size(size.width*.50f, size.height*.58f), androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()), style = Stroke(stroke))
-                    drawRoundRect(tint, Offset(size.width*.34f, size.height*.30f), androidx.compose.ui.geometry.Size(size.width*.48f, size.height*.58f), androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()), style = Stroke(stroke))
+                    roundRect(.18f, .14f, .48f, .56f)
+                    roundRect(.34f, .30f, .48f, .56f)
                 }
                 EditorAction.PASTE -> {
-                    drawRoundRect(tint, Offset(size.width*.24f, size.height*.20f), androidx.compose.ui.geometry.Size(size.width*.52f, size.height*.64f), androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()), style = Stroke(stroke))
-                    drawRoundRect(tint, Offset(size.width*.38f, size.height*.10f), androidx.compose.ui.geometry.Size(size.width*.24f, size.height*.18f), androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()), style = Stroke(stroke))
-                    line(Offset(size.width*.38f, size.height*.52f), Offset(size.width*.62f, size.height*.52f))
-                    line(Offset(size.width*.38f, size.height*.67f), Offset(size.width*.57f, size.height*.67f))
+                    roundRect(.24f, .19f, .52f, .65f)
+                    roundRect(.38f, .09f, .24f, .18f, .07f)
+                    line(p(.39f, .52f), p(.61f, .52f))
+                    line(p(.39f, .67f), p(.57f, .67f))
                 }
                 EditorAction.PIN -> {
-                    // A compact push-pin, modelled after the user's reference rather
-                    // than the old tilted lock-like mark.
-                    drawRoundRect(tint, Offset(size.width*.32f, size.height*.13f), androidx.compose.ui.geometry.Size(size.width*.36f, size.height*.23f), androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()), style = Stroke(stroke))
-                    line(Offset(size.width*.38f, size.height*.36f), Offset(size.width*.62f, size.height*.36f))
-                    line(Offset(size.width*.35f, size.height*.36f), Offset(size.width*.25f, size.height*.62f))
-                    line(Offset(size.width*.65f, size.height*.36f), Offset(size.width*.75f, size.height*.62f))
-                    line(Offset(size.width*.25f, size.height*.62f), Offset(size.width*.75f, size.height*.62f))
-                    line(Offset(size.width*.50f, size.height*.62f), Offset(size.width*.50f, size.height*.91f))
+                    // A calm, symmetrical thumbtack based on the supplied reference.
+                    roundRect(.33f, .12f, .34f, .20f, .08f)
+                    line(p(.37f, .33f), p(.28f, .60f))
+                    line(p(.63f, .33f), p(.72f, .60f))
+                    line(p(.28f, .60f), p(.72f, .60f))
+                    line(p(.50f, .60f), p(.50f, .88f))
                 }
                 EditorAction.CUT -> {
-                    drawCircle(color = tint, radius = size.width*.11f, center = Offset(size.width*.28f, size.height*.72f), style = Stroke(stroke))
-                    drawCircle(color = tint, radius = size.width*.11f, center = Offset(size.width*.70f, size.height*.72f), style = Stroke(stroke))
-                    line(Offset(size.width*.36f, size.height*.62f), Offset(size.width*.78f, size.height*.18f))
-                    line(Offset(size.width*.62f, size.height*.62f), Offset(size.width*.22f, size.height*.18f))
+                    drawCircle(color = tint, radius = size.width * .10f, center = p(.29f, .72f), style = outline())
+                    drawCircle(color = tint, radius = size.width * .10f, center = p(.71f, .72f), style = outline())
+                    line(p(.36f, .62f), p(.78f, .18f))
+                    line(p(.64f, .62f), p(.22f, .18f))
                 }
                 EditorAction.DELETE -> {
-                    drawRoundRect(tint, Offset(size.width*.27f, size.height*.30f), androidx.compose.ui.geometry.Size(size.width*.46f, size.height*.55f), androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()), style = Stroke(stroke))
-                    line(Offset(size.width*.20f, size.height*.24f), Offset(size.width*.80f, size.height*.24f))
-                    line(Offset(size.width*.42f, size.height*.14f), Offset(size.width*.58f, size.height*.14f))
-                    repeat(2) { n -> line(Offset(size.width*(.40f + n*.20f), size.height*.42f), Offset(size.width*(.40f + n*.20f), size.height*.73f)) }
+                    roundRect(.28f, .30f, .44f, .54f, .08f)
+                    line(p(.20f, .24f), p(.80f, .24f))
+                    line(p(.42f, .14f), p(.58f, .14f))
+                    line(p(.43f, .43f), p(.43f, .72f))
+                    line(p(.57f, .43f), p(.57f, .72f))
                 }
                 EditorAction.RENAME -> {
-                    // A simple outlined pencil, with a distinct nib and cap.
-                    line(Offset(size.width*.25f, size.height*.76f), Offset(size.width*.67f, size.height*.34f))
-                    line(Offset(size.width*.34f, size.height*.85f), Offset(size.width*.76f, size.height*.43f))
-                    line(Offset(size.width*.65f, size.height*.25f), Offset(size.width*.84f, size.height*.44f))
-                    line(Offset(size.width*.25f, size.height*.76f), Offset(size.width*.34f, size.height*.85f))
+                    // A compact rounded pencil with the same light line language.
+                    line(p(.23f, .76f), p(.66f, .33f))
+                    line(p(.34f, .87f), p(.77f, .44f))
+                    line(p(.66f, .33f), p(.77f, .44f))
+                    line(p(.23f, .76f), p(.34f, .87f))
+                    line(p(.20f, .89f), p(.48f, .89f))
                 }
                 EditorAction.ADD_COMPONENT -> {
-                    drawRoundRect(tint, Offset(size.width*.14f, size.height*.18f), androidx.compose.ui.geometry.Size(size.width*.55f, size.height*.55f), androidx.compose.ui.geometry.CornerRadius(4.dp.toPx()), style = Stroke(stroke))
-                    line(Offset(size.width*.76f, size.height*.33f), Offset(size.width*.76f, size.height*.73f))
-                    line(Offset(size.width*.56f, size.height*.53f), Offset(size.width*.94f, size.height*.53f))
+                    roundRect(.13f, .20f, .50f, .50f, .12f)
+                    roundRect(.26f, .33f, .28f, .28f, .08f)
+                    plus(.78f, .71f, .14f)
                 }
                 EditorAction.ADD_CITY -> {
-                    drawCircle(tint, size.width*.22f, Offset(size.width*.43f, size.height*.40f), style = Stroke(stroke))
-                    line(Offset(size.width*.27f, size.height*.57f), Offset(size.width*.43f, size.height*.82f))
-                    line(Offset(size.width*.59f, size.height*.57f), Offset(size.width*.43f, size.height*.82f))
-                    line(Offset(size.width*.79f, size.height*.48f), Offset(size.width*.79f, size.height*.82f))
-                    line(Offset(size.width*.62f, size.height*.65f), Offset(size.width*.96f, size.height*.65f))
+                    val pin = Path().apply {
+                        moveTo(size.width * .48f, size.height * .14f)
+                        cubicTo(size.width * .28f, size.height * .14f, size.width * .19f, size.height * .29f, size.width * .19f, size.height * .45f)
+                        cubicTo(size.width * .19f, size.height * .65f, size.width * .48f, size.height * .82f, size.width * .48f, size.height * .82f)
+                        cubicTo(size.width * .48f, size.height * .82f, size.width * .77f, size.height * .65f, size.width * .77f, size.height * .45f)
+                        cubicTo(size.width * .77f, size.height * .29f, size.width * .68f, size.height * .14f, size.width * .48f, size.height * .14f)
+                    }
+                    drawPath(pin, tint, style = outline())
+                    drawCircle(tint, size.width * .075f, p(.48f, .43f), style = outline())
+                    plus(.80f, .69f, .10f)
                 }
                 EditorAction.ADD_TEXT -> {
-                    line(Offset(size.width*.22f, size.height*.28f), Offset(size.width*.78f, size.height*.28f))
-                    line(Offset(size.width*.50f, size.height*.28f), Offset(size.width*.50f, size.height*.82f))
-                    line(Offset(size.width*.34f, size.height*.82f), Offset(size.width*.66f, size.height*.82f))
-                    line(Offset(size.width*.80f, size.height*.55f), Offset(size.width*.80f, size.height*.83f))
-                    line(Offset(size.width*.66f, size.height*.69f), Offset(size.width*.94f, size.height*.69f))
+                    line(p(.18f, .24f), p(.66f, .24f))
+                    line(p(.42f, .24f), p(.42f, .78f))
+                    line(p(.28f, .78f), p(.56f, .78f))
+                    plus(.80f, .72f, .13f)
                 }
                 EditorAction.UNDO, EditorAction.REDO -> {
                     val isUndo = action == EditorAction.UNDO
-                    drawArc(
-                        color = tint,
-                        startAngle = if (isUndo) 136f else -46f,
-                        sweepAngle = 205f,
-                        useCenter = false,
-                        topLeft = Offset(size.width*.15f, size.height*.16f),
-                        size = androidx.compose.ui.geometry.Size(size.width*.70f, size.height*.70f),
-                        style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-                    )
+                    val loop = Path().apply {
+                        if (isUndo) {
+                            moveTo(size.width * .17f, size.height * .40f)
+                            cubicTo(size.width * .32f, size.height * .12f, size.width * .79f, size.height * .15f, size.width * .84f, size.height * .54f)
+                            cubicTo(size.width * .87f, size.height * .73f, size.width * .71f, size.height * .86f, size.width * .54f, size.height * .86f)
+                        } else {
+                            moveTo(size.width * .83f, size.height * .40f)
+                            cubicTo(size.width * .68f, size.height * .12f, size.width * .21f, size.height * .15f, size.width * .16f, size.height * .54f)
+                            cubicTo(size.width * .13f, size.height * .73f, size.width * .29f, size.height * .86f, size.width * .46f, size.height * .86f)
+                        }
+                    }
+                    drawPath(loop, tint, style = outline())
                     if (isUndo) {
-                        val tip = Offset(size.width*.17f, size.height*.37f)
-                        line(tip, Offset(size.width*.39f, size.height*.22f))
-                        line(tip, Offset(size.width*.35f, size.height*.56f))
+                        line(p(.17f, .40f), p(.42f, .37f))
+                        line(p(.17f, .40f), p(.31f, .61f))
                     } else {
-                        val tip = Offset(size.width*.83f, size.height*.37f)
-                        line(tip, Offset(size.width*.61f, size.height*.22f))
-                        line(tip, Offset(size.width*.65f, size.height*.56f))
+                        line(p(.83f, .40f), p(.58f, .37f))
+                        line(p(.83f, .40f), p(.69f, .61f))
                     }
                 }
                 EditorAction.AUTO_SAVE -> {
-                    drawRoundRect(tint, Offset(size.width*.19f, size.height*.16f), androidx.compose.ui.geometry.Size(size.width*.62f, size.height*.68f), androidx.compose.ui.geometry.CornerRadius(4.dp.toPx()), style = Stroke(stroke))
-                    drawRoundRect(tint, Offset(size.width*.34f, size.height*.17f), androidx.compose.ui.geometry.Size(size.width*.28f, size.height*.22f), androidx.compose.ui.geometry.CornerRadius(1.dp.toPx()), style = Stroke(stroke))
-                    line(Offset(size.width*.33f, size.height*.62f), Offset(size.width*.45f, size.height*.73f))
-                    line(Offset(size.width*.45f, size.height*.73f), Offset(size.width*.70f, size.height*.48f))
+                    // A save tile with a small looping mark: understandable as a
+                    // persistent auto-save state without using a heavy filled disk.
+                    roundRect(.16f, .14f, .53f, .62f, .10f)
+                    roundRect(.31f, .14f, .22f, .19f, .05f)
+                    line(p(.30f, .59f), p(.44f, .72f))
+                    line(p(.44f, .72f), p(.63f, .49f))
+                    drawArc(
+                        color = tint,
+                        startAngle = -55f,
+                        sweepAngle = 175f,
+                        useCenter = false,
+                        topLeft = p(.53f, .50f),
+                        size = androidx.compose.ui.geometry.Size(size.width * .31f, size.height * .31f),
+                        style = outline()
+                    )
+                    line(p(.85f, .61f), p(.85f, .78f))
+                    line(p(.85f, .61f), p(.70f, .66f))
                 }
             }
         }

@@ -77,3 +77,11 @@ The product goal for this stage is a visually polished, warm, modern, coherent, 
 ## Build status
 PASS — `assembleDebug` verified after the pending TASK-007 coordinate correction (28s).
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
+
+## TASK-004 and TASK-005 implementation (2026-09-08)
+
+- Rebuilt the editor action and top-right function icons as one custom, theme-aware rounded-outline family in `MainActivity.kt`.
+- Visible artwork is 20dp with a consistent 1.6dp rounded stroke; all editor icon controls now use a 40dp touch target while preserving their original actions.
+- Redrawn action icons: rename, undo, redo, pin and paste. Redrawn top-right icons: autosave, add component, add city and add text.
+- No editor layout, persistence contract, rotation behavior, resize behavior, or TASK-007 code was changed.
+- `assembleDebug` passed. These two visual tasks are implemented and awaiting physical-device visual review before being considered complete.
