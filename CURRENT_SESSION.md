@@ -1,21 +1,34 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 1 documentation prepared for maintainer review
+Codex — Phase 2A foundation kernel prepared for maintainer review
 
 ## Current task
-Best Mates 2.0 — Phase 1: Design Foundation. The specification is complete and awaiting maintainer review. Stop before Phase 2; do not resume the previous UI-polish implementation queue automatically.
+Best Mates 2.0 — Phase 2A: Foundation Kernel. Implementation and verification are complete. Stop before Phase 2B; do not create the preview or migrate production UI automatically.
 
 ## Current branch
-`maintenance/repository-cleanup` at Phase 1 finalization (`34203f5`). The session began on `main`; the shared checkout changed branches during preparation. Re-check git branch/status before resuming.
+`maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Application baseline: f9beacd (feat(editor): unify action icon system). The existing TASK-004/005 entry below records its successful build; this documentation-only phase does not rerun or claim a new build.
+Phase 2A foundation kernel is the current handoff HEAD after its focused commit. Application production behavior remains based on `f9beacd`; later commits through Phase 2A add documentation, audit material, and the isolated kernel only.
 
 ## Task status
-BM2-P1: SPECIFICATION_COMPLETE / AWAITING_REVIEW
+BM2-P2A: IMPLEMENTED / AWAITING_REVIEW
+
+BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2A result (2026-09-08)
+
+- Created the nine requested kernel files under `ui/theme/` and `ui/icons/`: palette, semantic colors, typography, dimensions, elevation, states, motion, opt-in theme/access infrastructure, and Orbit icon metrics.
+- `BestMatesVisualIdentity` supports CLOUD, DREAM, MIDNIGHT, and MONO. `BestMatesBrightnessMode` supports SYSTEM, LIGHT, and DARK; SYSTEM resolves only from the supplied `systemIsDark` input. Midnight does not force dark mode.
+- `resolveBestMatesColors` and `resolveBestMatesDesign` are deterministic and have no store, persistence, widget, renderer, or Android-settings dependency.
+- The Material 3 bridge explicitly maps all 36 `ColorScheme` roles available in the pinned Material 3 1.3.1 dependency. Automatic tonal elevation is disabled inside the opt-in host as required by the spec.
+- All 104 unique approved target colors from the design specification are present exactly. Standard motion values and easing curves match the specification; reduced/disabled motion resolution is represented without adding effects or side effects.
+- No JVM tests were added because the repository has no existing test source set or test dependency setup, and Phase 2A forbids adding a framework solely for this work.
+- Final `assembleDebug`: PASS. No production screen imports or invokes the new kernel; `MainActivity.kt`, editor interaction, models, persistence, widget renderers/providers, Gradle, Android resources, and reference folders were unchanged.
+- Phase 2B recommendation: add only `ui/preview/BestMatesFoundationPreview.kt`, using `BestMatesDesignTheme` to render the eight identity/brightness combinations and token/control-state samples. Do not adopt the kernel at the production app root during that preview task.
 
 ## Best Mates 2.0 — Phase 1 result (2026-09-08)
 
@@ -76,19 +89,19 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review `docs/BEST_MATES_UI_2_SPEC.md` and its Settings/persistence boundary.
-2. After explicit review approval, choose a small Phase 2 scope; the recommendation is token scaffolding and an isolated foundation preview.
-3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog; do not begin them during the Phase 1 review gate.
+1. Review the Phase 2A kernel against `docs/BEST_MATES_UI_2_SPEC.md`.
+2. After explicit approval, begin Phase 2B with the isolated `BestMatesFoundationPreview.kt` only.
+3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog; do not begin them during the Phase 2A review gate.
 
-The product goal for this stage is a formal, coherent design foundation for the whole app. Do not begin broad UI implementation, unrelated architecture work, or TASK-007 investigation.
+The current goal is review of the isolated foundation kernel. Do not begin screen migration, shared components, broad UI implementation, unrelated architecture work, or TASK-007 investigation.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
 - Persistence contracts: `ConfigStore.kt`, `ProjectStore.kt`, `Models.kt` (do not break saved projects or migrations)
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
-## Build status (historical application work)
-PASS — `assembleDebug` verified after the pending TASK-007 coordinate correction (28s).
+## Build status
+PASS — `assembleDebug` verified after the Phase 2A foundation kernel (3s final run).
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

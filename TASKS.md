@@ -2,17 +2,34 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 1: Design Foundation — specification complete, awaiting maintainer review.
-2. Stop before Phase 2. Token/component implementation and screen integration require the next approved scope.
+1. Best Mates 2.0 — Phase 2A: Foundation Kernel — implemented and awaiting maintainer review.
+2. Stop before Phase 2B. Do not create the preview or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
-The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during design review. TASK-004/005 remain implemented and awaiting physical-device visual review.
+The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2A review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2A — Foundation Kernel
+Status: IMPLEMENTED / AWAITING_REVIEW
+Scope: Typed Compose design-system kernel only
+
+Completed:
+- Added raw palette references and typed semantic colors for Cloud, Dream, Midnight, and Mono in independent Light/Dark resolution.
+- Added an explicit Material 3 `ColorScheme` bridge for all roles supported by the pinned Material 3 1.3.1 dependency.
+- Added the complete UI typography, spacing, radius, shared dimension, elevation, Soft Halo, state, motion, reduced-motion, and Orbit Softline metric tokens.
+- Added pure identity/brightness/design resolvers and the opt-in `BestMatesDesignTheme`/`BestMatesDesign` access contract.
+- Verified all 104 approved target colors are present exactly and `assembleDebug` passes.
+
+Review gate:
+- The production `BestMatesTheme` and every production screen remain unchanged and do not import the new kernel.
+- No preview, shared component, icon artwork migration, persistence inheritance, screen migration, or app-root adoption was started.
+- No persistence/model/widget-renderer/interaction file changed. TASK-007 remains deferred.
+- No tests were added because the project has no existing JVM test source set/dependency setup; no framework was added for this phase.
+
 ### BM2-P1 — Design Foundation
-Status: SPECIFICATION_COMPLETE / AWAITING_REVIEW
+Status: APPROVED / COMPLETE
 Scope: Documentation only
 
 Completed:
@@ -22,8 +39,8 @@ Completed:
 - Defined Settings ownership of global theme mode and time format, with explicit preservation of existing saved widget display values and a separately scoped future migration.
 - Listed proposed token files, shared components, and later screen/settings integration boundaries.
 
-Review gate:
-- Review the specification before authorizing Phase 2.
+Review record:
+- Phase 1 was approved as the authoritative contract for Phase 2A.
 - Preserve fixed top canvas + vertically scrolling inspector below.
 - Do not change core editor interaction logic or reference folders `1/` and `2/`.
 - No application code or persistence was changed. No new build/device validation is claimed for this documentation task.
