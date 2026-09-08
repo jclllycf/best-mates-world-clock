@@ -92,11 +92,16 @@ fun resolveBestMatesColors(
     identity: BestMatesVisualIdentity,
     isDark: Boolean,
 ): BestMatesColors {
-    val neutral = if (isDark) LavenderDarkReferences else WarmPearlLightReferences
+    val neutral = when (identity) {
+        BestMatesVisualIdentity.CLOUD -> if (isDark) CloudDarkNeutralReferences else CloudLightNeutralReferences
+        BestMatesVisualIdentity.DREAM -> if (isDark) DreamDarkNeutralReferences else DreamLightNeutralReferences
+        BestMatesVisualIdentity.MIDNIGHT -> if (isDark) MidnightDarkNeutralReferences else MidnightLightNeutralReferences
+        BestMatesVisualIdentity.MONO -> if (isDark) MonoDarkNeutralReferences else MonoLightNeutralReferences
+    }
     val supporting = if (isDark) {
-        LavenderDarkSupportingReferences
+        CuteAtelierDarkSupportingReferences
     } else {
-        WarmPearlLightSupportingReferences
+        CuteAtelierLightSupportingReferences
     }
     val identityReferences = when (identity) {
         BestMatesVisualIdentity.CLOUD -> if (isDark) {

@@ -2,14 +2,33 @@
 
 ## Current development priority (2026-09-08)
 
-1. Best Mates 2.0 — Phase 2B.1: Design Lab device harness — implemented and awaiting physical-device review.
-2. Stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
+1. Best Mates 2.0 — Phase 2C: Cute Atelier Visual Refinement — implemented and awaiting physical-device visual review.
+2. Inspect all eight identity × brightness variants in the debug Design Lab, then stop before Phase 3. Do not create shared production components or migrate production screens until the next approved scope.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
-The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2A review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
+The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+
+### BM2-P2C — Cute Atelier Visual Refinement
+Status: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_VISUAL_REVIEW
+Scope: Foundation tokens, reusable Orbit Charm vectors, isolated Design Lab, debug-only system bars, and the design specification
+
+Completed:
+- Reinterpreted Cloud, Dream, Midnight, and Mono in both Light and Dark with identity-specific neutral environments, stronger surface separation, Powder Blush/Milk Pearl atmosphere, deep plum hierarchy, and a neutral lavender canvas mat.
+- Deepened functional Cloud accent, muted text, and light control-edge values where required by static contrast checks while retaining the supplied colors as visual north-star swatches.
+- Refined typography, radii, border widths, depth, pressed state, and Soft Halo 2.0 tokens without changing the Phase 2A resolver or Material bridge architecture.
+- Added `ui/icons/OrbitIcons.kt` with 27 reusable production-ready Orbit Charm vectors, including the orbit-based Rotate and sibling Resize marks. Production icon call sites remain untouched.
+- Rebuilt the Design Lab as Experience Showcase followed by compact Token Diagnostics. It uses custom preview-only button, toggle, slider, chip, field, picker, canvas, color-control, and selection recipes rather than stock Material samples.
+- Preserved local non-persistent switching across all eight identity × brightness variants. The debug Activity now synchronizes status/navigation bar colors and light/dark system icon appearance with the selected Lab variant.
+- Updated `docs/BEST_MATES_UI_2_SPEC.md` as the authoritative Cute Atelier / Cozy Orbit target and recorded the current contrast evidence and future component boundary.
+- `assembleDebug` and `:app:processReleaseMainManifest` pass. Generated-manifest inspection finds the Lab Activity only in debug outputs. The refreshed APK was installed and all eight selector combinations plus representative long-scroll checkpoints were inspected on the attached 1080 × 2340 device.
+
+Review gate:
+- Install the debug APK and inspect every Cloud/Dream/Midnight/Mono × Light/Dark variant on a physical phone, including long-scroll rhythm, surface separation, primary-button contrast, dark themes, Soft Halo, icon clarity, canvas neutrality, and system bars.
+- Do not begin Phase 3, production component extraction, screen migration, Settings persistence work, or TASK-007 investigation until explicitly authorized.
+- Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, rendering, gestures, canvas behavior, and reference folders remain unchanged.
 
 ### BM2-P2B.1 — Design Lab device harness
 Status: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_REVIEW
@@ -19,7 +38,7 @@ Completed:
 - Added `app/src/debug/AndroidManifest.xml` with a debug-only, non-launcher `BestMatesDesignLabActivity` entry.
 - Added `app/src/debug/java/com/bestmates/worldclock/debug/BestMatesDesignLabActivity.kt`, which renders the existing `BestMatesFoundationDesignLab()` without duplicating its UI.
 - Changed only that existing host composable from file-private to module-internal so the debug source set can reuse it. The `@Preview` remains private and production has no caller.
-- The local Design Lab identity/brightness selector remains available on device for all eight Cloud/Dream/Midnight × Light/Dark variants; it writes no preference.
+- The local Design Lab identity/brightness selector remains available on device for all eight Cloud/Dream/Midnight/Mono × Light/Dark variants; it writes no preference.
 - `assembleDebug` and `:app:processReleaseMainManifest` pass. The merged debug manifest contains the harness; the merged release manifest does not.
 
 Device access:
@@ -31,7 +50,7 @@ Review gate:
 - Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, gestures, canvas behavior, TASK-007, and reference folders remain unchanged.
 
 ### BM2-P2B — Foundation Design Lab
-Status: IMPLEMENTED / AWAITING_VISUAL_REVIEW
+Status: ENGINEERING_PASS / VISUAL_SUPERSEDED_BY_PHASE_2C
 Scope: One isolated Compose `@Preview` only
 
 Completed:
@@ -41,10 +60,9 @@ Completed:
 - Used compact preview-only helper composables inside that one file. No shared production UI component or icon-library migration was added.
 - Verified `assembleDebug` passes.
 
-Review gate:
-- Review the lab on a normal phone-size Compose preview across all eight variants before authorizing Phase 2C.
+Historical review result:
+- Engineering isolation passed; the Phase 2B visual treatment was not approved. Phase 2C supersedes its presentation while retaining the kernel and harness.
 - Production navigation, app-root theming, Workspace, Settings, Editor, persistence, models, widgets, gestures, canvas behavior, and TASK-007 remain unchanged.
-- The Compose `Modifier.shadow` used for the optional halo maps the approved 6dp blur to the supported elevation-shadow approximation; no custom shadow renderer or token adjustment was introduced.
 
 ### BM2-P2A — Foundation Kernel
 Status: COMPLETE / FOUNDATION_AUTHORIZED

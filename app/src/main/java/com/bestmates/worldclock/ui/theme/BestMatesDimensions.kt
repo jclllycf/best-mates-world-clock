@@ -76,10 +76,10 @@ private val DefaultBestMatesSpacing = BestMatesSpacing(
 
 private val DefaultBestMatesRadii = BestMatesRadii(
     radiusNone = 0.dp,
-    radiusXs = 4.dp,
-    radiusSm = 8.dp,
-    radiusMd = 12.dp,
-    radiusLg = 16.dp,
+    radiusXs = 6.dp,
+    radiusSm = 10.dp,
+    radiusMd = 14.dp,
+    radiusLg = 18.dp,
     radiusXl = 20.dp,
     radius2xl = 24.dp,
     radius3xl = 28.dp,
@@ -100,10 +100,10 @@ private val DefaultBestMatesSharedDimensions = BestMatesSharedDimensions(
 )
 
 private val DefaultBestMatesMaterialShapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(20.dp),
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(24.dp),
     extraLarge = RoundedCornerShape(28.dp),
 )
 

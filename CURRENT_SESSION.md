@@ -1,27 +1,43 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2B.1 Design Lab device harness prepared for physical-device review
+Codex — Phase 2C Cute Atelier foundation prepared for physical-device visual review
 
 ## Current task
-Best Mates 2.0 — Phase 2B.1: Design Lab device harness. Implementation and build verification are complete. Stop for physical-device review; do not start Phase 3 or migrate production UI.
+Best Mates 2.0 — Phase 2C: Cute Atelier Visual Refinement. Foundation implementation and isolated Lab refinement are complete. Stop for physical-device review; do not start Phase 3 or migrate production UI.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2B.1's focused debug-harness commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, the preview-only lab, and this debug-only entry point.
+Phase 2C's focused Cute Atelier foundation commit is the current handoff HEAD after this session. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, and this visual refinement.
 
 ## Task status
+BM2-P2C: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_VISUAL_REVIEW
+
 BM2-P2B.1: IMPLEMENTED / AWAITING_PHYSICAL_DEVICE_REVIEW
 
-BM2-P2B: IMPLEMENTED / AWAITING_VISUAL_REVIEW
+BM2-P2B: ENGINEERING_PASS / VISUAL_SUPERSEDED_BY_PHASE_2C
 
 BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2C result (2026-09-08)
+
+- Kept the Phase 2A resolver, semantic groups, Material 3 bridge, independent identity/brightness axes, and production isolation. Each of the eight resolved variants now has its own Cute Atelier neutral environment as well as accent and atmosphere values.
+- Cloud Light is built from `#FFF8FB` background, pearl surfaces, blush/lavender atmosphere, and neutral `#F2EEF4` canvas mat. Dream is rose-forward, Midnight uses aubergine studio surfaces, and Mono uses blush-neutral ivory/graphite surfaces. Dark palettes use warm plum values rather than generic charcoal.
+- Functional Cloud accent resolves to `#8F60AD` instead of the supplied `#9367B2` visual anchor so ordinary white button labels reach 4.72:1. Muted text and light control boundaries were similarly deepened; 228 opaque token-pair checks meet the 4.5:1 text and 3:1 control-edge targets recorded in the spec.
+- Refined UI typography, radius, state, elevation, shadow, and Soft Halo values. The Design Lab now demonstrates custom Cute Atelier buttons, accessory toggles, thin sliders, stationery fields, charm-marked chips, a floating picker tray, and a visibly distinct with/without-halo comparison.
+- Added `ui/icons/OrbitIcons.kt` with 27 production-ready Orbit Charm vectors. The complete family appears in the Lab, including partial-orbit Rotate and diagonal sibling Resize icons. No production call site uses the new family yet.
+- Rebuilt the Lab presentation into Experience Showcase followed by compact Token Diagnostics. Static future samples cover Workspace, Settings, editor toolbar, inspector, picker, neutral canvas guides/same-size/selection, and color controls without connecting to production state.
+- The debug-only Activity now matches status/navigation bar colors to the active Lab background and switches system icon brightness for Light/Dark. It remains non-launcher, excluded from recents, and absent from production navigation.
+- `assembleDebug` and `:app:processReleaseMainManifest` pass. Generated-manifest inspection finds the Lab Activity only in debug outputs. The refreshed APK was installed on the attached 1080 × 2340 phone; all eight selector combinations and representative long-scroll checkpoints were inspected successfully. Maintainer visual approval remains pending.
+- Production `MainActivity.kt`, Workspace, Settings, Editor, persistence, models, widgets, renderer, gestures, real canvas, TASK-007, Gradle, resources, and reference folders `1/` and `2/` remain unchanged.
+- Review command after installing the debug APK: `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
+- Next action: inspect all eight variants on a physical phone, then stop. Do not begin Phase 3 until explicitly authorized.
 
 ## Best Mates 2.0 — Phase 2B.1 result (2026-09-08)
 
@@ -38,7 +54,7 @@ TASK-007: PARTIALLY_COMPLETE / DEFERRED
 - The single scrolling page renders the full required review set: atmosphere/surface hierarchy, semantic palette, every typography role, spacing/radii, button/icon/chip/switch/slider/text-field references, color swatches, static state gallery, optional Soft Halo comparison, overlay/scrim reference, Orbit icon metrics, and Quiet Motion durations/easings.
 - `assembleDebug` passed after adding the preview. The only source addition is the preview file; `MainActivity.kt`, production theme adoption, Workspace, Settings, Editor, persistence, models, widgets, renderer, gestures, canvas, resources, Gradle, and reference folders `1/` and `2/` were unchanged.
 - Compose exposes only an elevation-style `Modifier.shadow` for the optional Soft Halo. The preview maps the approved 6dp blur and 2dp spread allowance to that supported approximation, without changing the Phase 1 token recipe or adding a custom renderer.
-- Next action: inspect the Design Lab at normal phone width across all eight variants. Do not begin Phase 2C until the maintainer reviews it.
+- The Phase 2B physical review passed engineering isolation but rejected the visual treatment. Phase 2C supersedes this presentation while preserving the underlying foundation architecture.
 
 ## Best Mates 2.0 — Phase 2A result (2026-09-08)
 
@@ -110,7 +126,7 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Install the debug APK and open the Phase 2B Design Lab with `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`; inspect every Cloud/Dream/Midnight Light/Dark variant at normal phone width.
+1. Install the debug APK and open the Phase 2C Cute Atelier Design Lab with `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`; inspect every Cloud/Dream/Midnight/Mono × Light/Dark variant at normal phone width.
 2. Do not begin Phase 3, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
 3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
 
@@ -122,7 +138,7 @@ The current goal is physical-device visual review of the isolated Design Lab. Pr
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug` verified after the Phase 2B.1 debug device harness. `:app:processReleaseMainManifest` also passed; the merged release manifest excludes the harness.
+PASS — `assembleDebug` and `:app:processReleaseMainManifest` verified after the Phase 2C Cute Atelier refinement. Generated-manifest inspection confirms the debug Activity remains absent from release outputs. The debug APK installed and launched successfully on the attached device.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

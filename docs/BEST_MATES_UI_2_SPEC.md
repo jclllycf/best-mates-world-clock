@@ -1,19 +1,97 @@
-# Best Mates 2.0 — Phase 1: Design Foundation
+# Best Mates 2.0 — UI Design Foundation
 
-Status: **SPECIFICATION COMPLETE — AWAITING MAINTAINER REVIEW**  
-Date: 2026-09-08  
-Inspected application baseline: `f9beacd` (`feat(editor): unify action icon system`). Documentation finalized on `maintenance/repository-cleanup` after the separate checkpoint/audit commits through `3417f42`; production app files remain unchanged from the inspected baseline.
+Status: **PHASE 2C CUTE ATELIER REFINEMENT — IMPLEMENTED / AWAITING DEVICE REVIEW**
+Date: 2026-09-08
+Implementation baseline: `592f54a` (`feat(debug): add design lab device harness`). The Phase 2C foundation keeps the Phase 2A resolver, semantic-token architecture, Material bridge, production isolation, and debug harness while replacing the rejected Phase 2B visual expression.
 
-Scope: design decisions and proposed architecture only. No application implementation is included. Phase 2 has not started.
+Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, and its debug-only device host. Production Workspace, Settings, Editor, app-root theme, persistence, widgets, rendering, gestures, canvas behavior, and TASK-007 remain unchanged.
+
+## 0. Phase 2C authoritative refinement
+
+This section supersedes earlier Phase 1 numeric palette, typography, radius, depth, state, icon, and component-recipe values wherever they conflict. Sections 1–15 retain the foundation rationale, ownership rules, accessibility contract, and production boundaries. The Phase 1 contrast table in §15 is historical evidence for the former palette and must not be used to approve Phase 2C colors.
+
+The refined personality is **cute atmosphere + professional skeleton**: milk-pearl and blush environments, plum hierarchy, scarce charm details, clear opaque working surfaces, and a lavender-neutral canvas. It is warm and collectible without becoming childish, candy-saturated, glass-heavy, or a stock Material theme. One card normally has zero or one decorative signature motif.
+
+### 0.1 Resolved neutral environments
+
+Each identity now owns its neutral environment as well as its accent and atmosphere. Identity and Light/Dark remain independent.
+
+| Identity / brightness | background | base | raised | inset | overlay | elevated | canvasMat |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Cloud / Light | `#FFF8FB` | `#FFFDFE` | `#FFFFFF` | `#F9F0F6` | `#FFFBFD` | `#F8EDF5` | `#F2EEF4` |
+| Cloud / Dark | `#19131D` | `#211925` | `#2C2131` | `#151018` | `#35283B` | `#403048` | `#29222D` |
+| Dream / Light | `#FFF5FA` | `#FFFBFD` | `#FFFFFF` | `#F9EAF2` | `#FFF9FC` | `#FCECF4` | `#F3EDF2` |
+| Dream / Dark | `#1D121A` | `#271821` | `#33212C` | `#170E15` | `#3D2934` | `#49303E` | `#2C222B` |
+| Midnight / Light | `#FAF7FC` | `#FEFCFF` | `#FFFFFF` | `#F1ECF7` | `#FCF9FF` | `#F5EFFA` | `#F0EDF4` |
+| Midnight / Dark | `#120E17` | `#1B1521` | `#261D2D` | `#0E0B12` | `#30243A` | `#3A2B46` | `#241E2A` |
+| Mono / Light | `#FBF8F8` | `#FEFCFC` | `#FFFFFF` | `#F2EDEC` | `#FDFBFB` | `#F7F1F3` | `#F0ECEE` |
+| Mono / Dark | `#191719` | `#211E21` | `#2B272B` | `#141214` | `#342F34` | `#3D373D` | `#272327` |
+
+| Identity / brightness | textPrimary | textSecondary | textMuted | borderSubtle | borderControl |
+| --- | --- | --- | --- | --- | --- |
+| Cloud / Light | `#322A35` | `#6C5E6C` | `#776879` | `#EBDCE6` | `#957F91` |
+| Cloud / Dark | `#F8EDF5` | `#D4C1CF` | `#B09DAD` | `#4C394F` | `#937997` |
+| Dream / Light | `#382A34` | `#765F6E` | `#7A6673` | `#EFD7E3` | `#96798C` |
+| Dream / Dark | `#FFEEF5` | `#DCC1CE` | `#B49AA8` | `#583846` | `#A4768D` |
+| Midnight / Light | `#302A38` | `#665D70` | `#716979` | `#E3DCEB` | `#897C92` |
+| Midnight / Dark | `#F4EDF8` | `#CDBFD4` | `#A697AD` | `#44354E` | `#887695` |
+| Mono / Light | `#312D30` | `#686166` | `#70696E` | `#E4DDDF` | `#8C8287` |
+| Mono / Dark | `#F3EFF2` | `#CBC3C8` | `#AAA2A7` | `#474047` | `#898087` |
+
+### 0.2 Identity accents and atmosphere
+
+| Identity / brightness | accent / onAccent | accentContainer / onAccentContainer | atmosphereA / atmosphereB |
+| --- | --- | --- | --- |
+| Cloud / Light | `#8F60AD` / `#FFFFFF` | `#F1DDF6` / `#533461` | `#F7CFDF` / `#DDD0F3` |
+| Cloud / Dark | `#DABCEA` / `#3D2348` | `#4D3157` / `#F7DFFF` | `#D88EAA` / `#9A7AC5` |
+| Dream / Light | `#A15D83` / `#FFFFFF` | `#F6DDE9` / `#62344C` | `#F3BFD3` / `#DFC6F2` |
+| Dream / Dark | `#ECB2CF` / `#4C2643` | `#5C3048` / `#FFDDEA` | `#C66F91` / `#9C70BC` |
+| Midnight / Light | `#745B91` / `#FFFFFF` | `#E8DDF2` / `#49385E` | `#D8CBE8` / `#E7D3DC` |
+| Midnight / Dark | `#D3B8E8` / `#352242` | `#493357` / `#F2DBFF` | `#76568E` / `#8C526C` |
+| Mono / Light | `#786871` / `#FFFFFF` | `#EEE4E8` / `#494047` | `#E8DADD` / `#DFD8E2` |
+| Mono / Dark | `#CDBFC7` / `#342C31` | `#443B41` / `#F1E8ED` | `#8D737F` / `#796F82` |
+
+Supporting light families are rose `#B97891` / `#F8E3EC`, peach `#C98A72` / `#F9E5DC`, berry-red `#A84762` / `#FBE5EB`, sage `#5F7D6C` / `#E5F0E8`, and honey `#9A6D31` / `#F8EBD2`. Dark counterparts are `#E1ACC0` / `#553140`, `#E7B29D` / `#5B372B`, `#F1A2B5` / `#552532`, `#A8CEB5` / `#294335`, and `#E8C58F` / `#4C371D`.
+
+Cloud Light keeps `#9367B2`, `#958897`, and `#B8A3B4` as visual north-star swatches. The resolved functional accent is deepened to `#8F60AD`, raising white-label contrast from 4.35:1 to 4.72:1. Functional muted-text and control-edge roles are also deepened just enough to remain at or above 4.5:1 and 3:1 respectively across their resolved surfaces.
+
+Atmosphere uses two large static radial blooms behind opaque surfaces, peaking at `.28` in light and `.10` in dark. A single faint orbit arc is allowed in a branded region. The canvas receives no atmosphere gradient.
+
+### 0.3 Refined type, geometry, state, and depth
+
+The interface scale is editorial and compact: display roles are `36/44`, `32/40`, `28/36`; headline roles are `26/34`, `24/32`, `21/28`; titles are `20/26`, `16/22`, `14/20`; bodies are `16/24`, `14/21`, `12/18`; labels are `14/18`, `12/16`, `12/16`; `valueTime` is `24/30`. Display/headline use the rounded system family; UI text uses system sans. No widget-authored font is affected.
+
+Radius tokens are `6, 10, 14, 18, 20, 24, 28dp`, plus full. Full is reserved for compact chips, segmented selections, badges, circles, and swatches. Primary buttons use 20dp, ordinary cards/inspectors 18–24dp, fields 18dp, and large overlay trays 28dp.
+
+Selected, focus, and error outlines are `1.5dp`, `1.5dp`, and `1dp`; focus keeps a 2dp clear offset. Hover/pressed layers are `.06/.08`. Disabled content/container remain `.38/.08`. Soft Halo 2.0 is `accent` at `.20` light / `.24` dark with a 12dp diffuse falloff and maximum 4dp spread. It is optional decoration around the required tint, fine outline, and non-color marker.
+
+Depth fallbacks are 0dp, 2dp, 4dp, and 8dp. Reference blur values are 0, 10, 18, and 30dp. Light/dark shadow alphas are depth1 `.08/.18`, depth2 `.10/.22`, and depth3 `.12/.20`. Surface tone and tinted 1dp hairlines carry most hierarchy; nested children normally remain depth0.
+
+### 0.4 Component and icon recipes
+
+- Primary actions are 54dp soft rounded rectangles with plum fill, subtle depth, and high-readability content. Secondary uses pearl/rose tint. Outlined uses a quiet filled surface plus hairline. Text actions keep only an invisible 48dp touch region. Destructive resting uses berry text/icon on a light berry container, not a large red pill.
+- The accessory toggle uses a 44×24dp visual track inside a 48dp target, an 18dp thumb, a fine edge, and only a tiny active halo. The slider uses a 3dp track, a 14dp outlined thumb, a restrained focus halo, and a compact value tag.
+- Stationery fields use `surfaceInset`, 18dp radius, and a 1dp resting hairline. Focus shifts the surface and uses a 1.5dp accent edge with a small halo. Error uses the soft berry container, 1dp edge, and persistent helper text.
+- Compact chips may remain pills, but use a 34dp visual body inside a 48dp target, thinner outlines, tighter text, and a bead/charm marker for selection. Avoid rows of large outlined capsules.
+- Overlay/picker surfaces use `surfaceOverlay`, 28dp radius, clear title hierarchy, tinted hairline, restrained depth, and selected pearl cards. The future color picker uses contained wheel, current/original swatches, refined opacity control, and one clear Apply action.
+- The future canvas study uses the resolved lavender-neutral `canvasMat`, grid at `.09`, precise guide at `.62`, a small measurement tag, Soft Halo selection, and the Orbit Charm Rotate/Resize pair. This remains a static Design Lab mockup.
+
+**Orbit Charm** keeps a 24×24 viewport, 20dp default artwork, 48dp target, round caps/joins, and 1.8 viewport-unit stroke (about 1.7dp rendered). Each utility icon may carry at most one restrained dot, bead, arc, petal, or sparkle. Critical Back/Delete/Undo/Redo stay especially literal. The Phase 2C family includes Back, Settings, Undo, Redo, Create widget, Add component/city/text, Rename, Copy, Paste, Cut, Pin, Lock, Delete, Rotate, Resize, Snap, Guides, Theme, Font, Color, Sun, Moon, Search, Close, and Confirm. Production call sites are not migrated in this phase.
+
+### 0.5 Design Lab presentation and review boundary
+
+The Design Lab now has two layers. **Experience Showcase** comes first with a branded hero, mini Workspace, theme card, toolbar, inspector, picker tray, full icon family, Halo comparison, neutral canvas study, color atelier, and custom controls. **Token Diagnostics** follows with compact surfaces, colors, typography, spacing/radii, states, and motion. The selector still exercises all eight identity × brightness combinations without storage.
+
+The debug Activity alone synchronizes status/navigation bar color and icon brightness with the selected Lab appearance. Production window behavior and production navigation are unchanged. Stop after physical-device review; no production screen migration is authorized by this specification.
 
 ## 1. Direction and boundaries
 
 | System | Name | Design intent |
 | --- | --- | --- |
 | Product | Best Mates 2.0 | A calm, approachable space for making personal world-clock widgets |
-| Design language | Soft Orbit | Gentle geometry, clear hierarchy, restrained celestial character |
-| Atmosphere | Warm Pearl + Lavender Atmosphere | Warm off-white foundations with lavender at the edges; readable, opaque working surfaces |
-| Icons | Orbit Softline | One rounded outline family with consistent optical weight |
+| Design language | Cute Atelier / Cozy Orbit | Cute atmosphere around a professional creative-tool skeleton |
+| Atmosphere | Powder Blush + Milk Pearl + Lavender Veil | Emotional ambient color behind clearly separated, opaque working surfaces |
+| Icons | Orbit Charm | A rounded outline family with one restrained charm detail where recognition allows |
 | Motion | Quiet Motion | Short, purposeful feedback with no bounce or ambient animation |
 | Selection | Soft Halo | A crisp state outline supported by a restrained halo and a non-color indicator |
 | Workspace | Floating Creation Space | Breathing room around project previews, with one clear creation action |
@@ -21,7 +99,7 @@ Scope: design decisions and proposed architecture only. No application implement
 | Settings | Visual Theme Gallery | Themes are understandable through real miniature interface previews |
 | Branding | Mates Orbit | Two companion forms sharing an orbit; warm, original, legible at small sizes |
 
-The visual hierarchy is **created content → current editing task → navigation → atmosphere**. Lavender must not compete with a user's widget colors. Softness comes from spacing, surfaces, and restrained geometry, never from low-contrast labels or blurred controls.
+The visual hierarchy is **created content → current editing task → navigation → atmosphere**. The conceptual blend is Japanese soft-tech, quiet editorial design, accessory/charm detail, and modern creative-tool clarity. Cute character belongs in chrome, cards, controls, pickers, selection, empty states, and scarce micro-details. The canvas remains a quiet lavender-neutral stage and never becomes pink. A surface normally carries zero or one decorative motif.
 
 Non-negotiable boundaries:
 
@@ -32,9 +110,11 @@ Non-negotiable boundaries:
 - App chrome tokens do not replace user-authored colors, fonts, opacity, shape styling, or day/night palettes in saved widgets.
 - Preserve JSON contracts, layout migrations, project and widget-instance storage, native providers, city timezones, solar calculations, and launcher pin flows.
 - Do not read, edit, move, or delete reference folders `1/` and `2/` for this phase. Do not expand the repository cleanup scope.
-- No screen redesign in code, token extraction, font import, icon asset replacement, or broad architectural refactor occurs in Phase 1.
+- No production-screen redesign, font import, icon call-site migration, or broad architectural refactor occurs in Phase 2C. Implementation is limited to the foundation tokens, Orbit Charm vectors, Design Lab, and debug-only host.
 
-## 2. Repository evidence and current-state audit
+## 2. Repository evidence and pre-foundation audit
+
+This section records the repository state that motivated Phase 1 and the later isolated foundation work. It is historical evidence rather than a description of the Phase 2C files now present; the implemented target is defined in §0 and the current file inventory in §14.
 
 Read before authoring: [AI_RULES.md](../AI_RULES.md), [PROJECT_HANDOFF.md](../PROJECT_HANDOFF.md), [TASKS.md](../TASKS.md), [CURRENT_SESSION.md](../CURRENT_SESSION.md), and [cleanup audit](REPOSITORY_CLEANUP_AUDIT.md), plus recent git history and the relevant source.
 
@@ -89,7 +169,7 @@ Rules:
 - Use immutable typed token groups and read-only composition locals. Components receive state and callbacks; tokens never read stores, trigger navigation, or mutate `WidgetConfig`.
 - Use `Dp` for layout/strokes, `Sp` for interface text, milliseconds for durations, and explicit unitless alpha values. Convert dp to pixels at drawing boundaries only. Existing model units and gesture math remain unchanged.
 - Prefer semantic aliases at call sites: `inspectorSurface = surfaceRaised`, `pickerSurface = surfaceOverlay`, `selectionOutline = accent`, `disabledContent = textPrimary at state.disabledContentAlpha`.
-- A theme identity changes approved palette/atmosphere values only. It does not change layout, touch targets, typography sizes, motion speed, or content defaults.
+- A theme identity changes its approved neutral environment, accent family, and atmosphere values. It does not change layout, touch targets, typography sizes, motion speed, or content defaults. Identity and brightness remain independent axes.
 - Explicitly map every color/typography role used by the bundled Material 3 version. Do not depend on incidental stock purple values. Do not upgrade Compose for this extraction.
 - Keep existing `AppThemeStyle` stored identifiers readable. Do not reuse the persisted widget `ThemeMode` enum as the app's settings model merely because the labels look similar.
 - No Android dynamic wallpaper colors in the initial foundation: they would make the reviewed palette non-deterministic. Device brightness is still followed in System mode.
@@ -115,69 +195,69 @@ Custom recipes name their surface explicitly instead of inferring it from elevat
 
 ## 4. Colors and surface hierarchy
 
-All hex values below are opaque sRGB (`#RRGGBB`) unless an alpha is explicitly stated. Kotlin may encode these as `0xFFRRGGBB`. These are proposed target tokens, not descriptions of the current build.
+All hex values below are opaque sRGB (`#RRGGBB`) unless an alpha is explicitly stated. Kotlin may encode these as `0xFFRRGGBB`. These are the implemented Phase 2C foundation targets; production screens have not adopted them.
 
-### 4.1 Default Cloud palette: Warm Pearl + Lavender
+### 4.1 Default Cloud palette: Powder Blush + Milk Pearl
 
 | Semantic token | Light | Dark | Use |
 | --- | --- | --- | --- |
-| `background` | `#F8F5F2` | `#19171F` | App backdrop, exposed workspace |
-| `surfaceBase` | `#FCF9F6` | `#201D28` | Navigation and resting page groups |
-| `surfaceRaised` | `#FFFDFC` | `#2A2534` | Project cards, inspector sections |
-| `surfaceInset` | `#F0EBF2` | `#17141D` | Input wells, quiet grouped controls |
-| `surfaceOverlay` | `#FFFDFF` | `#302A3B` | Pickers, sheets, dialogs, menus |
-| `surfaceElevated` | `#F4EFF7` | `#362E42` | Small floating controls within an overlay |
-| `textPrimary` | `#302C38` | `#F4EDF7` | Main labels, titles, content |
-| `textSecondary` | `#625B6D` | `#C8BED0` | Supporting labels, neutral action icons |
-| `textMuted` | `#6F6677` | `#B2A6BD` | Active metadata, hints; always opaque |
-| `borderSubtle` | `#E2DAE8` | `#463C52` | Decorative separators and card edges |
-| `borderControl` | `#877B93` | `#8E809E` | Required input/control boundaries |
-| `accent` | `#72549D` | `#D3BAF3` | Primary action, selected outline, focus |
-| `onAccent` | `#FFFFFF` | `#3B2655` | Text/icon on a filled primary control |
-| `accentContainer` | `#ECE1F7` | `#49345F` | Selected card/chip and tonal button fill |
-| `onAccentContainer` | `#493361` | `#EFDCFF` | Content on selected/tonal fills |
-| `secondary` / `onSecondary` | `#755E6B` / `#FFFFFF` | `#D9BDC9` / `#412D37` | Supporting accent, sparingly |
-| `secondaryContainer` / `onSecondaryContainer` | `#F3E2EA` / `#503943` | `#4A3541` / `#F5DFEA` | Soft rose support |
-| `tertiary` / `onTertiary` | `#536880` / `#FFFFFF` | `#B7CAE3` / `#24364C` | Informational accent |
-| `tertiaryContainer` / `onTertiaryContainer` | `#DFE8F3` / `#2F435B` | `#304157` / `#DAE7FA` | Informational message fill |
-| `destructive` / `onDestructive` | `#A43F55` / `#FFFFFF` | `#F2A8B7` / `#511627` | Delete and error actions |
-| `destructiveContainer` / `onDestructiveContainer` | `#FBE8EC` / `#6F2034` | `#4E2633` / `#FFDCE4` | Error message/quiet destructive state |
-| `success` / `onSuccess` | `#406C57` / `#FFFFFF` | `#A1CEB3` / `#193626` | Confirmed saved/completed status |
-| `successContainer` / `onSuccessContainer` | `#E3F0E8` / `#234D3B` | `#233D30` / `#D2F0DF` | Supporting success message |
-| `warning` / `onWarning` | `#805D22` / `#FFFFFF` | `#E2C58D` / `#3F2F15` | Attention that is not destructive |
-| `warningContainer` / `onWarningContainer` | `#F9EDCF` / `#594014` | `#44351E` / `#F6E6C6` | Warning message |
-| `shadowColor` | `#2E243B` | `#000000` | Neutral depth only |
-| `canvasMat` | `#E9E5EC` | `#25212D` | Neutral editing stage behind authored content |
-| `onCanvasMat` | `#52485F` | `#D9CFE4` | Canvas chrome/empty-state text |
-| `checkerLight` / `checkerDark` | `#EEEAF1` / `#DAD3E0` | `#302938` / `#201C26` | Transparency preview, not actual widget content |
+| `background` | `#FFF8FB` | `#19131D` | App backdrop, exposed workspace |
+| `surfaceBase` | `#FFFDFE` | `#211925` | Navigation and resting page groups |
+| `surfaceRaised` | `#FFFFFF` | `#2C2131` | Project cards, inspector sections |
+| `surfaceInset` | `#F9F0F6` | `#151018` | Input wells, quiet grouped controls |
+| `surfaceOverlay` | `#FFFBFD` | `#35283B` | Pickers, sheets, dialogs, menus |
+| `surfaceElevated` | `#F8EDF5` | `#403048` | Small floating controls within an overlay |
+| `textPrimary` | `#322A35` | `#F8EDF5` | Main labels, titles, content |
+| `textSecondary` | `#6C5E6C` | `#D4C1CF` | Supporting labels, neutral action icons |
+| `textMuted` | `#776879` | `#B09DAD` | Active metadata and hints; always opaque |
+| `borderSubtle` | `#EBDCE6` | `#4C394F` | Decorative separators and card edges |
+| `borderControl` | `#957F91` | `#937997` | Required input/control boundaries |
+| `accent` | `#8F60AD` | `#DABCEA` | Primary action, selected outline, focus |
+| `onAccent` | `#FFFFFF` | `#3D2348` | Text/icon on a filled primary control |
+| `accentContainer` | `#F1DDF6` | `#4D3157` | Selected card/chip and tonal button fill |
+| `onAccentContainer` | `#533461` | `#F7DFFF` | Content on selected/tonal fills |
+| `secondary` / `onSecondary` | `#B97891` / `#302027` | `#E1ACC0` / `#4C2736` | Supporting rose accent, sparingly |
+| `secondaryContainer` / `onSecondaryContainer` | `#F8E3EC` / `#593342` | `#553140` / `#FFDDEA` | Soft rose support |
+| `tertiary` / `onTertiary` | `#C98A72` / `#3E2922` | `#E7B29D` / `#4C2A1F` | Warm peach accent |
+| `tertiaryContainer` / `onTertiaryContainer` | `#F9E5DC` / `#623C2E` | `#5B372B` / `#FFDED0` | Peach support |
+| `destructive` / `onDestructive` | `#A84762` / `#FFFFFF` | `#F1A2B5` / `#541729` | Delete and error actions |
+| `destructiveContainer` / `onDestructiveContainer` | `#FBE5EB` / `#6C263A` | `#552532` / `#FFDCE5` | Error message/quiet destructive state |
+| `success` / `onSuccess` | `#5F7D6C` / `#FFFFFF` | `#A8CEB5` / `#1C3928` | Confirmed saved/completed status |
+| `successContainer` / `onSuccessContainer` | `#E5F0E8` / `#304C3B` | `#294335` / `#D8F0DF` | Supporting success message |
+| `warning` / `onWarning` | `#9A6D31` / `#FFFFFF` | `#E8C58F` / `#412E12` | Attention that is not destructive |
+| `warningContainer` / `onWarningContainer` | `#F8EBD2` / `#5D411D` | `#4C371D` / `#FFE6BC` | Warning message |
+| `shadowColor` | `#553D57` | `#08050A` | Neutral depth only |
+| `canvasMat` | `#F2EEF4` | `#29222D` | Neutral editing stage behind authored content |
+| `onCanvasMat` | `#554B59` | `#E5D9E4` | Canvas chrome/empty-state text |
+| `checkerLight` / `checkerDark` | `#F5F0F4` / `#E2D9E1` | `#352A39` / `#211A25` | Transparency preview, not actual widget content |
 
 Surface order is conceptual depth, not a requirement to make every successive light-mode layer darker. Raised light surfaces are pearl white; dark raised surfaces become lighter. Surface boundaries must still work with shadows disabled.
 
 ### 4.2 Theme identities and brightness
 
-Retain **Cloud, Dream, Midnight, Mono** as gallery names and stable identities. Cloud is the default expression of Warm Pearl + Lavender. Each identity must support **System / Light / Dark** independently; Midnight is a twilight palette identity, not a forced mode.
+Retain **Cloud, Dream, Midnight, Mono** as gallery names and stable identities. Cloud is the default expression of Powder Blush + Milk Pearl. Each identity must support **System / Light / Dark** independently; Midnight is a twilight palette identity, not a forced mode.
 
-Use §4.1 as the base for every identity. Replace only the following accent family and the decorative atmosphere pair. Unlisted semantic values remain exactly those in §4.1, including status colors and neutral working surfaces. This keeps every theme equally usable and makes the eight resolved variants deterministic.
+Use the complete neutral environments in §0.1 and accent/atmosphere values in §0.2. Supporting status families remain shared by brightness. This keeps all eight variants deterministic while allowing Dream, Midnight, and Mono to feel materially distinct from Cloud.
 
 | Theme / brightness | `accent` | `onAccent` | `accentContainer` | `onAccentContainer` |
 | --- | --- | --- | --- | --- |
-| Cloud / Light | `#72549D` | `#FFFFFF` | `#ECE1F7` | `#493361` |
-| Cloud / Dark | `#D3BAF3` | `#3B2655` | `#49345F` | `#EFDCFF` |
-| Dream / Light | `#825274` | `#FFFFFF` | `#F2E1ED` | `#5B3553` |
-| Dream / Dark | `#E5B4D5` | `#4C2643` | `#57334E` | `#F9DBEF` |
-| Midnight / Light | `#505F86` | `#FFFFFF` | `#E2E8F7` | `#354365` |
-| Midnight / Dark | `#B8C7F1` | `#283858` | `#303F5E` | `#DCE5FF` |
-| Mono / Light | `#62616B` | `#FFFFFF` | `#E8E5EA` | `#41404A` |
-| Mono / Dark | `#C9C5CF` | `#323038` | `#3D3943` | `#EEEBF0` |
+| Cloud / Light | `#8F60AD` | `#FFFFFF` | `#F1DDF6` | `#533461` |
+| Cloud / Dark | `#DABCEA` | `#3D2348` | `#4D3157` | `#F7DFFF` |
+| Dream / Light | `#A15D83` | `#FFFFFF` | `#F6DDE9` | `#62344C` |
+| Dream / Dark | `#ECB2CF` | `#4C2643` | `#5C3048` | `#FFDDEA` |
+| Midnight / Light | `#745B91` | `#FFFFFF` | `#E8DDF2` | `#49385E` |
+| Midnight / Dark | `#D3B8E8` | `#352242` | `#493357` | `#F2DBFF` |
+| Mono / Light | `#786871` | `#FFFFFF` | `#EEE4E8` | `#494047` |
+| Mono / Dark | `#CDBFC7` | `#342C31` | `#443B41` | `#F1E8ED` |
 
 | Theme | `atmosphereA` / `atmosphereB` | Character |
 | --- | --- | --- |
-| Cloud | `#DCCEED` / `#F1DCE5` | Lavender pearl |
-| Dream | `#EBD3E7` / `#F6DED8` | Soft rose and warm blush |
-| Midnight | `#D4DCF2` / `#DCD3ED` | Blue-violet twilight |
-| Mono | `#DFDCE3` / `#E9E5E3` | Quiet near-neutral warmth |
+| Cloud | blush + lavender | Milk pearl, blush mist, and lavender veil |
+| Dream | rose + muted lilac | Pinker and more romantic without candy saturation |
+| Midnight | violet + muted rose | Deep plum-black studio atmosphere |
+| Mono | dusty mauve + blush neutral | Ivory/graphite editorial restraint |
 
-Atmosphere recipe: at most two static radial gradients, A near the upper end edge and B near the lower start edge, each fading to transparent over roughly 60% of the page's shorter dimension. Peak alpha is **0.24 light / 0.06 dark**, composited once over `background`. Keep gradients behind opaque content groups and away from reading/control surfaces. No animated particles, glass blur, noise, or gradients inside the canvas. The palette remains usable with both gradients absent.
+Atmosphere recipe: at most two static radial gradients, A near the upper end edge and B near the lower start edge, each fading to transparent over roughly 60% of the page's shorter dimension. Peak alpha is **0.28 light / 0.10 dark**, composited once over `background`. Keep gradients behind opaque content groups and away from reading/control surfaces. No animated particles, glass blur, noise, or gradients inside the canvas. The palette remains usable with both gradients absent.
 
 ### 4.3 Contrast contract
 
@@ -195,22 +275,22 @@ All size/line-height pairs are in sp; weight is the nominal numeric weight; lett
 
 | Material role / intended use | Size / line height | Weight |
 | --- | --- | --- |
-| `displayLarge` / rare brand presentation | 40 / 48 | 600 |
-| `displayMedium` / brand presentation | 36 / 44 | 600 |
-| `displaySmall` / workspace introduction | 32 / 40 | 600 |
-| `headlineLarge` / major page heading | 30 / 38 | 600 |
-| `headlineMedium` / page heading | 28 / 36 | 600 |
-| `headlineSmall` / compact page heading | 24 / 32 | 600 |
-| `titleLarge` / app bar, dialog title | 20 / 28 | 600 |
-| `titleMedium` / project/section title | 16 / 24 | 600 |
+| `displayLarge` / rare brand presentation | 36 / 44 | 600 |
+| `displayMedium` / brand presentation | 32 / 40 | 600 |
+| `displaySmall` / workspace introduction | 28 / 36 | 600 |
+| `headlineLarge` / major page heading | 26 / 34 | 600 |
+| `headlineMedium` / page heading | 24 / 32 | 600 |
+| `headlineSmall` / compact page heading | 21 / 28 | 600 |
+| `titleLarge` / app bar, dialog title | 20 / 26 | 600 |
+| `titleMedium` / project/section title | 16 / 22 | 600 |
 | `titleSmall` / property group | 14 / 20 | 600 |
 | `bodyLarge` / setting row, input | 16 / 24 | 400 |
-| `bodyMedium` / inspector label, description | 14 / 20 | 400 |
+| `bodyMedium` / inspector label, description | 14 / 21 | 400 |
 | `bodySmall` / helper text | 12 / 18 | 400 |
-| `labelLarge` / button, tab, chip | 14 / 20 | 500 |
+| `labelLarge` / button, tab, chip | 14 / 18 | 500 |
 | `labelMedium` / metadata, value | 12 / 16 | 500 |
 | `labelSmall` / secondary badge | 12 / 16 | 500 |
-| `valueTime` / Settings format example | 24 / 32 | 500 |
+| `valueTime` / Settings format example | 24 / 30 | 500 |
 
 No functional UI label below 12sp. Font-library specimens are content previews and may use the selected font; their names and selection indicators use UI typography. Use tabular digits for changing numeric values where supported, without imposing a monospace font on city/text artwork.
 
@@ -242,24 +322,24 @@ Compact screens use 16dp side gutters; wider screens use 24dp. Existing canvas m
 | Token | dp | Use |
 | --- | --- | --- |
 | `radiusNone` | 0 | Drawing primitives |
-| `radiusXs` | 4 | Tiny status/selection detail |
-| `radiusSm` | 8 | Canvas bounding decoration, small preview well |
-| `radiusMd` | 12 | Text fields, compact menus |
-| `radiusLg` | 16 | Buttons and chips with readable labels |
+| `radiusXs` | 6 | Tiny status/selection detail |
+| `radiusSm` | 10 | Canvas bounding decoration, small preview well |
+| `radiusMd` | 14 | Small controls and compact menus |
+| `radiusLg` | 18 | Text fields and compact controls |
 | `radiusXl` | 20 | Project cards, inspector sections |
 | `radius2xl` | 24 | Canvas frame target, large gallery card, dialog |
 | `radius3xl` | 28 | Modal sheet top corners |
 | `radiusFull` | 50% of shortest side | Circular icon button/swatch; capsule only for compact badges |
 
-Material shape bridge: extraSmall → 4, small → 8, medium → 12, large → 20, extraLarge → 28dp; component recipes explicitly select 16/24dp where required. Clip content to the inner container shape, never a user's authored widget to a newly invented decorative outline. The canvas frame's proposed radius is a future paint/layout review, not a Phase 1 change to its existing 18dp clip.
+Material shape bridge: extraSmall → 6, small → 10, medium → 14, large → 24, extraLarge → 28dp; component recipes explicitly select 18/20/24dp where required. Clip content to the inner container shape, never a user's authored widget to a newly invented decorative outline. The canvas frame's proposed radius is a future paint/layout review, not a Phase 2C change to its existing 18dp clip.
 
 ### 6.3 Border recipes
 
 - `borderDecorative = 1dp borderSubtle`: card edges, separators, preview wells.
 - `borderInteractive = 1dp borderControl`: resting outlined buttons and inputs.
-- `borderSelected = 2dp selectionOutline`: selected card/chip, preserving its total measured size.
-- `borderFocus = 2dp focusRing` with 2dp clear offset: keyboard/accessibility focus; reserve space to avoid clipping.
-- `borderError = 2dp destructive`: invalid field plus explanatory text/icon.
+- `borderSelected = 1.5dp selectionOutline`: selected card/chip, preserving its total measured size.
+- `borderFocus = 1.5dp focusRing` with 2dp clear offset: keyboard/accessibility focus; reserve space to avoid clipping.
+- `borderError = 1dp destructive`: invalid field plus explanatory text/icon.
 - Draw borders as overlays or reserved strokes so switching state never shifts content. Separate adjacent groups with space before adding more lines. Do not put a border and shadow around every nested row.
 
 ### 6.4 Elevation, shadow, and glow
@@ -269,13 +349,13 @@ These are visual reference recipes. Blur/spread values describe the target appea
 | Token | Elevation fallback | Reference offset Y / blur / spread (dp) | Shadow alpha Light / Dark | Use |
 | --- | --- | --- | --- | --- |
 | `depth0` | 0dp | 0 / 0 / 0 | 0 / 0 | Page, inset controls, inspector rows |
-| `depth1` | 1dp | 2 / 8 / 0 | .06 / .12 | Resting project card, canvas host |
-| `depth2` | 3dp | 4 / 16 / 0 | .08 / .16 | Floating toolbar, popup menu |
-| `depth3` | 6dp | 8 / 28 / 0 | .12 / .20 | Modal sheet or dialog |
+| `depth1` | 2dp | 2 / 10 / 0 | .08 / .18 | Resting project card, canvas host |
+| `depth2` | 4dp | 4 / 18 / 0 | .10 / .22 | Floating toolbar, popup menu |
+| `depth3` | 8dp | 10 / 30 / 0 | .12 / .20 | Modal sheet or dialog |
 
 All offsets X are 0. Use one shadow per floating group; nested children remain `depth0`. Dark mode relies primarily on surface value and edge contrast, not stronger colored shadows. Do not blur the app background under overlays.
 
-Soft Halo is decoration, not depth: outside an eligible selected card/control, use `accent` at **.12 light / .10 dark**, 6dp soft falloff, 0 offset and no more than 2dp spread. Pair it with the solid selected outline and check/state indicator. Omit the glow when clipped, costly, or visually busy; retain the outline. Keyboard focus uses the crisp ring. No pulsing, neon, multi-shadow stacks, or permanent glowing buttons. UI glow tokens must never replace `WidgetLayer.softness`, `glowOpacity`, or shadow fields.
+Soft Halo is decoration, not depth: outside an eligible selected card/control, use `accent` at **.20 light / .24 dark**, 12dp soft falloff, 0 offset and no more than 4dp spread. Pair it with the solid selected outline and bead/check state indicator. Omit the glow when clipped, costly, or visually busy; retain the outline. Keyboard focus uses the crisp ring. No pulsing, neon, multi-shadow stacks, or permanent glowing buttons. UI glow tokens must never replace `WidgetLayer.softness`, `glowOpacity`, or shadow fields.
 
 ## 7. State system: Soft Halo
 
@@ -285,9 +365,9 @@ Semantic aliases: `selectionOutline = accent`, `selectionFill = accentContainer`
 | --- | --- | --- |
 | Resting | Component's normal surface/content | No selection glow |
 | Hover | Current foreground at `.06` over current fill | Pointer feedback only; no geometry change |
-| Pressed | Current foreground at `.10` over current fill | Bounded state layer; instant input response |
-| Selected | `selectionFill` + 2dp `selectionOutline` + `selectionContent` | Check/radio indicator and selected semantics; optional halo on the outer card |
-| Focused | Separate 2dp focus ring at 2dp offset | Can coexist with selection; does not select or activate by itself |
+| Pressed | Current foreground at `.08` over current fill | Bounded state layer; instant input response |
+| Selected | `selectionFill` + 1.5dp `selectionOutline` + `selectionContent` | Bead/check indicator and selected semantics; optional halo on the outer card |
+| Focused | Separate 1.5dp focus ring at 2dp offset | Can coexist with selection; does not select or activate by itself |
 | Disabled | `textPrimary` at `.38`; filled control base `textPrimary` at `.08` over its parent | No click, ripple, hover or halo; expose disabled semantics and an accessible reason when useful |
 | Destructive resting | `destructive` icon/label on normal surface | Reserved for delete/cut/data-loss actions, never for ordinary deselection |
 | Destructive filled | `destructive` fill + `onDestructive` | Confirmation action after explicit consequence text |
@@ -309,9 +389,9 @@ Draw handles on small opaque `surfaceOverlay` discs with `accent` glyphs and a `
 
 Canvas grid is decorative: `onCanvasMat` at `.08`, 1 physical pixel. Active guides use opaque `guide`, 1dp plus a contrasting keyline when over artwork; guide labels use `onAccent` on opaque `accent` at `labelMedium`. Do not change guide detection, snap increments, haptics, or pointer math. A geometry-free color substitution is the only possible later foundation integration here.
 
-## 8. Icon system: Orbit Softline
+## 8. Icon system: Orbit Charm
 
-The custom outline family in `f9beacd` is the starting point for review; do not discard it or introduce a competing toolbar library.
+Orbit Charm is the reusable Best Mates 2.0 outline family. Phase 2C establishes it without replacing production call sites.
 
 | Token/rule | Definition |
 | --- | --- |
@@ -319,7 +399,7 @@ The custom outline family in `f9beacd` is the starting point for review; do not 
 | `iconSizeDefault` | 20dp rendered artwork, centered in a 48 × 48dp target |
 | `iconSizeProminent` | 24dp for navigation/standalone actions |
 | `iconSizeInline` | 16dp for non-interactive metadata; never a standalone touch box |
-| `iconStrokeDefault` | 1.9 design units in the 24-unit viewport: about 1.6dp at 20dp rendering, consistent with the current family |
+| `iconStrokeDefault` | 1.8 design units in the 24-unit viewport: about 1.7dp at 20dp rendering |
 | `iconStrokeInline` | Optically adjust to at least 1.4dp for 16dp artwork; do not shrink every detail proportionally |
 | Caps and joins | Round; no sharp miter spikes |
 | Live area | Normally 3–21 on each viewport axis, retaining 3-unit outside breathing space |
@@ -327,11 +407,11 @@ The custom outline family in `f9beacd` is the starting point for review; do not 
 | Optical compensation | Curves/diagonals may overshoot the normal live area by up to .5 design units; manually center visual mass within ±.5 unit |
 | Tint | `textSecondary` resting, semantic selected/destructive/disabled colors for states |
 
-Use clear silhouettes at actual 20dp size: copy uses two sheets; paste has a clipboard; cut uses scissors; pin/lock states remain distinct; autosave must communicate a toggle. A small plus badge uses the same stroke and reserved negative space. Avoid emoji, Unicode arrows, emoji-style settings/trash marks, heavy fills, decorative sparkles on ordinary commands, and per-icon background bubbles in a grouped toolbar.
+Use clear silhouettes at actual 20dp size: copy uses two sheets; paste has a clipboard; cut uses scissors; pin/lock states remain distinct. Each icon may carry at most one orbit dot, bead, short arc, petal, or sparkle. Rotate uses a partial orbit with a directional terminal instead of a generic circular arrow; Resize uses fine diagonal expansion geometry. Avoid emoji, Unicode arrows, heavy fills, multiple decorations on one command, and per-icon background bubbles in a grouped toolbar.
 
 Single-icon buttons need localized action descriptions and a tooltip/accessible label; toggle controls announce their state. Decorative icons beside a fully labeled control do not repeat the label to TalkBack. Mirror directional navigation in RTL; do not blindly mirror text glyphs, clocks, or artwork. Review undo/redo direction consistently with navigation conventions.
 
-Orbit Softline is the app command family. Sun/moon assets chosen as widget content remain in their current libraries and preserve their asset IDs and notices. The Mates Orbit brand mark is a separate identity asset, not an extra action icon.
+Orbit Charm is the app command family. Sun/moon assets chosen as widget content remain in their current libraries and preserve their asset IDs and notices. The Mates Orbit brand mark is a separate identity asset, not an extra action icon.
 
 ## 9. Motion system: Quiet Motion
 
@@ -372,9 +452,9 @@ Respect system animation duration settings, including disabled animations. A fut
 
 | Hierarchy | Recipe | Typical use |
 | --- | --- | --- |
-| Primary filled | `accent` / `onAccent`, radius16, depth0 | Create widget; Save; Apply in a draft picker |
-| Secondary tonal | `accentContainer` / `onAccentContainer`, radius16 | Important supporting action |
-| Secondary outlined | Transparent over parent, `borderControl`, `textPrimary`, radius16 | Add to Home; import; change city |
+| Primary filled | `accent` / `onAccent`, 54dp height, radius20, depth1 | Create widget; Save; Apply in a draft picker |
+| Secondary tonal | `secondaryContainer` / `onSecondaryContainer`, radius18 | Important supporting action |
+| Secondary outlined | `surfaceRaised`, `borderControl`, `textPrimary`, radius18 | Add to Home; import; change city |
 | Tertiary text | No persistent fill/border, `accent` | Cancel, Close, supporting navigation |
 | Icon action | 20dp art, 48dp target, bounded state layer, no elevation | Undo/redo and frequent toolbar commands |
 | Destructive | Quiet `destructive` text/icon; filled only for confirmation | Delete project, irreversible removal |
@@ -385,10 +465,10 @@ Workspace project deletion should eventually show a named/count-aware confirmati
 
 ### 10.2 Sliders, toggles, chips, and fields
 
-- **Slider:** label and current value with unit above the control; 4dp inactive track in `borderControl`, 4dp active track in `accent`, 20dp thumb in `accent` with contrasting edge; minimum 48dp interaction height. Use existing ranges/steps and callbacks. Continuous values remain continuous; ticks only where values have a meaningful discrete interpretation. Provide accessible range/value semantics and a later numeric entry alternative for precise values. Do not alter normalized model units.
-- **Toggle:** use one consistent Material switch recipe with 52 × 32dp visual track and at least 48dp target. On = `accent` track / `onAccent` thumb; off = `surfaceInset` track / `borderControl` border and thumb. Text says what is enabled. A simple setting makes the row one semantic toggle; a row with a separate Edit action must expose two distinct, non-overlapping controls.
-- **Chip:** radius16, 12dp horizontal padding, 8dp icon gap; visual body at least 36dp with a real 48dp interactive box. Selected = selected fill/outline plus check; unselected = `surfaceBase` + `borderControl`. Single-choice sets announce radio-like selection; multi-select sets announce independent choices. Wrap chips instead of truncating localized labels or relying on hidden horizontal choices.
-- **Text field:** `surfaceInset`, radius12, resting `borderControl`, focused `accent`, error `destructive`; persistent label, 16sp input, helper/error below. At least 56dp height; grows for multiline input. Hex input is an optional precise path in a color picker, not the primary color-selection interface.
+- **Slider:** label and compact value tag above the control; 3dp inactive track in `borderSubtle`, 3dp active track in `secondary`, 14dp `surfaceRaised` thumb with 1.5dp accent edge and diffuse focus halo; minimum 48dp interaction height. Use existing ranges/steps and callbacks. Continuous values remain continuous; ticks only where values have a meaningful discrete interpretation. Provide accessible range/value semantics and a later numeric entry alternative for precise values. Do not alter normalized model units.
+- **Toggle:** use the Best Mates accessory recipe: 44 × 24dp visual track inside at least a 48dp target, 18dp thumb, fine edge, `accentContainer` active track, neutral inset off track, and an optional tiny active halo. Text says what is enabled. A simple setting makes the row one semantic toggle; a row with a separate Edit action must expose two distinct, non-overlapping controls.
+- **Chip:** full radius, 12dp horizontal padding, 8dp icon gap; visual body is 34dp with a real 48dp interactive box. Selected = selected fill/1dp outline plus a bead/charm marker; unselected = `surfaceRaised` + `borderSubtle`. Single-choice sets announce radio-like selection; multi-select sets announce independent choices. Wrap chips instead of truncating localized labels or relying on hidden horizontal choices.
+- **Text field:** `surfaceInset`, radius18, resting 1dp hairline, focused 1.5dp `accent`, error 1dp `destructive`; persistent label, 16sp input, helper/error below. At least 56dp height; grows for multiline input. Hex input is an optional precise path in a color picker, not the primary color-selection interface.
 - **Color swatch:** 32dp visual disc inside a 48dp target, check in a contrasting opaque badge outside the sample, neutral checkerboard for alpha, label/alpha announced. App theme must not tint the sampled color.
 - **Status chip:** non-interactive if informational; do not style it like a clickable choice. Save state includes text/icon, not a color-only dot.
 
@@ -396,14 +476,14 @@ Workspace project deletion should eventually show a named/count-aware confirmati
 
 | Layer | Surface/shape/depth | Purpose and dismissal |
 | --- | --- | --- |
-| Inline field / preview | `surfaceInset`, radius12, depth0 | Current value and direct control |
-| Anchored menu | `surfaceOverlay`, radius12, depth2 | Short action list; dismiss outside/Back; restore trigger focus |
+| Inline field / preview | `surfaceInset`, radius18, depth0 | Current value and direct control |
+| Anchored menu | `surfaceOverlay`, radius14, depth2 | Short action list; dismiss outside/Back; restore trigger focus |
 | Library picker sheet | `surfaceOverlay`, radius28 top corners, depth3 | Shapes/fonts/sun/moon/cities/palettes; searchable or scrollable choices |
 | Full-height picker on constrained screens | Same surface, safe-area layout | Long results, keyboard, or large-font content; title and close remain reachable |
-| Dialog | `surfaceOverlay`, radius24, depth3, 24dp padding | Rename, concise confirmation, short focused decision |
-| Snackbar/status | `inverseSurface` / `inverseOnSurface`, radius12 | Result plus optional action; accessible announcement, no canvas obstruction |
+| Dialog | `surfaceOverlay`, radius28, depth3, 24dp padding | Rename, concise confirmation, short focused decision |
+| Snackbar/status | `inverseSurface` / `inverseOnSurface`, radius14 | Result plus optional action; accessible announcement, no canvas obstruction |
 
-Modal scrim: black at `.32` in light and `.48` in dark, applied once. Only one modal is active at a time. A subpicker replaces the parent modal content or navigates within its shell; Back returns to the previous picker level before closing. Keep an explicit Close/Cancel control, contain modal focus, and return focus to the opening field.
+Modal scrim: black at `.32` in light and `.52` in dark, applied once. Only one modal is active at a time. A subpicker replaces the parent modal content or navigates within its shell; Back returns to the previous picker level before closing. Keep an explicit Close/Cancel control, contain modal focus, and return focus to the opening field.
 
 Single-choice libraries may commit on selection and close; document this in their component contract and show the current item with a check. Multi-step editing such as color/opacity uses a local draft, Original/New samples, **Apply** and **Cancel**. Back/outside dismissal cancels the draft. Never mutate persisted values while presenting a Cancel action that cannot roll them back. Current `CityPartDialog` contains immediate edits; converting it to draft semantics is later behavioral work, not an extraction detail.
 
@@ -528,27 +608,18 @@ This contract intentionally requires a later settings integration/migration task
 
 ## 14. Proposed later files and components
 
-All Kotlin paths below are relative to `app/src/main/java/com/bestmates/worldclock/`. **None are created by Phase 1.** The table separates a small possible Phase 2 foundation from later screen/behavior work; it is not an instruction to begin any of it.
+All Kotlin paths below are relative to `app/src/main/java/com/bestmates/worldclock/`. Phase 2A–2C already provide `ui/theme/BestMatesPalette.kt`, `BestMatesColors.kt`, `BestMatesTypography.kt`, `BestMatesDimensions.kt`, `BestMatesElevation.kt`, `BestMatesStates.kt`, `BestMatesMotion.kt`, `BestMatesTheme.kt`, `ui/icons/OrbitIconMetrics.kt`, `ui/icons/OrbitIcons.kt`, and `ui/preview/BestMatesFoundationPreview.kt`. The debug source set also contains the isolated Design Lab Activity and manifest entry.
+
+The following files/components remain proposals for a separately approved production-integration phase. The list is not authorization to create them now.
 
 | Proposed file | Responsibility | Eligible stage after review |
 | --- | --- | --- |
-| `ui/theme/BestMatesPalette.kt` | Raw opaque swatches, four identity accent overrides, atmosphere pairs | Foundation scaffolding |
-| `ui/theme/BestMatesColors.kt` | Typed semantic colors; deterministic identity + brightness resolver; Material color bridge | Foundation scaffolding |
-| `ui/theme/BestMatesTypography.kt` | Complete UI type scale and font fallbacks | Foundation scaffolding |
-| `ui/theme/BestMatesDimensions.kt` | Spacing/radius scales, minimum targets, shared sizes, Material shapes bridge | Foundation scaffolding |
-| `ui/theme/BestMatesElevation.kt` | Depth, scrim and decorative halo recipes | Foundation scaffolding |
-| `ui/theme/BestMatesStates.kt` | State-layer alphas, precedence and selection/focus/disabled aliases | Foundation scaffolding |
-| `ui/theme/BestMatesMotion.kt` | Durations, easing, reduced-motion resolution; no editor gesture code | Foundation scaffolding |
-| `ui/theme/BestMatesTheme.kt` | Composition locals/accessors, Material bridge, root theme resolution | Foundation scaffolding; root adoption only if separately scoped |
-| `ui/icons/OrbitIconMetrics.kt` | Viewport, stroke, optical sizes and minimum icon target | Foundation scaffolding |
-| `ui/icons/OrbitIcons.kt` | Extracted, reviewed command artwork from `EditorActionButton`, retaining action meaning | Shared primitive work |
 | `ui/components/OrbitSurface.kt` | Named flat/card/overlay surface recipes | Shared primitive work |
 | `ui/components/OrbitButton.kt` | Primary/tonal/outlined/text/destructive and icon button recipes | Shared primitive work |
 | `ui/components/OrbitSelection.kt` | State-only outline/check/halo decorators with no hit-test or gesture ownership | Shared primitive work |
 | `ui/components/OrbitControls.kt` | Labeled slider, switch row, choice chip, swatch and field recipes | Shared primitive work |
 | `ui/components/OrbitOverlay.kt` | Common dialog/sheet/menu chrome and accessibility structure; caller owns draft/apply behavior | Shared primitive work |
 | `ui/components/OrbitThemePreview.kt` | Token-driven miniature UI card for gallery and design review | Isolated component review |
-| `ui/preview/BestMatesFoundationPreview.kt` | Debug/design-preview gallery of tokens and all control states; no production navigation | First visual validation surface |
 | `ui/editor/InspectorSection.kt` | Surface/heading/spacing wrapper for existing inspector content | Later editor paint integration |
 | `ui/editor/CanvasChrome.kt` | Mat/grid/outline paint tokens only; preserve existing geometry and callbacks | Later guarded integration |
 | `ui/workspace/ProjectCard.kt` | Workspace card and selection presentation | Later workspace integration |
@@ -559,32 +630,30 @@ All Kotlin paths below are relative to `app/src/main/java/com/bestmates/worldclo
 
 Avoid an all-purpose constants file and a mechanical extraction of the entire activity. Existing widget renderers must not depend on Compose composition locals. Do not add a design-system module, network dependency, font pack, icon dependency, or new navigation framework merely to host these tokens. The current single app module is sufficient.
 
-Recommended **Phase 2 review scope**, only after maintainer approval: token types/resolution plus an isolated foundation preview using the existing Compose version. Review palettes and component states there before adopting them screen by screen. Settings relocation, inheritance migration, canvas target resizing, and whole-screen redesigns need explicit later scopes. TASK-007 remains deferred through all of these proposals.
+Recommended next review is physical-device inspection of every identity × brightness variant in the isolated Lab. Shared production components and screen-by-screen adoption begin only after that visual approval. Settings relocation, inheritance migration, canvas target resizing, and whole-screen redesigns need explicit later scopes. TASK-007 remains deferred through all of these proposals.
 
 ## 15. Verification and review gate
 
-### Phase 1 verification
+### Phase 2C verification
 
-- Source/history audit completed at `f9beacd`; current implementation and target rules are distinguished throughout the spec.
-- Required foundation areas are defined with explicit values and component behavior contracts.
-- Static sRGB contrast calculation uses linearized channel luminance (`0.2126R + 0.7152G + 0.0722B`) and `(lighter + 0.05) / (darker + 0.05)`. Results below cover the specified opaque token pairs, not screenshots or custom artwork.
-- No Kotlin, Android XML, Gradle, model, renderer, interaction code, or reference assets changed. No build or device verification is claimed for Phase 1; `assembleDebug` is not rerun for documentation-only changes.
-- [TASKS.md](../TASKS.md) and [CURRENT_SESSION.md](../CURRENT_SESSION.md) record the review gate. TASK-004/005 remain awaiting visual review; TASK-007 remains deferred.
+- Source, history, task state, the Phase 2A token kernel, Phase 2B Lab, and the debug harness were re-audited before refinement. Phase 2C changes stay inside the documented foundation and debug-preview boundary.
+- Static sRGB contrast uses linearized channel luminance (`0.2126R + 0.7152G + 0.0722B`) and `(lighter + 0.05) / (darker + 0.05)`. The check covers 228 opaque pairs: three text roles and `borderControl` over all six resolved surfaces, primary and selected-container labels, and all light/dark supporting semantic pairs.
+- Every tested active text pair is at least 4.5:1, every tested control edge is at least 3:1, and every filled semantic foreground/background pair is at least 4.5:1. The Cloud Light functional accent was deepened from the visual anchor specifically to clear the primary-button threshold.
+- The Design Lab resolves all eight identity × brightness combinations locally, shows the complete Orbit Charm family, and keeps the future canvas study separate from production `LayoutCanvas`.
+- The debug Activity alone controls its status/navigation bar colors and icon brightness. Physical rendering and ergonomics remain the review gate.
 
-Static palette check: **744 comparisons passed** across eight resolved theme/brightness variants. This includes active text/status colors on the six working surfaces, control outlines, on-color/container pairs, primary and semantic filled-button pressed states, neutral text/action pressed states, and canvas mat pairs. Pressed samples composite the specified `.10` foreground layer in sRGB and round to 8-bit channels before measuring.
+| Theme / mode | Minimum UI text on six working surfaces | Minimum control edge | Primary label | Selected-container label |
+| --- | --- | --- | --- | --- |
+| Cloud / Light | 4.56:1 | 3.22:1 | 4.72:1 | 8.08:1 |
+| Cloud / Dark | 4.77:1 | 3.13:1 | 8.07:1 | 8.96:1 |
+| Dream / Light | 4.55:1 | 3.34:1 | 4.76:1 | 7.77:1 |
+| Dream / Dark | 4.58:1 | 3.13:1 | 7.11:1 | 8.51:1 |
+| Midnight / Light | 4.52:1 | 3.37:1 | 5.76:1 | 7.99:1 |
+| Midnight / Dark | 4.74:1 | 3.14:1 | 8.08:1 | 8.63:1 |
+| Mono / Light | 4.60:1 | 3.20:1 | 5.23:1 | 8.02:1 |
+| Mono / Dark | 4.65:1 | 3.04:1 | 7.66:1 | 8.99:1 |
 
-| Theme / mode | Minimum UI text on working surfaces | Minimum control outline | Primary label | Primary label while pressed | Selected-container label |
-| --- | --- | --- | --- | --- | --- |
-| Cloud / Light | 4.65:1 | 3.38:1 | 6.05:1 | 4.84:1 | 8.64:1 |
-| Cloud / Dark | 5.58:1 | 3.52:1 | 7.58:1 | 6.45:1 | 8.43:1 |
-| Dream / Light | 4.65:1 | 3.38:1 | 6.16:1 | 4.91:1 | 8.07:1 |
-| Dream / Dark | 5.58:1 | 3.52:1 | 7.10:1 | 6.08:1 | 8.25:1 |
-| Midnight / Light | 4.65:1 | 3.38:1 | 6.32:1 | 4.99:1 | 7.99:1 |
-| Midnight / Dark | 5.58:1 | 3.52:1 | 6.94:1 | 5.98:1 | 8.35:1 |
-| Mono / Light | 4.65:1 | 3.38:1 | 6.10:1 | 4.82:1 | 8.18:1 |
-| Mono / Dark | 5.58:1 | 3.52:1 | 7.66:1 | 6.52:1 | 9.53:1 |
-
-These are calculated reference-color results, not a rendered-state audit. Gradient compositing, anti-aliased strokes, keyboard focus, disabled presentation, arbitrary widget artwork, actual touch regions, and device rendering still require visual/accessibility verification during their approved implementation scope.
+These calculations do not replace screenshot review. Atmosphere compositing, anti-aliased strokes, keyboard focus, disabled presentation, authored widget colors, real semantics/hit regions, and device rendering still require their appropriate physical or implementation review.
 
 ### Acceptance criteria for later implementation
 
@@ -600,4 +669,4 @@ These are calculated reference-color results, not a rendered-state audit. Gradie
 | Existing regression | Known post-rotation drag issue remains documented, not marked fixed; pin/add, empty projects and stored migrations still work |
 | Code-task checks | Scoped diff, `assembleDebug`, task/session updates, focused commit per AI_RULES; appropriate targeted validation for the actual scope |
 
-**Stop here for maintainer review.** The Phase 1 document is ready to assess as a design foundation, not approval to implement Phase 2. Review the palette/theme variants, typography density, Soft Halo/icon/motion rules, Settings ownership and compatibility policy, and the proposed first implementation scope before further work.
+**Stop here for maintainer review.** Inspect all eight Lab variants on a physical device before approving production migration. Review surface separation, typography density, Cute Atelier controls, Soft Halo, Orbit Charm clarity, the neutral canvas study, and system-bar contrast. Do not begin Phase 3 from this document alone.

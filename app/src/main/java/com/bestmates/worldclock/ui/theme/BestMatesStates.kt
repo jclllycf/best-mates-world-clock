@@ -62,13 +62,13 @@ data class BestMatesStateTokens(
 
 internal fun resolveBestMatesStates(colors: BestMatesColors) = BestMatesStateTokens(
     hoverAlpha = 0.06f,
-    pressedAlpha = 0.10f,
+    pressedAlpha = 0.08f,
     disabledContentAlpha = 0.38f,
     disabledContainerAlpha = 0.08f,
-    selectedOutlineWidth = 2.dp,
-    focusRingWidth = 2.dp,
+    selectedOutlineWidth = 1.5.dp,
+    focusRingWidth = 1.5.dp,
     focusRingGap = 2.dp,
-    errorOutlineWidth = 2.dp,
+    errorOutlineWidth = 1.dp,
     colors = BestMatesStateColorAliases(
         selectionOutline = colors.selectionOutline,
         selectionFill = colors.selectionFill,
