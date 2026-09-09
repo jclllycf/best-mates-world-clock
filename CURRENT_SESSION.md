@@ -1,18 +1,20 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2C.3 Soft Crystal Atelier interaction foundation physically verified and visually frozen
+Codex — Phase 2D-0 Visual Asset Bible complete; Phase 2C foundation remains visually frozen
 
 ## Current task
-Best Mates 2.0 — Phase 2C.3: Interaction Surface Closure & Visual Hygiene. The isolated Design Lab implementation and physical-device validation are complete. Stop for maintainer review; do not begin Phase 2D or migrate production UI.
+Best Mates 2.0 — Phase 2D-0: Visual Asset Bible. The authoritative documentation is complete. Stop for maintainer review; do not begin Phase 2D-0.5 or create production assets automatically.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2C.3's focused interaction-foundation commit is the current handoff HEAD after this session. Its implementation baseline was `ed86e9c`. Application production behavior remains based on `f9beacd`; later commits add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the approved Cute Atelier foundation, and isolated visual refinements.
+Phase 2D-0 starts from the frozen Phase 2C.3 baseline `810ada4518be5fef0d82303d91c9e8166278c072`. The Phase 2D-0 commit is documentation-only. Application production behavior remains based on `f9beacd`; later commits through `810ada4` add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the approved Cute Atelier foundation, and isolated visual refinements.
 
 ## Task status
+BM2-P2D-0: COMPLETE / AWAITING_MAINTAINER_REVIEW
+
 BM2-P2C.3: IMPLEMENTED / PHYSICALLY_VERIFIED / VISUALLY_FROZEN
 
 BM2-P2C.2: IMPLEMENTED / SUPERSEDED_BY_BM2-P2C.3
@@ -30,6 +32,17 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2D-0 result (2026-09-09)
+
+- Created `docs/BEST_MATES_VISUAL_ASSET_BIBLE.md` as the authoritative Phase 2D asset specification while retaining `docs/BEST_MATES_UI_2_SPEC.md` as the source of truth for frozen Phase 2C materials, interaction states, motion, accessibility, and app composition.
+- Audited the actual foundation, provisional Orbit vectors, 12 persisted shapes and renderer-backed previews, 45 Sun/47 Moon local SVG entries and recoloring renderer, system-alias font picker, local font/icon import shell, and persistence keys before writing the specification.
+- Defined the common Cute Atelier + Soft Crystal Atelier + Cozy Orbit DNA as “soft collectible objects for a personal creative atelier,” with calm continuous curves, controlled negative space, optical correction, coherent weight, and strict decorative-detail limits.
+- Defined Orbit Charm 2.0 construction and semantic rules; four Shape Atelier families and preview standards; three paired Celestial Atelier families and small-size geometry checks; and Type Wardrobe categories, specimens, fallback, licensing, and eventual bundle-size criteria.
+- Defined unified asset-picker hierarchy through the frozen Pearl Glass/Milk Crystal/Jelly Crystal/Soft Halo system, plus external-reference provenance, deterministic offline delivery, and stable-ID compatibility requirements.
+- Defined Phase 2D-0.5 as a gated Golden Set: six Orbit commands, three paired Sun/Moon families, Heart/Cloud/Soft Arch/one Stationery shape, and a Type Wardrobe presentation master using existing fonts only.
+- Production color-picker behavior remains entirely outside Phase 2D. No application source, production UI, renderer, persistence, widget, gesture, TASK-007, or reference-folder file changed.
+- Phase 2D-0.5 remains unstarted pending maintainer review.
 
 ## Best Mates 2.0 — Phase 2C.3 result (2026-09-09)
 
@@ -172,11 +185,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review the visually frozen Phase 2C.3 Soft Crystal Atelier foundation in the installed debug Design Lab; the device command remains `adb shell am start -n com.bestmates.worldclock/com.bestmates.worldclock.debug.BestMatesDesignLabActivity`.
-2. Do not begin Phase 2D, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
-3. Retain TASK-004/005 visual review, TASK-009, and TASK-003 in the backlog.
+1. Review `docs/BEST_MATES_VISUAL_ASSET_BIBLE.md` as the Phase 2D source of truth.
+2. Do not begin Phase 2D-0.5, mass asset creation, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
+3. If approved, Phase 2D-0.5 produces only the documented Golden Orbit/Celestial/Shape Set and Type Wardrobe presentation master before any family expansion.
 
-The current goal is maintainer review of the isolated, visually frozen Soft Crystal interaction foundation. Production behavior remains unchanged.
+The current goal is maintainer review of the Visual Asset Bible. The Soft Crystal interaction foundation remains frozen and production behavior remains unchanged.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -184,7 +197,7 @@ The current goal is maintainer review of the isolated, visually frozen Soft Crys
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-PASS — `assembleDebug --warning-mode all` verified after the Phase 2C.3 interaction-foundation closure with no new warnings. The debug APK installed and launched successfully on attached device PJF110; all eight variants rendered, Cloud Light/Dream Light/Midnight Dark received representative full review, and safe status/navigation insets were confirmed through top, middle, and bottom scroll checkpoints. Only the debug Activity source changed outside the foundation source/docs; no production manifest, screen, behavior, or data contract changed.
+NOT RUN for Phase 2D-0 because the task changed documentation only. The last application verification remains the Phase 2C.3 `assembleDebug --warning-mode all` pass and successful PJF110 Design Lab review at baseline `810ada4`.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

@@ -2,14 +2,33 @@
 
 ## Current development priority (2026-09-09)
 
-1. Best Mates 2.0 — Phase 2C.3: Interaction Surface Closure & Visual Hygiene — implemented, physically verified, and visually frozen unless a serious regression is found.
-2. Stop for maintainer review. Do not begin Phase 2D, create shared production components, or migrate production screens until explicitly authorized.
+1. Best Mates 2.0 — Phase 2D-0: Visual Asset Bible — complete as the authoritative asset-language and compatibility specification.
+2. Stop for maintainer review. Do not begin Phase 2D-0.5, create production assets, migrate production screens, or resume TASK-007 until explicitly authorized.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
+
+Phase 2D asset language: [docs/BEST_MATES_VISUAL_ASSET_BIBLE.md](docs/BEST_MATES_VISUAL_ASSET_BIBLE.md).
 
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+
+### BM2-P2D-0 — Visual Asset Bible
+Status: COMPLETE / AWAITING_MAINTAINER_REVIEW
+Scope: documentation-only definition of the Phase 2D asset language and staged quality gates
+
+Completed:
+- Defined the shared “soft collectible objects for a personal creative atelier” DNA across Orbit Charm 2.0, Shape Atelier, Celestial Atelier, Type Wardrobe, previews, and picker presentation.
+- Defined measurable Orbit construction, decoration limits, canonical Confirm/Undo/Redo/Font/Pin/Rotate/Resize rules, and 16/20/24dp review criteria.
+- Defined Studio Card, Organic, Charm, and Paper/Stationery shape families; shape-specific quality bars; canonical-renderer preview rules; and intrinsic-proportion presentation without changing canvas transforms.
+- Defined paired Minimal Celestial, Soft Halo, and Dreamy Charm Sun/Moon families, geometry guidance, 20/28/40dp checks, recoloring, and offline requirements.
+- Defined Type Wardrobe categories, a 10–16 family eventual target subject to size/licensing, clock-specific specimens, multilingual/fallback review, and Milk Crystal presentation.
+- Defined one unified asset-picker hierarchy using the frozen Pearl Glass, Milk Crystal, Jelly Crystal, Soft Halo, and semantic selection contracts.
+- Defined external-reference and provenance requirements, strict saved-ID compatibility, and the Phase 2D-0.5 Golden Orbit/Celestial/Shape/Type gate.
+- Confirmed the production color picker and all production UI, interaction, persistence, widget, TASK-007, and reference-folder work remain outside Phase 2D-0.
+
+Stop condition:
+- Phase 2D-0.5 is not started. Await review of the Bible before producing Golden Set assets.
 
 ### BM2-P2C.3 — Interaction Surface Closure & Visual Hygiene
 Status: IMPLEMENTED / PHYSICALLY_VERIFIED / VISUALLY_FROZEN

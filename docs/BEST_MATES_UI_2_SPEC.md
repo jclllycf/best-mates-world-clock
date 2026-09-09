@@ -6,6 +6,8 @@ Implementation baseline: `ed86e9c` (`feat(ui): finalize Soft Crystal Atelier fou
 
 Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, and its debug-only device host. Production Workspace, Settings, Editor, app-root theme, persistence, widgets, rendering, gestures, canvas behavior, and TASK-007 remain unchanged.
 
+Phase 2D visual assets are governed by [BEST_MATES_VISUAL_ASSET_BIBLE.md](BEST_MATES_VISUAL_ASSET_BIBLE.md). That Bible defines Orbit Charm 2.0, Shape Atelier, Celestial Atelier, Type Wardrobe, preview, picker, licensing, and stable-ID rules; it does not supersede this document's frozen Phase 2C materials, motion, states, accessibility, or app-composition contracts.
+
 ## 0. Phase 2C authoritative refinement
 
 This section supersedes earlier Phase 1 numeric palette, typography, radius, depth, state, icon, and component-recipe values wherever they conflict. Sections 1–15 retain the foundation rationale, ownership rules, accessibility contract, and production boundaries. The Phase 1 contrast table in §15 is historical evidence for the former palette and must not be used to approve Phase 2C colors.
