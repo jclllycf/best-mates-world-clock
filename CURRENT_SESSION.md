@@ -1,19 +1,21 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2D-0 Visual Asset Bible complete; Phase 2C foundation remains visually frozen
+Codex — Phase 2D-0.5 Golden Visual Asset Set implemented; Phase 2C foundation remains visually frozen
 
 ## Current task
-Best Mates 2.0 — Phase 2D-0: Visual Asset Bible. The authoritative documentation is complete. Stop for maintainer review; do not begin Phase 2D-0.5 or create production assets automatically.
+Best Mates 2.0 — Phase 2D-0.5: Golden Visual Asset Set. Candidate masters and the isolated Design Lab gallery are implemented. Stop for maintainer visual review; do not begin Phase 2D-1, production adoption, or mass asset expansion automatically.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2D-0 starts from the frozen Phase 2C.3 baseline `810ada4518be5fef0d82303d91c9e8166278c072`. The Phase 2D-0 commit is documentation-only. Application production behavior remains based on `f9beacd`; later commits through `810ada4` add documentation, audit material, the isolated kernel, Design Lab, debug-only entry point, the approved Cute Atelier foundation, and isolated visual refinements.
+Phase 2D-0.5 starts from the Phase 2D-0 documentation commit `b16193512e62b2c3eb5778953dcf4301085bae5d`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Application production behavior remains based on `f9beacd`; subsequent work adds documentation, audit material, the isolated kernel, Design Lab/debug host, frozen Cute Atelier foundation, and isolated visual candidates.
 
 ## Task status
-BM2-P2D-0: COMPLETE / AWAITING_MAINTAINER_REVIEW
+BM2-P2D-0.5: IMPLEMENTED / AWAITING_MAINTAINER_VISUAL_REVIEW
+
+BM2-P2D-0: COMPLETE / APPROVED_AS_PHASE_2D_SOURCE_OF_TRUTH
 
 BM2-P2C.3: IMPLEMENTED / PHYSICALLY_VERIFIED / VISUALLY_FROZEN
 
@@ -32,6 +34,20 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2D-0.5 result (2026-09-09)
+
+- Started from clean HEAD `b16193512e62b2c3eb5778953dcf4301085bae5d` after rereading the repository rules, handoff, task/session state, UI specification, Visual Asset Bible, recent history, foundation, current preview system, and production shape/celestial/font/picker implementations.
+- Added a preview-only Golden catalog with six original Orbit Charm vectors: Settings uses soft adjustment rows; Undo/Redo are true visual relatives with separate heads and open curved bodies; Font uses a constructed type-specimen card rather than raw `Aa`; Pin represents Fix Position without inventing Lock; Rotate uses a clear partial orbit and separate terminal.
+- Added three original, recolorable Celestial pairs: Minimal Celestial, Soft Halo, and Dreamy Charm. They share pair-specific stroke/motif language and are shown together at 20dp, 28dp, and 40dp.
+- Added four original fillable shapes: Heart, Cloud, Soft Arch, and Atelier Ticket. One path drives both the 42dp-high thumbnail and 88dp-high larger canonical preview through aspect-preserving fitting; no production transform or renderer changed.
+- Added Clean Sans, Editorial Serif, and Friendly Display presentation cards using existing device/system fonts only, with `Tokyo`, `18:40`, `Tue, Sep 8`, and `AM  PM` specimens.
+- Added an isolated Golden Asset Gallery chapter to the existing debug Design Lab. It reuses the frozen Milk Crystal/Pearl Glass/Soft Halo/selection system and automatically participates in all eight existing identity × brightness variants.
+- Added a lightweight integrity path that enumerates 19 candidates and verifies exact counts, unique IDs, positive vector viewports/sizes, path construction, non-empty bounds, and in-bounds geometry before the Gallery renders the same catalog.
+- Recorded reference/license provenance in the Visual Asset Bible. Tabler, Lucide, Phosphor, and Meteocons were used only to study general proportion, stroke rhythm, consistency, and paired-family balance. Every Golden path is original local Kotlin code; no remote runtime dependency or third-party asset was bundled.
+- All candidate IDs remain under `golden.*` in `ui/preview`. Production `OrbitIcons`, `WidgetShape` names, Sun/Moon enum IDs/SVGs, font strings, pickers, color behavior, persistence, widget rendering/providers, screens, canvas, gestures, and TASK-007 remain unchanged. Reference folders `1/` and `2/` were not touched.
+- `assembleDebug --warning-mode all` passes. A separate ignored raster review checked Orbit at 16/20/24, Celestial at 20/28/40, shapes at two preview scales, and all Type cards. No Android device was attached, so installation, Cloud Light/Dream Light/Midnight Dark physical inspection, and all-eight physical review remain pending.
+- Stop at the Golden Set review gate. Phase 2D-1 and production adoption are not started.
 
 ## Best Mates 2.0 — Phase 2D-0 result (2026-09-09)
 

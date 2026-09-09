@@ -396,3 +396,32 @@ Phase 2D does not authorize changes to production Workspace, Settings, Editor, `
 - [ ] Has verified provenance and license when directly included or adapted.
 - [ ] Preserves stable IDs or includes an approved alias/migration.
 - [ ] Does not change production interaction, rendering contracts, or color-picker behavior outside its approved phase.
+
+## 16. Phase 2D-0.5 Golden Set implementation record
+
+Phase 2D-0.5 implements an isolated candidate catalog and Golden Asset Gallery under `ui/preview`. It does not replace the provisional production-facing `OrbitIcons`, existing `WidgetShape` values, Sun/Moon enums or SVG files, font strings, renderer paths, or picker behavior. Every candidate ID begins with `golden.` and exists only in the Design Lab; these labels are review handles, not saved-data identifiers.
+
+### Golden definitions
+
+| Area | Candidate masters | Defining decision |
+| --- | --- | --- |
+| Orbit Charm | Settings, Undo, Redo, Font, Pin, Rotate | Original 24×24 vectors with 1.8u rounded strokes; recognition comes from soft proportion, clear negative space, and calm curve tension rather than appended ornaments. |
+| Celestial Atelier | Minimal Celestial Sun/Moon, Soft Halo Sun/Moon, Dreamy Charm Sun/Moon | Three deliberately paired, tintable families: quiet universal outline, controlled shared halo language, and one restrained shared sparkle respectively. |
+| Shape Atelier | Heart, Cloud, Soft Arch, Atelier Ticket | Four original fillable paths with explicit intrinsic ratios. Heart uses mild optical asymmetry; Cloud uses a low calm lobe rhythm; Soft Arch joins a tangent crown to stationery walls; Ticket uses soft collectible-paper side notches. |
+| Type Wardrobe | Clean Sans, Editorial Serif, Friendly Display | Three Milk Crystal presentation cards using existing device families only. The specimen is `Tokyo`, `18:40`, `Tue, Sep 8`, and `AM  PM`; the family label stays in normal UI typography. |
+
+Settings uses three soft adjustment rows instead of an industrial gear. Undo and Redo are manually mirrored relatives whose arrowheads are separate from their open motion bodies. Font is a miniature type-specimen card with one constructed `A` and a curved specimen baseline, avoiding the repeatedly awkward raw `Aa` pairing. Pin depicts the real Fix Position semantics as a balanced pushpin and does not introduce Lock. Rotate uses a partial orbital arc and a separate directional terminal instead of a full-circle stock arrow.
+
+Orbit appears at actual 16dp, 20dp, and 24dp artwork sizes in the Gallery while future controls retain their independent 48dp target. Celestial pairs appear together at 20dp, 28dp, and 40dp; the 40dp rendering is the representative widget-use check. Shape cards show a 42dp-high picker thumbnail and an 88dp-high larger canonical preview through the same aspect-preserving path fitter. The Gallery reuses the frozen Milk Crystal shelves, Pearl Glass compact labels, semantic selection check, and optional secondary Soft Halo in all eight local identity × brightness combinations.
+
+The lightweight debug integrity check enumerates 6 Orbit vectors, 3 Sun vectors, 3 Moon vectors, 4 Shape paths, and 3 Type cards: 19 candidates total. It rejects incorrect category counts, duplicate candidate IDs, invalid vector viewports/default sizes, path-construction failures, empty bounds, and paths leaving the supplied canvas. Gallery composition renders the enumerated candidates directly, so there is no parallel resource list to drift and no remote dependency to resolve.
+
+### References, licensing, and provenance
+
+The proportion and category study used the official [Tabler icon design guide](https://tabler.io/icons/icon-design-guide) and MIT-licensed [Tabler Icons](https://github.com/tabler/tabler-icons), the ISC-licensed [Lucide](https://lucide.dev/) system, the MIT-licensed multi-weight [Phosphor core](https://github.com/phosphor-icons/core), and the MIT-licensed paired-weather [Meteocons](https://github.com/basmilius/meteocons). These sources informed general questions such as 24×24 proportion, rounded stroke rhythm, negative space, family consistency, and paired celestial weight. No source path, glyph outline, SVG, font, or binary is copied, adapted, bundled, or redistributed. All Golden vector and shape geometry is original Kotlin code, so Phase 2D-0.5 adds no third-party asset notice or runtime license dependency.
+
+Rejected concepts are recorded so they are not multiplied later: a literal cramped `Aa`; an industrial gear; full-circle or hook-like Rotate; fused Undo/Redo heads; a target-like four-mark Halo Sun; an emoji-symmetric Heart; a high-bump cartoon Cloud; harsh Ticket notches; unrelated Sun/Moon drawings; and decorative dots or sparkles on ordinary utility commands.
+
+### Freeze and next gate
+
+The Golden Set is implemented for visual review and remains a candidate set. Production stable IDs and output stay unchanged; saved projects, imported resources, color selection, widget rendering, canvas transforms, and TASK-007 are unaffected. Phase 2D-1, family expansion, external font bundling, and production picker migration require a separate approval after this gate.

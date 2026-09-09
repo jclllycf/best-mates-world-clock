@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-09)
 
-1. Best Mates 2.0 — Phase 2D-0: Visual Asset Bible — complete as the authoritative asset-language and compatibility specification.
-2. Stop for maintainer review. Do not begin Phase 2D-0.5, create production assets, migrate production screens, or resume TASK-007 until explicitly authorized.
+1. Best Mates 2.0 — Phase 2D-0.5: Golden Visual Asset Set — implemented in the isolated Design Lab and awaiting maintainer visual review.
+2. Stop at the Golden Set gate. Do not begin Phase 2D-1, mass-expand any family, adopt candidates in production, migrate production screens, or resume TASK-007 until explicitly authorized.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -13,8 +13,26 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2D-0.5 — Golden Visual Asset Set
+Status: IMPLEMENTED / AWAITING_MAINTAINER_VISUAL_REVIEW
+Scope: isolated Golden masters and Design Lab presentation only; no production asset adoption
+
+Completed:
+- Added exactly six original 24×24 Golden Orbit candidates: soft-adjustment Settings; mirrored, separated-head Undo/Redo; intentional specimen-card Font; semantically correct Pin/Fix Position; and partial-orbit Rotate.
+- Added exactly three original, tintable Sun/Moon pairs: Minimal Celestial, Soft Halo, and Dreamy Charm. Each pair shares its declared construction and appears together at 20dp, 28dp, and 40dp.
+- Added exactly four original fillable Shape candidates: a mild-asymmetry Heart, low-lobe Cloud, tangent Soft Arch, and soft-notch Atelier Ticket. Their candidate preview retains intrinsic aspect ratio at thumbnail and larger size.
+- Added three Type Wardrobe presentation cards using existing local/system families only: Clean Sans, Editorial Serif, and Friendly Display. No font file or dependency was added.
+- Added a Design Lab Golden Asset Gallery using the frozen Milk Crystal, Pearl Glass, semantic selection, and Soft Halo presentation rules across the existing eight local theme variants.
+- Added a lightweight candidate-catalog integrity report covering 19 entries: exact category counts, unique IDs, valid vector dimensions, successful shape-path construction, non-empty/in-bounds geometry, and direct gallery enumeration.
+- Recorded the external proportion/style references and license status. Golden paths are original Kotlin geometry; no third-party path or binary was copied, adapted, or bundled.
+- Kept every review handle under `golden.*`. Existing production shape names, Sun/Moon enum IDs/assets, font strings, `OrbitIcons`, persistence, renderers, widgets, color picker, app screens, transforms, TASK-007, and reference folders remain unchanged.
+- `assembleDebug --warning-mode all` passes. No Android device was attached for this task, so physical-device review remains pending.
+
+Stop condition:
+- Review the Golden Asset Gallery before authorizing Phase 2D-1 or any production adoption/mass expansion.
+
 ### BM2-P2D-0 — Visual Asset Bible
-Status: COMPLETE / AWAITING_MAINTAINER_REVIEW
+Status: COMPLETE / APPROVED_AS_PHASE_2D_SOURCE_OF_TRUTH
 Scope: documentation-only definition of the Phase 2D asset language and staged quality gates
 
 Completed:

@@ -649,6 +649,14 @@ This contract intentionally requires a later settings integration/migration task
 - Honor system motion controls and the proposed reduction setting. Haptic feedback is supplemental and never the only signal; changing existing snap haptics is outside this phase.
 - Status and errors remain readable long enough for assistive use; important failures need persistent text/retry rather than a transient toast. Touch feedback never depends on a glow or animation being enabled.
 
+### 13.1 Phase 2D-0.5 Golden presentation boundary
+
+The Golden Asset Gallery is an isolated Design Lab chapter that presents the Phase 2D-0.5 candidate masters inside the frozen Phase 2C environment. It reuses Milk Crystal shelves/cards, Pearl Glass compact labels, Soft Halo as secondary selection decoration, and the existing semantic check rule. It adds no new material recipe, interaction primitive, or production navigation path.
+
+The Gallery shows six Orbit Charm candidates at actual 16/20/24dp artwork sizes, three paired Celestial families at 20/28/40dp, four aspect-preserving Shape candidates at thumbnail and larger preview sizes, and three Type Wardrobe presentation cards using existing device fonts. Candidate IDs use the isolated `golden.*` namespace and are never written to production models or storage. The production color picker, Workspace, Settings, Editor, canvas, gestures, renderer, provider, and saved-data contracts remain unchanged.
+
+This candidate gallery is the Phase 2D-0.5 review artifact. It does not authorize Phase 2D-1 family expansion or production adoption.
+
 ## 14. Proposed later files and components
 
 All Kotlin paths below are relative to `app/src/main/java/com/bestmates/worldclock/`. Phase 2A–2C already provide `ui/theme/BestMatesPalette.kt`, `BestMatesColors.kt`, `BestMatesTypography.kt`, `BestMatesDimensions.kt`, `BestMatesElevation.kt`, `BestMatesStates.kt`, `BestMatesMotion.kt`, `BestMatesTheme.kt`, `ui/icons/OrbitIconMetrics.kt`, `ui/icons/OrbitIcons.kt`, and `ui/preview/BestMatesFoundationPreview.kt`. The debug source set also contains the isolated Design Lab Activity and manifest entry.

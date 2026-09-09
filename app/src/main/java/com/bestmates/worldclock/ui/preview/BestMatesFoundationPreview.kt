@@ -156,6 +156,9 @@ private fun CuteAtelierLabPage(
                 onBrightnessSelected = onBrightnessSelected,
             )
 
+            ChapterLabel("GOLDEN ASSET GALLERY", "Phase 2D-0.5 · candidate masters · no production IDs")
+            BestMatesGoldenAssetGallery()
+
             ChapterLabel("EXPERIENCE SHOWCASE", "Cute atmosphere · professional skeleton")
             ShowcaseSection("A warm welcome", "Personal, polished, and ready to make something.") {
                 WelcomeSample(colors, dimensions)
@@ -449,7 +452,7 @@ private fun DiagnosticSection(title: String, content: @Composable ColumnScope.()
 }
 
 @Composable
-private fun AtelierSurface(
+internal fun AtelierSurface(
     colors: BestMatesColors,
     dimensions: BestMatesDimensionTokens,
     modifier: Modifier = Modifier,
@@ -1274,7 +1277,7 @@ private fun DepthStateColumn(
 }
 
 private enum class AtelierButtonKind { Primary, Secondary, Outlined, Text, Destructive }
-private enum class AtelierCrystalLevel { PearlGlass, MilkCrystal, JellyCrystal }
+internal enum class AtelierCrystalLevel { PearlGlass, MilkCrystal, JellyCrystal }
 
 @Composable
 private fun AtelierButton(
