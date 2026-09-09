@@ -1,10 +1,10 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2D-0.5 Golden Visual Asset Set implemented; Phase 2C foundation remains visually frozen
+Codex — Phase 2D Visual Direction Lock / Golden Set 2 implemented; Phase 2C foundation remains visually frozen
 
 ## Current task
-Best Mates 2.0 — Phase 2D-0.5: Golden Visual Asset Set. Candidate masters and the isolated Design Lab gallery are implemented. Stop for maintainer visual review; do not begin Phase 2D-1, production adoption, or mass asset expansion automatically.
+Best Mates 2.0 — Phase 2D Visual Direction Lock. Audit decisions and Golden Set 2 are implemented in the isolated Design Lab. Stop for maintainer/device review; do not begin production adoption, mass expansion, or Phase 3 automatically.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
@@ -13,7 +13,9 @@ Best Mates 2.0 — Phase 2D-0.5: Golden Visual Asset Set. Candidate masters and 
 Phase 2D-0.5 starts from the Phase 2D-0 documentation commit `b16193512e62b2c3eb5778953dcf4301085bae5d`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Application production behavior remains based on `f9beacd`; subsequent work adds documentation, audit material, the isolated kernel, Design Lab/debug host, frozen Cute Atelier foundation, and isolated visual candidates.
 
 ## Task status
-BM2-P2D-0.5: IMPLEMENTED / AWAITING_MAINTAINER_VISUAL_REVIEW
+BM2-P2D-DL: DIRECTION_LOCKED / GOLDEN_SET_2_REVIEW_PENDING
+
+BM2-P2D-0.5: IMPLEMENTED / SUPERSEDED_BY_BM2-P2D-DL
 
 BM2-P2D-0: COMPLETE / APPROVED_AS_PHASE_2D_SOURCE_OF_TRUTH
 
@@ -34,6 +36,18 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2D Visual Direction Lock result (2026-09-09)
+
+- Audited the current Golden candidates, production `WidgetShape`/Sun/Moon IDs and SVG renderer behavior, local third-party notices, and local `design_refs/phase2d` material. Reference folders `1/` and `2/` were not inspected or modified.
+- Locked preserve → normalize → extend. Production assets remain saved-data compatible; collection/picker family architecture changes later through metadata and curation, not deletion.
+- Temporarily locked the approved Golden Undo and Redo vectors. Retained the reviewed Settings, Font, Pin/Fix Position, and Rotate candidate directions without speculative redesign.
+- Defined the Celestial hierarchy: Canonical, Minimal, Crystal Halo, Dream Crescent, Horizon, Weather Celestial, dedicated symbolic Crescent & Star, and Historical/Source-pack variants. Local Kustom screenshots are inspiration-only with unknown source/license; no path or screenshot was copied.
+- Implemented preview-only Golden Set 2: four original Sun/Moon pairs (Minimal, Crystal Halo, Dream Crescent, Horizon), one separate Crescent & Star Moon, and nine canonical-plus-variant Shape paths. All 27 candidates use the `golden.*` namespace and leave production enum IDs, SVGs, `BackgroundRenderer`, `SolarIconRenderer`, persistence, and widget output unchanged.
+- Canonical symmetric Heart is now separate from Soft Heart; Cloud has Canonical/Calm variants; Arch has artifact-free Canonical/Soft variants; Stationery has Canonical/Atelier Ticket plus Postcard. All previews preserve intrinsic aspect ratio.
+- Updated the Visual Asset Bible, UI spec, visual-direction-lock record, task/session state, and reference README. Sol handoff is documented, but production work is blocked until Golden Set 2 review.
+- Static raster review was generated locally and labeled as static. `assembleDebug --warning-mode all` passes. No Android device is connected, so required Cloud Light, Dream Light, Midnight Dark, and all-eight physical review remain pending.
+- TASK-007, editor gestures/canvas geometry, production HSV/ARGB color picker, persistence contracts, widget semantics, production screens, and reference folders remain untouched.
 
 ## Best Mates 2.0 — Phase 2D-0.5 result (2026-09-09)
 

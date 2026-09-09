@@ -211,8 +211,10 @@ Pairing is a visual catalog and quality rule. It does not automatically couple t
 | Family | Sun | Moon | Ornament |
 | --- | --- | --- | --- |
 | Minimal Celestial | Quiet disk with balanced restrained rays | Graceful open crescent | None or essential geometry only |
-| Soft Halo | Controlled disk/ring/halo relationship | Matching crescent with halo or orbit relationship | Halo/orbit is the single secondary structure |
-| Dreamy Charm | Softer, more personal ray or disk rhythm | Friendly crescent with matching mass | At most one small sparkle, celestial dot, or short orbit accent |
+| Crystal Halo | Controlled disk/ring/halo relationship | Matching crescent with halo or orbit relationship | Halo/orbit is the single secondary structure |
+| Dream Crescent | Softer, more personal ray or disk rhythm | Long crescent with matching mass | At most one small sparkle outside the essential counter |
+| Horizon | Half sun or crescent held by semantic horizon bands | Matched crescent held by the same horizon language | Horizon bands only; no charm motif |
+| Crescent & Star | Not applicable; this is a dedicated symbolic Moon study | Long crescent with one balanced star | Explicit cultural/symbolic label; never the generic default Moon |
 
 ### 7.1 Sun geometry
 
@@ -350,8 +352,8 @@ The Golden Set establishes the quality bar before library expansion. It is accep
 | Set | Required masters |
 | --- | --- |
 | Golden Orbit | Settings, Undo, Redo, Font, Pin, Rotate |
-| Golden Celestial | Three paired families: 3 Sun + 3 Moon, covering Minimal Celestial, Soft Halo, and Dreamy Charm |
-| Golden Shape | Heart, Cloud, Soft Arch, and one Paper/Stationery shape |
+| Golden Celestial | Four paired families: 4 Sun + 4 Moon, covering Minimal Celestial, Crystal Halo, Dream Crescent, and Horizon; plus one dedicated Crescent & Star Moon study |
+| Golden Shape | Nine candidates covering canonical Heart/Cloud/Arch/Ticket plus refined variants and Postcard |
 | Type Wardrobe | Picker/presentation master using existing fonts only; no new font bundle |
 
 The 2D-0.5 review must show:
@@ -397,24 +399,24 @@ Phase 2D does not authorize changes to production Workspace, Settings, Editor, `
 - [ ] Preserves stable IDs or includes an approved alias/migration.
 - [ ] Does not change production interaction, rendering contracts, or color-picker behavior outside its approved phase.
 
-## 16. Phase 2D-0.5 Golden Set implementation record
+## 16. Phase 2D Golden Set implementation record
 
-Phase 2D-0.5 implements an isolated candidate catalog and Golden Asset Gallery under `ui/preview`. It does not replace the provisional production-facing `OrbitIcons`, existing `WidgetShape` values, Sun/Moon enums or SVG files, font strings, renderer paths, or picker behavior. Every candidate ID begins with `golden.` and exists only in the Design Lab; these labels are review handles, not saved-data identifiers.
+Phase 2D-0.5 established the original candidate catalog. The Visual Direction Lock expands it into Golden Set 2 under `ui/preview`. Neither stage replaces the provisional production-facing `OrbitIcons`, existing `WidgetShape` values, Sun/Moon enums or SVG files, font strings, renderer paths, or picker behavior. Every candidate ID begins with `golden.` and exists only in the Design Lab; these labels are review handles, not saved-data identifiers.
 
 ### Golden definitions
 
 | Area | Candidate masters | Defining decision |
 | --- | --- | --- |
 | Orbit Charm | Settings, Undo, Redo, Font, Pin, Rotate | Original 24×24 vectors with 1.8u rounded strokes; recognition comes from soft proportion, clear negative space, and calm curve tension rather than appended ornaments. |
-| Celestial Atelier | Minimal Celestial Sun/Moon, Soft Halo Sun/Moon, Dreamy Charm Sun/Moon | Three deliberately paired, tintable families: quiet universal outline, controlled shared halo language, and one restrained shared sparkle respectively. |
-| Shape Atelier | Heart, Cloud, Soft Arch, Atelier Ticket | Four original fillable paths with explicit intrinsic ratios. Heart uses mild optical asymmetry; Cloud uses a low calm lobe rhythm; Soft Arch joins a tangent crown to stationery walls; Ticket uses soft collectible-paper side notches. |
+| Celestial Atelier | Minimal Celestial, Crystal Halo, Dream Crescent, and Horizon Sun/Moon pairs; Crescent & Star Moon | Four paired, tintable families plus one explicitly symbolic Moon study: quiet universal outline, controlled shared halo language, one restrained shared sparkle, and semantic horizon bands. |
+| Shape Atelier | Canonical + Soft Heart, Canonical + Calm Cloud, Canonical + Soft Arch, Canonical + Atelier Ticket, Postcard | Nine original fillable paths with explicit intrinsic ratios. Canonical recognizable forms remain separate from curated variants. |
 | Type Wardrobe | Clean Sans, Editorial Serif, Friendly Display | Three Milk Crystal presentation cards using existing device families only. The specimen is `Tokyo`, `18:40`, `Tue, Sep 8`, and `AM  PM`; the family label stays in normal UI typography. |
 
 Settings uses three soft adjustment rows instead of an industrial gear. Undo and Redo are manually mirrored relatives whose arrowheads are separate from their open motion bodies. Font is a miniature type-specimen card with one constructed `A` and a curved specimen baseline, avoiding the repeatedly awkward raw `Aa` pairing. Pin depicts the real Fix Position semantics as a balanced pushpin and does not introduce Lock. Rotate uses a partial orbital arc and a separate directional terminal instead of a full-circle stock arrow.
 
-Orbit appears at actual 16dp, 20dp, and 24dp artwork sizes in the Gallery while future controls retain their independent 48dp target. Celestial pairs appear together at 20dp, 28dp, and 40dp; the 40dp rendering is the representative widget-use check. Shape cards show a 42dp-high picker thumbnail and an 88dp-high larger canonical preview through the same aspect-preserving path fitter. The Gallery reuses the frozen Milk Crystal shelves, Pearl Glass compact labels, semantic selection check, and optional secondary Soft Halo in all eight local identity × brightness combinations.
+Orbit appears at actual 16dp, 20dp, and 24dp artwork sizes in the Gallery while future controls retain their independent 48dp target. Four Celestial pairs and the separate Crescent & Star study appear at 20dp, 28dp, and 40dp; the 40dp rendering is the representative widget-use check. Nine Shape cards show a 42dp-high picker thumbnail and an 88dp-high larger canonical preview through the same aspect-preserving path fitter. The Gallery reuses the frozen Milk Crystal shelves, Pearl Glass compact labels, semantic selection check, and optional secondary Soft Halo in all eight local identity × brightness combinations.
 
-The lightweight debug integrity check enumerates 6 Orbit vectors, 3 Sun vectors, 3 Moon vectors, 4 Shape paths, and 3 Type cards: 19 candidates total. It rejects incorrect category counts, duplicate candidate IDs, invalid vector viewports/default sizes, path-construction failures, empty bounds, and paths leaving the supplied canvas. Gallery composition renders the enumerated candidates directly, so there is no parallel resource list to drift and no remote dependency to resolve.
+The lightweight debug integrity check enumerates 6 Orbit vectors, 4 Sun vectors, 5 Moon vectors, 9 Shape paths, and 3 Type cards: 27 candidates total. It rejects incorrect category counts, duplicate candidate IDs, invalid vector viewports/default sizes, path-construction failures, empty bounds, and paths leaving the supplied canvas. Gallery composition renders the enumerated candidates directly, so there is no parallel resource list to drift and no remote dependency to resolve.
 
 ### References, licensing, and provenance
 

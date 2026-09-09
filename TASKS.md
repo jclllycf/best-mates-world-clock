@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-09)
 
-1. Best Mates 2.0 — Phase 2D-0.5: Golden Visual Asset Set — implemented in the isolated Design Lab and awaiting maintainer visual review.
-2. Stop at the Golden Set gate. Do not begin Phase 2D-1, mass-expand any family, adopt candidates in production, migrate production screens, or resume TASK-007 until explicitly authorized.
+1. Best Mates 2.0 — Phase 2D Visual Direction Lock: Golden Set 2 is implemented in the isolated Design Lab; static review is complete and physical-device review remains pending.
+2. Stop at the Visual Direction Lock gate. Do not begin production adoption, bulk family expansion, Phase 3, or TASK-007 until the Golden Set 2 hierarchy receives maintainer review.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -13,8 +13,24 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2D-DL — Visual Direction Lock / Golden Set 2
+Status: DIRECTION_LOCKED / GOLDEN_SET_2_REVIEW_PENDING
+Scope: audit and preview-only candidates; production IDs, renderers, and pickers remain unchanged
+
+Completed:
+- Locked the Phase 2D method as preserve → normalize → extend. Existing successful production assets remain compatible; future picker curation groups them by family instead of replacing the library wholesale.
+- Temporarily locked the approved Golden Undo and Redo candidates. Settings, Font, Pin/Fix Position, and Rotate remain the existing reviewed core candidates.
+- Audited production Sun/Moon sources into Canonical, Minimal, Crystal Halo, Dream Crescent, Horizon, Weather Celestial, optional Crescent & Star, and historical/source-pack roles. Existing BM simple/ring/horizon assets are preservation anchors; local pack variants remain resolvable but are not future defaults.
+- Expanded the debug-only Celestial Golden Set to four original paired families (Minimal, Crystal Halo, Dream Crescent, Horizon) plus a separate, explicitly labeled Crescent & Star Moon study. It contains four Sun and five Moon vectors without changing any production enum or SVG.
+- Locked Canonical Base Shape + Curated Variant as the Shape Atelier rule. Added nine debug-only candidates: canonical/soft Hearts, canonical/calm Clouds, canonical/soft Arches, canonical/atelier Tickets, and Postcard. The symmetric Heart remains available; Arch and Stationery candidates were redrawn after the earlier rejection.
+- Added the visual-direction record and updated the Visual Asset Bible, UI spec, and ignored local-reference README with provenance, audit decisions, taxonomy, ownership boundaries, and Sol handoff requirements.
+- Ran a clearly labeled static raster review at artwork sizes. `assembleDebug --warning-mode all` passes. No device is connected, so Cloud Light, Dream Light, Midnight Dark, and all-eight Design Lab device review remain pending.
+
+Stop condition:
+- Review Golden Set 2 on a physical device before any production ID migration, library expansion, Phase 3 UI adoption, or TASK-007 work.
+
 ### BM2-P2D-0.5 — Golden Visual Asset Set
-Status: IMPLEMENTED / AWAITING_MAINTAINER_VISUAL_REVIEW
+Status: IMPLEMENTED / SUPERSEDED_BY_BM2-P2D-DL
 Scope: isolated Golden masters and Design Lab presentation only; no production asset adoption
 
 Completed:

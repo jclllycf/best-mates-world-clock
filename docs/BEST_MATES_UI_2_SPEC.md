@@ -651,11 +651,11 @@ This contract intentionally requires a later settings integration/migration task
 
 ### 13.1 Phase 2D-0.5 Golden presentation boundary
 
-The Golden Asset Gallery is an isolated Design Lab chapter that presents the Phase 2D-0.5 candidate masters inside the frozen Phase 2C environment. It reuses Milk Crystal shelves/cards, Pearl Glass compact labels, Soft Halo as secondary selection decoration, and the existing semantic check rule. It adds no new material recipe, interaction primitive, or production navigation path.
+The Golden Asset Gallery is an isolated Design Lab chapter that presents the Phase 2D-0.5 candidates and Phase 2D Visual Direction Lock Golden Set 2 inside the frozen Phase 2C environment. It reuses Milk Crystal shelves/cards, Pearl Glass compact labels, Soft Halo as secondary selection decoration, and the existing semantic check rule. It adds no new material recipe, interaction primitive, or production navigation path.
 
-The Gallery shows six Orbit Charm candidates at actual 16/20/24dp artwork sizes, three paired Celestial families at 20/28/40dp, four aspect-preserving Shape candidates at thumbnail and larger preview sizes, and three Type Wardrobe presentation cards using existing device fonts. Candidate IDs use the isolated `golden.*` namespace and are never written to production models or storage. The production color picker, Workspace, Settings, Editor, canvas, gestures, renderer, provider, and saved-data contracts remain unchanged.
+The Gallery shows six Orbit Charm candidates at actual 16/20/24dp artwork sizes, four paired Celestial families plus one explicitly symbolic Crescent & Star Moon study at 20/28/40dp, nine canonical-plus-variant Shape candidates at thumbnail and larger preview sizes, and three Type Wardrobe presentation cards using existing device fonts. Candidate IDs use the isolated `golden.*` namespace and are never written to production models or storage. The production color picker, Workspace, Settings, Editor, canvas, gestures, renderer, provider, and saved-data contracts remain unchanged.
 
-This candidate gallery is the Phase 2D-0.5 review artifact. It does not authorize Phase 2D-1 family expansion or production adoption.
+This candidate gallery is the Phase 2D Visual Direction Lock review artifact. It does not authorize bulk family expansion, production adoption, or Phase 3.
 
 ## 14. Proposed later files and components
 

@@ -189,13 +189,47 @@ private fun GoldenOrbitShelf(colors: BestMatesColors, dimensions: BestMatesDimen
 @Composable
 private fun GoldenCelestialShelf(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
     GoldenShelf(
-        title = "Celestial Atelier · three pairs",
-        note = "One canonical geometry per family · recolourable · small and medium checks",
+        title = "Celestial Atelier · Golden Set 2",
+        note = "Four paired families + one dedicated symbolic Moon · recolourable",
         colors = colors,
         dimensions = dimensions,
     ) {
         BestMatesGoldenAssets.celestial.forEachIndexed { index, family ->
             GoldenCelestialPairCard(family, selected = index == 1, colors, dimensions)
+        }
+        BestMatesGoldenAssets.celestialSymbols.forEach { symbol ->
+            GoldenCelestialSymbolCard(symbol, colors, dimensions)
+        }
+    }
+}
+
+@Composable
+private fun GoldenCelestialSymbolCard(
+    symbol: GoldenCelestialSymbol,
+    colors: BestMatesColors,
+    dimensions: BestMatesDimensionTokens,
+) {
+    AtelierSurface(
+        colors = colors,
+        dimensions = dimensions,
+        color = colors.surfaceRaised,
+        radius = dimensions.radii.radiusXl,
+        padding = dimensions.spacing.space4,
+        borderColor = colors.borderSubtle,
+        crystalLevel = AtelierCrystalLevel.MilkCrystal,
+    ) {
+        Text(symbol.name, style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
+        Text(symbol.note, style = MaterialTheme.typography.bodySmall, color = colors.textMuted)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(symbol.vector, "${symbol.name}, 20dp", tint = colors.secondary, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(dimensions.spacing.space3))
+            Icon(symbol.vector, "${symbol.name}, 28dp", tint = colors.secondary, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(dimensions.spacing.space3))
+            Icon(symbol.vector, "${symbol.name}, 40dp", tint = colors.secondary, modifier = Modifier.size(40.dp))
         }
     }
 }
@@ -282,8 +316,8 @@ private fun GoldenCelestialFigure(
 @Composable
 private fun GoldenShapeShelf(colors: BestMatesColors, dimensions: BestMatesDimensionTokens) {
     GoldenShelf(
-        title = "Shape Atelier · four silhouettes",
-        note = "Intrinsic proportion retained in thumbnail and canonical preview",
+        title = "Shape Atelier · canonical + variants",
+        note = "Nine Golden Set 2 silhouettes · intrinsic proportion retained",
         colors = colors,
         dimensions = dimensions,
     ) {
