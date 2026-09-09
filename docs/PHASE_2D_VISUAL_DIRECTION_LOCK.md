@@ -1,6 +1,6 @@
 # Best Mates 2.0 — Phase 2D visual direction lock
 
-Status: **DIRECTION LOCK — Golden Set 2 review required before production adoption**
+Status: **CLOSED — VISUAL SYSTEM DIRECTION ESTABLISHED / CELESTIAL ARTWORK FINALIZATION DEFERRED**
 Date: 2026-09-09
 Baseline: `e89d10369a00791cfdb882d96ee00d6dd6c953ff`
 
@@ -23,7 +23,7 @@ Every visual asset is classified before work starts:
 
 Undo and Redo are **approved for now and temporarily locked**. Their separate arrowheads, open curved bodies, mirror relationship, and 16/20/24dp raster behavior are the current family reference. Do not iterate on them without a demonstrated system inconsistency.
 
-Settings, Font, Pin/Fix Position, and Rotate remain Golden candidates. Their present direction is sound: soft adjustment rows; a constructed specimen card rather than raw `Aa`; a pushpin rather than a Lock; and a partial orbital Rotate. They need only family-level comparison during later implementation, not speculative redesign.
+The accepted or provisionally accepted direction is Golden Undo/Redo, a gear for global Settings, sliders for local Adjust surfaces, the current production Pin, the Rotate artwork identified by the user in the Future canvas language, and the general Orbit Charm curve/stroke character. Font remains a candidate study. Minor optical polish may happen later, but the complete Orbit family must not be reopened without a focused scope. Generic Apply buttons do not carry decorative checkmarks.
 
 ## Celestial Atelier architecture
 
@@ -80,8 +80,14 @@ Golden Set 2 is implemented as a preview-only review set, not a library expansio
 - Shapes: Canonical Heart, Soft Heart, Canonical Cloud, Calm Cloud, Canonical Arch, Soft Arch, Canonical Ticket, Atelier Ticket, and Postcard.
 - Type Wardrobe: preserve the existing three-card presentation; lock taxonomy, multilingual fallback review, and license gate before font acquisition.
 
-## Handoff to Sol after review
+## Phase 2D closure and handoff
 
-Sol may implement approved original vectors, metadata, picker grouping, renderer-backed preview, and production migration only after the Golden Set 2 review passes. It must preserve existing IDs, route legacy entries through a compatibility catalog, retain offline/recolorable rendering, keep user imports, and avoid changes to color-picker behavior, gestures, widget semantics, or TASK-007.
+Golden Set 3 supersedes Golden Set 2 as the active debug review surface while preserving the earlier sets as history. Its Objects, Celestial, Orbit, Work Mat, Wallpapers, and Sources pages remain available for future study. Candidate IDs remain separate from saved production IDs, and no candidate becomes production artwork merely by appearing in the gallery.
 
-Phase 2D is visually ready to lock only when the Golden Set 2 candidates receive Cloud Light, Dream Light, and Midnight Dark review, the family hierarchy is accepted, and the compatibility catalog is documented. Phase 3 remains blocked until then.
+Phase 2D now closes with the visual system direction established. It does **not** claim visual approval of the new Sun/Moon candidates. The deferred **Celestial Atelier Final Pass** owns final Sun/Moon geometry, reference-quality crescents, star/jewel companion work, atmospheric variants, Crescent & Star, target-size optical correction, picker population, license/source review, and explicit promotion decisions.
+
+Future object architecture is **Shape × Variant × Material × Appearance**. Material is a rendering choice and must not be embedded in a persistent Shape ID. Existing transparent components remain supported. The current production Heart remains the canonical Heart; other Golden Set 3 objects remain studies until individually accepted.
+
+The Soft Atelier Work Mat is accepted as the basis for later Editor visual migration. That migration must preserve the current geometry engine, intrinsic proportions, drag, resize, rotate, snap, guides, fixed canvas plus scrolling inspector, and widget geometry behavior. TASK-007 remains deferred.
+
+Phase 3 is the next implementation phase. Its work starts only under a separate authorized scope and must follow the Manual Device Review Policy in `PROJECT_HANDOFF.md`.

@@ -128,7 +128,7 @@ object BackgroundRenderer {
         return PointF(bounds.centerX() + (cx - bounds.centerX()) * low, bounds.centerY() + (cy - bounds.centerY()) * low)
     }
 
-    private fun shapePath(shape: WidgetShape, r: RectF): Path = Path().apply {
+    internal fun shapePath(shape: WidgetShape, r: RectF): Path = Path().apply {
         when (shape) {
             WidgetShape.ROUNDED -> {
                 val x = r.width()*.18f; val y = r.height()*.18f

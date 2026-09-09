@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-09)
 
-1. Best Mates 2.0 — Phase 2D Visual Direction Lock: Golden Set 2 is implemented in the isolated Design Lab; static review is complete and physical-device review remains pending.
-2. Stop at the Visual Direction Lock gate. Do not begin production adoption, bulk family expansion, Phase 3, or TASK-007 until the Golden Set 2 hierarchy receives maintainer review.
+1. Best Mates 2.0 — Phase 2D is closed: **Visual System Direction Established / Celestial Artwork Finalization Deferred**.
+2. Phase 3 is the next implementation phase. Start it only under a separate explicit scope; do not infer bulk asset promotion or Celestial approval from Phase 2D closure.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -13,8 +13,34 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
 
+### BM2-P2D-CLOSURE — Phase 2D Closure & Phase 3 Handoff
+Status: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
+Scope: preserve Golden Set 3 review work, freeze architecture decisions, and prepare the Phase 3 handoff
+
+Completed:
+- Preserved the Golden Set 3 Objects, Celestial, Orbit, Work Mat, Wallpapers, and Sources review pages without mass-promoting candidates into production.
+- Established **Shape × Variant × Material × Appearance** as independent axes. Material is not part of persistent Shape identity, and existing transparent components remain supported.
+- Kept the production Heart as canonical. Golden Set 3 object IDs remain review-only until an explicitly scoped migration accepts an individual asset.
+- Accepted the Soft Atelier Work Mat as the visual basis for a later Editor migration while preserving the geometry engine, intrinsic proportions, gestures, guides, fixed canvas plus scrolling inspector, and widget behavior.
+- Preserved accepted/provisional Orbit decisions: Golden Undo/Redo, global Settings gear, local Adjust sliders, production Pin, the user-identified Future canvas Rotate, and the general Orbit direction. Generic Apply buttons do not display decorative checkmarks.
+- Added the Manual Device Review Policy to `PROJECT_HANDOFF.md`: the user is the primary physical-device visual reviewer unless autonomous screenshot inspection is explicitly requested or needed for a specific rendering defect.
+- `assembleDebug --warning-mode all` passes; the debug APK was installed on connected PJF110 and the Design Lab was launched and left open for manual review without screenshot capture.
+- Phase 3 is next but remains unstarted in this closure task. TASK-007 remains deferred.
+
+### BM2-CELESTIAL-FINAL — Celestial Atelier Final Pass
+Status: DEFERRED / FUTURE_FOCUSED_TASK
+Scope: final Celestial artwork and explicit production-promotion decisions
+
+Deferred work:
+- Final Sun and Moon geometry, reference-quality crescent families, star/jewel companions, atmospheric variants, and the dedicated Crescent & Star option.
+- Small-size optical correction, picker population, source/license review, and explicit per-asset production promotion.
+- Preserve the current debug Celestial gallery, filters, Sources page, retained production collection, persisted production IDs, and current production behavior until this task is explicitly started.
+
+Stop condition:
+- Do not describe current new Sun/Moon candidates as visually approved and do not continue drawing them during Phase 3 work unless this focused task is explicitly authorized.
+
 ### BM2-P2D-DL — Visual Direction Lock / Golden Set 2
-Status: DIRECTION_LOCKED / GOLDEN_SET_2_REVIEW_PENDING
+Status: HISTORICAL / SUPERSEDED_BY_GOLDEN_SET_3_AND_PHASE_2D_CLOSURE
 Scope: audit and preview-only candidates; production IDs, renderers, and pickers remain unchanged
 
 Completed:

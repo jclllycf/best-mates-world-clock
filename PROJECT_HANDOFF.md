@@ -155,15 +155,42 @@ Current source behavior, not future intent:
 - Required JDK: bundled Java 17 at `.tooling/jdk/jdk-17.0.20.1+1`.
 - Local SDK used for verification: `.android-sdk`.
 - Build command from project root (PowerShell): set `JAVA_HOME` to the bundled JDK, set `ANDROID_HOME`/`ANDROID_SDK_ROOT` to `.android-sdk`, then run `./gradlew.bat assembleDebug`.
-- Last verification: `assembleDebug` completed successfully on 2026-09-05. Output: `app/build/outputs/apk/debug/app-debug.apk`.
+- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-09 for the Phase 2D closure. Output: `app/build/outputs/apk/debug/app-debug.apk`.
 - Install/run: install the debug APK on an Android device, launch Best Mates, create/edit a project, then add a widget through the launcher. Verify both generic and resized widget receivers.
 - No automated tests were found or run.
 
-## 14. NEXT DEVELOPMENT STAGE
+## 14. MANUAL DEVICE REVIEW POLICY
+
+The user is the primary subjective visual reviewer on a physical Android device. Unless the user explicitly requests autonomous screenshot inspection, a rendering defect cannot reasonably be diagnosed without one, or the task requires visual-regression evidence, Codex must not repeatedly capture/pull screenshots, scroll through the app solely to gather screenshots, approve visuals on the user's behalf, or claim user acceptance.
+
+After a visual implementation task:
+
+1. Run the necessary build, compile, and static validation.
+2. Detect an attached device with `adb`.
+3. If connected, install/update the debug APK when needed and launch the exact Activity or shortest path to the highest-priority review surface.
+4. Leave that review surface open, stop device automation, and give the user a concise manual checklist. Provide navigation or exact `adb` commands for any additional surfaces.
+5. If no device is connected, finish all non-device work and report the real APK path, install command, launch command or shortest navigation path, and checklist. A missing device is not a blocker unless physical execution is essential.
+
+Capture only the minimum necessary screenshots when one of the exceptions above applies. Future visual-task reports use this format:
+
+- Build: PASS / FAIL
+- Device: connected / not connected
+- Review surface prepared: screen or Activity
+- User should inspect: concise visual checklist
+- Functional checks: verified non-subjective behavior
+- Known deferred items: explicit remaining scope
+
+Do not continue subjective refinement after preparing the review surface until the user provides feedback.
+
+## 15. NEXT DEVELOPMENT STAGE
+
+Best Mates 2.0 Phase 2D is closed with the visual system direction established and Celestial artwork finalization deferred. Phase 3 is the next implementation phase and requires a separate explicit scope. Golden Set 3 candidates are not automatically production assets; the later `Celestial Atelier Final Pass` owns unresolved Sun/Moon artwork. TASK-007 remains deferred.
 
 ### P0 — Must prioritize
 
-1. Reproduce and fix editor stability/gesture issues (back navigation, long-session crashes, rotated drag, unlimited rotation) without changing persistence contracts.
+The legacy backlog below is context, not authorization to resume TASK-007 or the deferred Celestial pass. Phase 3 must begin from its own scoped request.
+
+1. Address separately authorized editor stability issues without changing persistence contracts; rotated drag and unlimited-rotation follow-up remain deferred under TASK-007.
 2. Make the preview/render coordinate system and all shape bounds deterministic; verify every declared launcher size and free/non-proportional resize.
 3. Complete localization coverage and add a testable locale string audit.
 
@@ -179,7 +206,7 @@ Current source behavior, not future intent:
 2. Add weather integration and update policy.
 3. Add automated persistence, renderer and Compose interaction tests.
 
-## 15. FIRST FILES TO READ
+## 16. FIRST FILES TO READ
 
 1. `app/src/main/java/com/bestmates/worldclock/MainActivity.kt` — current UI/state/editor behavior.
 2. `app/src/main/java/com/bestmates/worldclock/model/Models.kt` — persisted data contracts and shape/icon enums.
@@ -188,7 +215,7 @@ Current source behavior, not future intent:
 5. `app/src/main/java/com/bestmates/worldclock/data/ConfigStore.kt` — persistence schema and migrations.
 6. `app/src/main/java/com/bestmates/worldclock/data/CityCatalog.kt` and `solar/SolarCalculator.kt` — city data and day/night logic.
 
-## 16. HANDOFF CHECKLIST
+## 17. HANDOFF CHECKLIST
 
 - [ ] Read this handoff.
 - [ ] Verify the listed key files exist and inspect their current implementation.
@@ -196,4 +223,5 @@ Current source behavior, not future intent:
 - [ ] Re-check completed features against source, not chat history.
 - [ ] Review incomplete features and known bugs before editing.
 - [ ] Understand the DO NOT BREAK list.
-- [ ] Select one scoped P0 task before beginning changes.
+- [ ] Follow the Manual Device Review Policy for visual work.
+- [ ] Select one explicitly authorized scoped task before beginning changes.

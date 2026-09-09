@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 /**
- * Orbit Charm foundation family. The vectors are production-ready, but Phase 2C
- * intentionally leaves every existing production icon call site unchanged.
+ * Orbit Charm foundation family. Golden Set 3 adopts only the explicitly approved
+ * Undo/Redo, global Settings, local Adjust and refined Font artwork in production.
  */
 object OrbitIcons {
     val Back: ImageVector by lazy {
@@ -21,38 +21,58 @@ object OrbitIcons {
         }
     }
 
+    /** Global preferences only. Local parameter controls use Adjust. */
     val Settings: ImageVector by lazy {
-        orbitIcon("OrbitSettings") {
-            moveTo(4f, 7f); lineTo(20f, 7f)
-            orbitDot(9f, 7f, 1.7f)
-            moveTo(4f, 12f); lineTo(20f, 12f)
-            orbitDot(15f, 12f, 1.7f)
-            moveTo(4f, 17f); lineTo(20f, 17f)
-            orbitDot(11f, 17f, 1.7f)
+        orbitIcon("OrbitGlobalSettings") {
+            // Equal tooth rhythm, softened shoulders and a centered counter.
+            // Midpoint quadratic joins avoid the previous gear's sharp, uneven corners.
+            val points = buildList {
+                repeat(8) { tooth ->
+                    listOf(-22.5 to 7.0, -11.0 to 9.3, 11.0 to 9.3).forEach { (offset,radius) ->
+                        val angle=Math.toRadians(tooth*45.0-90.0+offset)
+                        add((12f+(kotlin.math.cos(angle)*radius).toFloat()) to (12f+(kotlin.math.sin(angle)*radius).toFloat()))
+                    }
+                }
+            }
+            moveTo((points.last().first+points.first().first)/2f,(points.last().second+points.first().second)/2f)
+            points.forEachIndexed { index,point ->
+                val next=points[(index+1)%points.size]
+                quadTo(point.first,point.second,(point.first+next.first)/2f,(point.second+next.second)/2f)
+            }
+            close()
+            orbitDot(12f, 12f, 3.15f)
+        }
+    }
+
+    /** Exact Golden Set 2 sliders, retained for local adjustments. */
+    val Adjust: ImageVector by lazy {
+        orbitIcon("OrbitAdjust") {
+            moveTo(4.2f, 6.2f); lineTo(6.2f, 6.2f); orbitDot(8.1f, 6.2f, 1.75f)
+            moveTo(9.85f, 6.2f); lineTo(19.8f, 6.2f)
+            moveTo(4.2f, 12.1f); lineTo(13.45f, 12.1f); orbitDot(15.35f, 12.1f, 1.75f)
+            moveTo(17.1f, 12.1f); lineTo(19.8f, 12.1f)
+            moveTo(4.2f, 17.9f); lineTo(8.65f, 17.9f); orbitDot(10.55f, 17.9f, 1.75f)
+            moveTo(12.3f, 17.9f); lineTo(19.8f, 17.9f)
         }
     }
 
     val Undo: ImageVector by lazy {
         orbitIcon("OrbitUndo") {
-            moveTo(9.4f, 6.7f)
-            curveTo(7.7f, 7.7f, 6.3f, 8.9f, 5.2f, 10.5f)
-            curveTo(6.3f, 12f, 7.7f, 13.2f, 9.4f, 14.1f)
-            moveTo(7.2f, 10.5f)
-            curveTo(9.3f, 8.1f, 12.4f, 7.3f, 15.1f, 8.8f)
-            curveTo(18f, 10.4f, 18.9f, 14.1f, 17.1f, 16.9f)
-            curveTo(16.4f, 18f, 15.3f, 18.7f, 14f, 19f)
+            moveTo(8.55f, 8.15f)
+            curveTo(11.15f, 6.15f, 15.15f, 6.35f, 17.65f, 8.85f)
+            curveTo(20.2f, 11.4f, 20f, 15.55f, 17.05f, 18.15f)
+            curveTo(15.35f, 19.65f, 13f, 20.05f, 10.95f, 19.35f)
+            moveTo(8.6f, 4.85f); lineTo(4.85f, 8.65f); lineTo(8.8f, 11.85f)
         }
     }
 
     val Redo: ImageVector by lazy {
         orbitIcon("OrbitRedo") {
-            moveTo(14.6f, 6.7f)
-            curveTo(16.3f, 7.7f, 17.7f, 8.9f, 18.8f, 10.5f)
-            curveTo(17.7f, 12f, 16.3f, 13.2f, 14.6f, 14.1f)
-            moveTo(16.8f, 10.5f)
-            curveTo(14.7f, 8.1f, 11.6f, 7.3f, 8.9f, 8.8f)
-            curveTo(6f, 10.4f, 5.1f, 14.1f, 6.9f, 16.9f)
-            curveTo(7.6f, 18f, 8.7f, 18.7f, 10f, 19f)
+            moveTo(15.45f, 8.15f)
+            curveTo(12.85f, 6.15f, 8.85f, 6.35f, 6.35f, 8.85f)
+            curveTo(3.8f, 11.4f, 4f, 15.55f, 6.95f, 18.15f)
+            curveTo(8.65f, 19.65f, 11f, 20.05f, 13.05f, 19.35f)
+            moveTo(15.4f, 4.85f); lineTo(19.15f, 8.65f); lineTo(15.2f, 11.85f)
         }
     }
 
@@ -221,13 +241,14 @@ object OrbitIcons {
 
     val Font: ImageVector by lazy {
         orbitIcon("OrbitFont") {
-            moveTo(3.7f, 19.5f); lineTo(8f, 4.6f); lineTo(12.3f, 19.5f)
-            moveTo(5.4f, 13.8f); lineTo(10.6f, 13.8f)
-            moveTo(19.7f, 13.1f); lineTo(19.7f, 19f)
-            moveTo(19.7f, 15.3f)
-            curveTo(18.8f, 13.9f, 16.5f, 13.5f, 15.3f, 14.7f)
-            curveTo(14f, 16f, 14.5f, 18.4f, 16.6f, 18.7f)
-            curveTo(18f, 18.9f, 19.2f, 18.2f, 19.7f, 17.3f)
+            moveTo(2.9f, 19f); lineTo(7.1f, 5.2f)
+            curveTo(7.2f, 4.9f, 7.5f, 4.9f, 7.6f, 5.2f); lineTo(11.8f, 19f)
+            moveTo(4.6f, 13.8f); lineTo(10.1f, 13.8f)
+            moveTo(20.7f, 11.8f); lineTo(20.7f, 19f)
+            moveTo(20.7f, 14.2f)
+            curveTo(20.1f, 11.8f, 16.8f, 11.6f, 15.6f, 13.4f)
+            curveTo(14.1f, 15.6f, 15.2f, 19f, 17.4f, 19f)
+            curveTo(19.1f, 19f, 20.7f, 17.7f, 20.7f, 16f)
         }
     }
 
@@ -265,7 +286,11 @@ object OrbitIcons {
             curveTo(5f, 17.2f, 8.8f, 21f, 13.6f, 21f)
             curveTo(16.8f, 21f, 19.6f, 19.2f, 21f, 16.6f)
             curveTo(20f, 16.8f, 18.9f, 16.9f, 17.8f, 16.8f)
-            orbitDot(19f, 6f, 0.75f)
+            moveTo(19f, 3.8f)
+            curveTo(19.3f, 5.1f, 19.8f, 5.7f, 21.2f, 6f)
+            curveTo(19.8f, 6.3f, 19.3f, 6.9f, 19f, 8.2f)
+            curveTo(18.7f, 6.9f, 18.2f, 6.3f, 16.8f, 6f)
+            curveTo(18.2f, 5.7f, 18.7f, 5.1f, 19f, 3.8f); close()
         }
     }
 

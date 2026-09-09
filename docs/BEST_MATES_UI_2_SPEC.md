@@ -4,7 +4,7 @@ Status: **PHASE 2C.3 SOFT CRYSTAL ATELIER INTERACTION FOUNDATION — VISUALLY FR
 Date: 2026-09-09
 Implementation baseline: `ed86e9c` (`feat(ui): finalize Soft Crystal Atelier foundation`), with the repository-maintenance ignore rules retained. Phase 2C.3 keeps the approved Cute Atelier / Cozy Orbit palette, typography, geometry, layout, hierarchy, production isolation, and debug harness while closing interaction-surface, selection-indicator, icon-geometry, and system-inset defects.
 
-Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, and its debug-only device host. Production Workspace, Settings, Editor, app-root theme, persistence, widgets, rendering, gestures, canvas behavior, and TASK-007 remain unchanged.
+Scope: design-foundation tokens, Orbit Charm vectors, the isolated Design Lab, its debug-only device host, and the Phase 2D closure contract. Golden Set 3 includes the previously authorized limited Orbit artwork migration and Soft Atelier editor-chrome refinement; production navigation, app-root theme, persistence, widget behavior, editor gesture/geometry semantics, and TASK-007 remain unchanged.
 
 Phase 2D visual assets are governed by [BEST_MATES_VISUAL_ASSET_BIBLE.md](BEST_MATES_VISUAL_ASSET_BIBLE.md). That Bible defines Orbit Charm 2.0, Shape Atelier, Celestial Atelier, Type Wardrobe, preview, picker, licensing, and stable-ID rules; it does not supersede this document's frozen Phase 2C materials, motion, states, accessibility, or app-composition contracts.
 
@@ -651,11 +651,19 @@ This contract intentionally requires a later settings integration/migration task
 
 ### 13.1 Phase 2D-0.5 Golden presentation boundary
 
-The Golden Asset Gallery is an isolated Design Lab chapter that presents the Phase 2D-0.5 candidates and Phase 2D Visual Direction Lock Golden Set 2 inside the frozen Phase 2C environment. It reuses Milk Crystal shelves/cards, Pearl Glass compact labels, Soft Halo as secondary selection decoration, and the existing semantic check rule. It adds no new material recipe, interaction primitive, or production navigation path.
+The Golden Asset Gallery is an isolated Design Lab chapter that preserves the Phase 2D-0.5 and Golden Set 2 history. Golden Set 3 is the active Phase 2D review surface inside the frozen Phase 2C environment. It reuses Milk Crystal shelves/cards, Pearl Glass compact labels, Soft Halo as secondary selection decoration, and the existing semantic check rule. It adds no new persisted asset identity or production navigation path.
 
-The Gallery shows six Orbit Charm candidates at actual 16/20/24dp artwork sizes, four paired Celestial families plus one explicitly symbolic Crescent & Star Moon study at 20/28/40dp, nine canonical-plus-variant Shape candidates at thumbnail and larger preview sizes, and three Type Wardrobe presentation cards using existing device fonts. Candidate IDs use the isolated `golden.*` namespace and are never written to production models or storage. The production color picker, Workspace, Settings, Editor, canvas, gestures, renderer, provider, and saved-data contracts remain unchanged.
+Golden Set 3 separates Objects, Celestial, Orbit, Work Mat, Wallpapers, and Sources. Its `golden3.*` handles are review-only and are never written to production models or storage. The current Celestial candidates are structurally useful but are not visually approved. Existing production Sun/Moon IDs, old collection assets, renderer behavior, and saved data remain available.
 
-This candidate gallery is the Phase 2D Visual Direction Lock review artifact. It does not authorize bulk family expansion, production adoption, or Phase 3.
+This candidate gallery records Phase 2D decisions. It does not authorize bulk family expansion or production adoption.
+
+### 13.2 Phase 2D closure contract
+
+Phase 2D is closed with **Visual System Direction Established** and **Celestial Artwork Finalization Deferred**. Future object work models **Shape × Variant × Material × Appearance** as independent axes. Material does not become part of the persistent Shape ID; existing transparent components remain supported. The production Heart remains the canonical Heart, and Golden candidates remain studies until explicitly promoted.
+
+The Soft Atelier Work Mat is the accepted visual basis for a later Editor migration. The migration must retain the fixed canvas at the top plus vertically scrolling inspector below, along with the current geometry engine, intrinsic proportions, drag, resize, rotate, snap, guides, and widget geometry behavior. TASK-007 remains deferred.
+
+The default device-review workflow is defined in `PROJECT_HANDOFF.md`: Codex performs build/static validation, installs and launches the relevant surface when a device is connected, then leaves subjective visual review to the user unless screenshot inspection is explicitly requested or needed for a specific rendering defect.
 
 ## 14. Proposed later files and components
 
@@ -720,4 +728,4 @@ These calculations do not replace screenshot review. Atmosphere compositing, ant
 | Existing regression | Known post-rotation drag issue remains documented, not marked fixed; pin/add, empty projects and stored migrations still work |
 | Code-task checks | Scoped diff, `assembleDebug`, task/session updates, focused commit per AI_RULES; appropriate targeted validation for the actual scope |
 
-**Stop here for maintainer review.** All eight Lab variants have been inspected on a physical device. Review the frozen surface separation, typography density, Cute Atelier controls, Soft Halo, provisional Orbit Charm clarity, neutral canvas study, and system-bar contrast before authorizing any later work. Do not begin Phase 2D or production migration from this document alone.
+Phase 2C remains visually frozen, and Phase 2D is now closed under the contract above. Phase 3 is the next implementation phase and requires its own scope. Do not infer production asset promotion, Celestial approval, or TASK-007 resumption from this document.

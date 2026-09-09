@@ -1,5 +1,8 @@
 package com.bestmates.worldclock
 
+import com.bestmates.worldclock.ui.icons.OrbitIcons
+import androidx.compose.ui.unit.Dp
+
 import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -392,7 +395,7 @@ class MainActivity : ComponentActivity() {
     var nameDraft by remember { mutableStateOf("") }
     val projects = remember(revision) { store.ids().map { it to store.load(it) } }
     BackHandler(enabled = selected.isNotEmpty()) { selected = emptySet() }
-    Scaffold(topBar = { TopAppBar(title = { Text(if (selected.isEmpty()) uiText("workspace_title") else uiFormat("selected_count", selected.size)) }, navigationIcon = { IconButton(onClick = onSettings) { Text("⚙") } }, actions = {
+    Scaffold(topBar = { TopAppBar(title = { Text(if (selected.isEmpty()) uiText("workspace_title") else uiFormat("selected_count", selected.size)) }, navigationIcon = { IconButton(onClick = onSettings) { Icon(OrbitIcons.Settings, uiText("settings"), modifier = Modifier.size(24.dp)) } }, actions = {
         EditorActionButton(EditorAction.PASTE, uiText("paste"), { clipboard?.let { store.create(it.copy(title = it.title.ifBlank { translated(currentLanguage, "unnamed") })); revision++ } }, selected = clipboard != null)
         if (selected.size == 1) {
             EditorActionButton(EditorAction.RENAME, uiText("rename"), { val id = selected.first(); nameDraft = store.load(id).title; namingMode = id })
@@ -801,7 +804,9 @@ private fun EditorActionButton(
             .size(40.dp)
             .semantics { contentDescription = description }
     ) {
-        Canvas(Modifier.size(20.dp)) {
+        if (action == EditorAction.UNDO || action == EditorAction.REDO) {
+            Icon(if (action == EditorAction.UNDO) OrbitIcons.Undo else OrbitIcons.Redo, null, tint = tint, modifier = Modifier.size(20.dp))
+        } else Canvas(Modifier.size(20.dp)) {
             val stroke = 1.6.dp.toPx()
             val roundCap = androidx.compose.ui.graphics.StrokeCap.Round
             val roundJoin = androidx.compose.ui.graphics.StrokeJoin.Round
@@ -837,12 +842,7 @@ private fun EditorActionButton(
                     line(p(.39f, .67f), p(.57f, .67f))
                 }
                 EditorAction.PIN -> {
-                    // A calm, symmetrical thumbtack based on the supplied reference.
-                    roundRect(.33f, .12f, .34f, .20f, .08f)
-                    line(p(.37f, .33f), p(.28f, .60f))
-                    line(p(.63f, .33f), p(.72f, .60f))
-                    line(p(.28f, .60f), p(.72f, .60f))
-                    line(p(.50f, .60f), p(.50f, .88f))
+                    drawProductionPin(tint)
                 }
                 EditorAction.CUT -> {
                     drawCircle(color = tint, radius = size.width * .10f, center = p(.29f, .72f), style = outline())
@@ -889,26 +889,7 @@ private fun EditorActionButton(
                     plus(.80f, .72f, .13f)
                 }
                 EditorAction.UNDO, EditorAction.REDO -> {
-                    val isUndo = action == EditorAction.UNDO
-                    val loop = Path().apply {
-                        if (isUndo) {
-                            moveTo(size.width * .17f, size.height * .40f)
-                            cubicTo(size.width * .32f, size.height * .12f, size.width * .79f, size.height * .15f, size.width * .84f, size.height * .54f)
-                            cubicTo(size.width * .87f, size.height * .73f, size.width * .71f, size.height * .86f, size.width * .54f, size.height * .86f)
-                        } else {
-                            moveTo(size.width * .83f, size.height * .40f)
-                            cubicTo(size.width * .68f, size.height * .12f, size.width * .21f, size.height * .15f, size.width * .16f, size.height * .54f)
-                            cubicTo(size.width * .13f, size.height * .73f, size.width * .29f, size.height * .86f, size.width * .46f, size.height * .86f)
-                        }
-                    }
-                    drawPath(loop, tint, style = outline())
-                    if (isUndo) {
-                        line(p(.17f, .40f), p(.42f, .37f))
-                        line(p(.17f, .40f), p(.31f, .61f))
-                    } else {
-                        line(p(.83f, .40f), p(.58f, .37f))
-                        line(p(.83f, .40f), p(.69f, .61f))
-                    }
+                    // Rendered by shared OrbitIcons before this legacy Canvas branch.
                 }
                 EditorAction.AUTO_SAVE -> {
                     // A save tile with a small looping mark: understandable as a
@@ -938,7 +919,7 @@ private fun EditorActionButton(
     Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
         if (onChecked != null) Switch(checked, onChecked) else Spacer(Modifier.width(52.dp))
         Text(label, Modifier.weight(1f).padding(start = 10.dp))
-        TextButton(onClick = onEdit, enabled = checked) { Text(uiText("tap_edit"), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (checked) .72f else .35f)) }
+        TextButton(onClick = onEdit, enabled = checked) { Icon(OrbitIcons.Adjust, null, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text(uiText("tap_edit"), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (checked) .72f else .35f)) }
     }
 }
 
@@ -976,6 +957,7 @@ private val FONT_CHOICES: List<FontChoice> = buildList {
     val choice = FONT_CHOICES.firstOrNull { it.id == value } ?: FONT_CHOICES.first()
     ElevatedCard(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(OrbitIcons.Font, null, modifier = Modifier.size(24.dp)); Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) { Text(label, style = MaterialTheme.typography.bodySmall); Text(sample, fontFamily = textFont(choice.id), fontSize = 20.sp, maxLines = 2, lineHeight = 25.sp, overflow = TextOverflow.Ellipsis) }
             Text(uiText("choose"))
         }
@@ -1088,18 +1070,25 @@ private fun LayoutCanvas(
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Box(Modifier.width(canvasWidth.dp).height(canvasHeight.dp)
             .onGloballyPositioned { canvasOriginInRoot = it.positionInRoot() }
-            .clip(RoundedCornerShape(18.dp)).background(Color(0xFFE9E7EC)).pointerInput(Unit) {
+            .clip(RoundedCornerShape(18.dp)).background(Color(0xFFF0EDF2)).border(1.dp, Color(0xFFDCD6E2), RoundedCornerShape(18.dp)).pointerInput(Unit) {
             detectTapGestures(onTap = { onSelect(null) })
         }) {
             Canvas(Modifier.fillMaxSize()) {
-                val grid = Color(0xFF716A79).copy(alpha = .10f)
+                val grid = Color(0xFF716A79).copy(alpha = .09f)
+                for (index in 1..15) {
+                    if (index % 4 != 0) {
+                        val p = size.width * index / 16f
+                        drawLine(grid.copy(alpha = .035f), Offset(p, 0f), Offset(p, size.height), 1f)
+                        drawLine(grid.copy(alpha = .035f), Offset(0f, p), Offset(size.width, p), 1f)
+                    }
+                }
                 for (index in 1..3) {
                     val p = size.width * index / 4f
                     drawLine(grid, Offset(p, 0f), Offset(p, size.height), 1f)
                     drawLine(grid, Offset(0f, p), Offset(size.width, p), 1f)
                 }
                 if (guidesVisible) {
-                    val guideColor = Color(0xFF7552AE).copy(alpha = .48f)
+                    val guideColor = Color(0xFF7552AE).copy(alpha = .58f)
                     guideX?.let { drawLine(guideColor, Offset(it, boardBounds.top), Offset(it, boardBounds.bottom), 1.3f) }
                     guideY?.let { drawLine(guideColor, Offset(boardBounds.left, it), Offset(boardBounds.right, it), 1.3f) }
                     guideAngle?.let { angle ->
@@ -1148,7 +1137,7 @@ private fun LayoutCanvas(
                 Box(
                     Modifier.offset(rect.left.dp, rect.top.dp).width(rect.width().dp).height(rect.height().dp)
                         .graphicsLayer { rotationZ = layer.rotation }
-                        .then(if (isSelected) Modifier.border(1.dp, Color(0xFF7655AF).copy(alpha = .85f), RoundedCornerShape(7.dp)) else Modifier)
+                        .then(if (isSelected) Modifier.border(3.dp, Color(0xFF9B82B8).copy(alpha = .12f), RoundedCornerShape(7.dp)).border(1.dp, Color(0xFF7655AF).copy(alpha = .85f), RoundedCornerShape(7.dp)) else Modifier)
                         .pointerInput(index, layer.locked, canvasWidth, snapEnabled) {
                             var start = layer
                             var total = Offset.Zero
@@ -1235,13 +1224,13 @@ private fun LayoutCanvas(
             if (guidesVisible && sizeGuide != null) {
                 Text(
                     sizeGuide!!,
-                    Modifier.align(Alignment.TopStart).padding(12.dp).clip(RoundedCornerShape(10.dp)).background(Color(0xDD7655AF)).padding(horizontal = 8.dp, vertical = 4.dp),
+                    Modifier.align(Alignment.TopStart).padding(12.dp).clip(RoundedCornerShape(10.dp)).background(Color(0xEE765D91)).border(1.dp, Color(0x66FFFFFF), RoundedCornerShape(10.dp)).padding(horizontal = 8.dp, vertical = 4.dp),
                     color = Color.White,
                     fontSize = 11.sp
                 )
             }
 
-            if (config.cities.isEmpty() && config.texts.isEmpty()) Text(uiText("empty_canvas"), Modifier.align(Alignment.Center), color = Color(0xFF514B58).copy(alpha = .72f), fontSize = 11.sp)
+            if (config.cities.isEmpty() && config.texts.isEmpty()) Text(uiText("empty_canvas"), Modifier.align(Alignment.Center), color = Color(0xFF645D6B).copy(alpha = .65f), fontSize = 11.sp)
             config.cities.forEachIndexed { index, city ->
                 tick
                 val liveCity by rememberUpdatedState(city)
@@ -1508,7 +1497,10 @@ private fun snapRotation(value: Float, enabled: Boolean): SnapResult {
 
 @Composable private fun ResizeHandle(modifier: Modifier = Modifier) {
     Canvas(modifier.size(28.dp)) {
-        val c = Color.White.copy(alpha = .48f)
+        val center=Offset(size.width*.73f,size.height*.73f)
+        drawCircle(Color(0xEAF8F4FA),size.width*.26f,center)
+        drawCircle(Color(0x667E658F),size.width*.26f,center,style=Stroke(.6.dp.toPx()))
+        val c = Color(0xFF796288).copy(alpha = .75f)
         val stroke = 1.25.dp.toPx()
         drawLine(c, Offset(size.width*.55f,size.height*.88f), Offset(size.width*.88f,size.height*.55f), stroke)
         drawLine(c, Offset(size.width*.70f,size.height*.90f), Offset(size.width*.90f,size.height*.70f), stroke)
@@ -1599,21 +1591,9 @@ private fun RotationHandleUnified(
             },
         contentAlignment = Alignment.Center
     ) {
-        Canvas(Modifier.size(17.dp)) {
-            val tint = Color(0xFF7655AF).copy(alpha = .46f)
-            val stroke = 1.25.dp.toPx()
-            drawArc(
-                color = tint,
-                startAngle = -58f,
-                sweepAngle = 254f,
-                useCenter = false,
-                topLeft = Offset(size.width * .12f, size.height * .12f),
-                size = androidx.compose.ui.geometry.Size(size.width * .76f, size.height * .76f),
-                style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-            )
-            val tip = Offset(size.width * .79f, size.height * .25f)
-            drawLine(tint, tip, Offset(size.width * .57f, size.height * .19f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-            drawLine(tint, tip, Offset(size.width * .71f, size.height * .47f), stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+        // User-approved Future canvas language artwork; the outer 42dp target and geometry stay intact.
+        Box(Modifier.size(26.dp).background(Color(0xEEF9F5FA),RoundedCornerShape(13.dp)).border(.7.dp,Color(0x66836A93),RoundedCornerShape(13.dp)),contentAlignment=Alignment.Center) {
+            Icon(OrbitIcons.Rotate,null,tint=Color(0xFF7655AF),modifier=Modifier.size(18.dp))
         }
     }
 }
@@ -1627,6 +1607,61 @@ private fun RotationHandleUnified(
 
 private fun fontFamilyName(value: String): String = FONT_CHOICES.firstOrNull { it.id == value }?.family ?: value.split('|').getOrNull(1) ?: "sans-serif"
 private fun fontStyle(value: String): Int = FONT_CHOICES.firstOrNull { it.id == value }?.style ?: value.split('|').getOrNull(2)?.toIntOrNull() ?: android.graphics.Typeface.NORMAL
+// Shared artwork only. Production Pin proportions and 20dp stroke are unchanged.
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawProductionPin(tint: Color) {
+    val stroke = size.width * .08f
+    val cap = androidx.compose.ui.graphics.StrokeCap.Round
+    fun p(x:Float,y:Float) = Offset(size.width*x,size.height*y)
+    fun line(a:Offset,b:Offset) = drawLine(tint,a,b,stroke,cap=cap)
+    drawRoundRect(tint,p(.33f,.12f),androidx.compose.ui.geometry.Size(size.width*.34f,size.height*.20f),androidx.compose.ui.geometry.CornerRadius(size.width*.08f),style=Stroke(stroke,cap=cap,join=androidx.compose.ui.graphics.StrokeJoin.Round))
+    line(p(.37f,.33f),p(.28f,.60f)); line(p(.63f,.33f),p(.72f,.60f))
+    line(p(.28f,.60f),p(.72f,.60f)); line(p(.50f,.60f),p(.50f,.88f))
+}
+
+@Composable internal fun ProductionPinStudy(artworkSize: Dp) {
+    val tint=MaterialTheme.colorScheme.onSurface
+    Canvas(Modifier.size(artworkSize)) { drawProductionPin(tint) }
+}
+
+/** The exact Orbit Rotate the user identified in Future canvas language. */
+@Composable internal fun ProductionRotateStudy(artworkSize: Dp) {
+    Icon(OrbitIcons.Rotate,"Rotate",tint=MaterialTheme.colorScheme.onSurface,modifier=Modifier.size(artworkSize))
+}
+
+/** Debug review bridge to actual production buttons; never saves a project. */
+@Composable internal fun BestMatesProductionToolbarReview() {
+    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly,verticalAlignment=Alignment.CenterVertically) {
+        EditorActionButton(EditorAction.UNDO,"Undo",{})
+        EditorActionButton(EditorAction.REDO,"Redo",{})
+        EditorActionButton(EditorAction.PIN,"Pin position",{})
+        Icon(OrbitIcons.Font,"Font",modifier=Modifier.size(20.dp))
+        Icon(OrbitIcons.Adjust,"Local adjustments",modifier=Modifier.size(20.dp))
+        ProductionRotateStudy(20.dp)
+    }
+}
+
+/** Disposable local state around the unchanged geometry/gesture engine. */
+@Composable internal fun BestMatesCanvasReview() {
+    var study by remember { mutableStateOf(WidgetConfig(
+        layers=listOf(WidgetLayer(id=1L,shape=WidgetShape.HEART,width=.82f,height=.82f,dayColor=0xDDEEDCEC,nightColor=0xDDEEDCEC,textColor=0xFF796584,softness=4f,glowOpacity=.08f)),
+        cities=listOf(City("Tokyo","Japan",35.68,139.69,"Asia/Tokyo",componentId=1L,scale=.85f,nameColor=0xFF4A3A53,timeColor=0xFF4A3A53,dateColor=0xFF63536C))
+    )) }
+    var selection by remember { mutableStateOf<CanvasSelection?>(CanvasSelection.ComponentItem(0)) }
+    Column(Modifier.fillMaxWidth().height(570.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+        BestMatesProductionToolbarReview()
+        LayoutCanvas(study,{index,value -> study=study.copy(cities=study.cities.toMutableList().also { it[index]=value })},
+            {index,value -> study=study.copy(texts=study.texts.toMutableList().also { it[index]=value })},
+            {index,value -> study=study.copy(layers=study.layers.toMutableList().also { it[index]=value })},
+            {},{},selection,{selection=it},true,true)
+        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+            Text("Soft inspector · local study",style=MaterialTheme.typography.titleMedium)
+            FontField("Time typeface",study.cities.first().timeFont,"18:40") { next -> study=study.copy(cities=study.cities.map { it.copy(timeFont=next) }) }
+            EditableDisplayRow("Date",study.cities.first().showDate,{next -> study=study.copy(cities=study.cities.map { it.copy(showDate=next) })},{})
+            Text("Current production Heart · neutral work mat · no saved project",style=MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+
 private fun textFont(value: String): FontFamily = FontFamily(android.graphics.Typeface.create(fontFamilyName(value), fontStyle(value)))
 
 @Composable private fun shapeLabel(shape: WidgetShape): String {

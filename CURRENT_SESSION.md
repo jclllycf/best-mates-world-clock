@@ -1,19 +1,23 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2D Visual Direction Lock / Golden Set 2 implemented; Phase 2C foundation remains visually frozen
+Codex — Phase 2D closure and Phase 3 handoff; Phase 2C foundation remains visually frozen
 
 ## Current task
-Best Mates 2.0 — Phase 2D Visual Direction Lock. Audit decisions and Golden Set 2 are implemented in the isolated Design Lab. Stop for maintainer/device review; do not begin production adoption, mass expansion, or Phase 3 automatically.
+Best Mates 2.0 — Phase 2D is closed with Visual System Direction Established and Celestial Artwork Finalization Deferred. Golden Set 3 remains available in the Design Lab. Phase 3 is next but has not started; do not resume TASK-007 or infer bulk candidate promotion.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2D-0.5 starts from the Phase 2D-0 documentation commit `b16193512e62b2c3eb5778953dcf4301085bae5d`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Application production behavior remains based on `f9beacd`; subsequent work adds documentation, audit material, the isolated kernel, Design Lab/debug host, frozen Cute Atelier foundation, and isolated visual candidates.
+Phase 2D closure starts from `769cf26abda06fe181a41efe1007061e5c98b63e`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Use the current clean HEAD after the closure commit as the Phase 3 baseline.
 
 ## Task status
-BM2-P2D-DL: DIRECTION_LOCKED / GOLDEN_SET_2_REVIEW_PENDING
+BM2-P2D-CLOSURE: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
+
+BM2-CELESTIAL-FINAL: DEFERRED / FUTURE_FOCUSED_TASK
+
+BM2-P2D-DL: HISTORICAL / SUPERSEDED_BY_GOLDEN_SET_3_AND_PHASE_2D_CLOSURE
 
 BM2-P2D-0.5: IMPLEMENTED / SUPERSEDED_BY_BM2-P2D-DL
 
@@ -36,6 +40,19 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: PARTIALLY_COMPLETE / DEFERRED
+
+## Best Mates 2.0 — Phase 2D closure result (2026-09-09)
+
+- Closed Phase 2D with **Visual System Direction Established**. New Golden Set 3 Sun/Moon candidates are not visually approved; **Celestial Artwork Finalization Deferred** is an explicit separate outcome.
+- Preserved the Golden Set 3 debug review surface: Objects, Celestial, Orbit, Work Mat, Wallpapers, and Sources. The Celestial gallery retains the production collection, category filters, new comparison candidates, and source/licensing separation.
+- Established **Shape × Variant × Material × Appearance** as the future object architecture. Material never becomes part of persistent Shape identity. Existing transparent components remain valid, and the current production Heart remains canonical.
+- Kept Golden Set 3 candidates under review-only IDs. No new object or Celestial candidate is automatically a production asset, and persisted production Sun/Moon IDs remain intact.
+- Accepted the Soft Atelier Work Mat as the basis for future Editor visual migration while preserving geometry, intrinsic proportions, drag, resize, rotate, snap, guides, fixed canvas plus scrolling inspector, and widget geometry behavior.
+- Preserved accepted/provisional Orbit decisions: Golden Undo/Redo, global Settings gear, local Adjust sliders, current production Pin, and the Rotate identified by the user in the Future canvas language. Generic Apply buttons have no decorative checkmark.
+- Deferred **Celestial Atelier Final Pass**: final Sun/Moon and crescent geometry, star/jewel companions, atmospheric and symbolic variants, target-size correction, picker population, source/license review, and production promotion decisions.
+- Added the Manual Device Review Policy to `PROJECT_HANDOFF.md`. By default the user reviews subjective visuals on the physical device; Codex builds, installs, launches the relevant review surface, then stops without repeated screenshot collection unless specifically requested or technically necessary.
+- `assembleDebug --warning-mode all` passes. The APK was installed on connected PJF110 and `com.bestmates.worldclock.debug.BestMatesDesignLabActivity` was launched without automated screenshot capture; the Design Lab is left open for user review.
+- Phase 3 is the next implementation phase and remains unstarted. TASK-007 remains partially complete and deferred.
 
 ## Best Mates 2.0 — Phase 2D Visual Direction Lock result (2026-09-09)
 
@@ -215,11 +232,11 @@ Device testing of commit 31c3ebb revealed the following issues:
 
 ## Next development priorities
 
-1. Review `docs/BEST_MATES_VISUAL_ASSET_BIBLE.md` as the Phase 2D source of truth.
-2. Do not begin Phase 2D-0.5, mass asset creation, production shared components, screen migration, Settings persistence work, broad UI implementation, or TASK-007 investigation until explicitly authorized.
-3. If approved, Phase 2D-0.5 produces only the documented Golden Orbit/Celestial/Shape Set and Type Wardrobe presentation master before any family expansion.
+1. Begin Phase 3 only from a new explicit implementation scope, using the Phase 2D closure documents as the visual and compatibility baseline.
+2. Promote only assets that Phase 3 actually needs and explicitly accepts. Golden Set 3 candidates are not production assets by default.
+3. Keep **Celestial Atelier Final Pass** and TASK-007 deferred until each is separately reprioritized.
 
-The current goal is maintainer review of the Visual Asset Bible. The Soft Crystal interaction foundation remains frozen and production behavior remains unchanged.
+The Soft Crystal interaction foundation remains frozen. The default visual workflow is now user-led physical-device review after Codex prepares the relevant screen.
 
 ## Files/folders that must NOT be touched / deleted
 - Reference folders: `1/` and `2/`
@@ -227,7 +244,7 @@ The current goal is maintainer review of the Visual Asset Bible. The Soft Crysta
 - Native widget provider declarations in `AndroidManifest.xml` and `res/xml/`
 
 ## Build status
-NOT RUN for Phase 2D-0 because the task changed documentation only. The last application verification remains the Phase 2C.3 `assembleDebug --warning-mode all` pass and successful PJF110 Design Lab review at baseline `810ada4`.
+PASS — `assembleDebug --warning-mode all` completed successfully on 2026-09-09. The debug APK was installed on connected PJF110 and the Design Lab Activity was launched for manual review without screenshot capture.
 TASK-007 is partially complete and deferred with the post-rotation drag issue still open.
 
 ## TASK-004 and TASK-005 implementation (2026-09-08)

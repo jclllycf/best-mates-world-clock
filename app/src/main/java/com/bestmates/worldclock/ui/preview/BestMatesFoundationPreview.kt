@@ -156,8 +156,8 @@ private fun CuteAtelierLabPage(
                 onBrightnessSelected = onBrightnessSelected,
             )
 
-            ChapterLabel("GOLDEN ASSET GALLERY", "Phase 2D-0.5 · candidate masters · no production IDs")
-            BestMatesGoldenAssetGallery()
+            ChapterLabel("GOLDEN SET 3", "Objects for the worlds you keep close")
+            GoldenSet3Review()
 
             ChapterLabel("EXPERIENCE SHOWCASE", "Cute atmosphere · professional skeleton")
             ShowcaseSection("A warm welcome", "Personal, polished, and ready to make something.") {
@@ -684,7 +684,7 @@ private fun EditorToolbarSample(colors: BestMatesColors, dimensions: BestMatesDi
                 OrbitAction(OrbitIcons.Undo, "Undo", colors, dimensions)
                 OrbitAction(OrbitIcons.Redo, "Redo", colors, dimensions)
                 OrbitAction(OrbitIcons.AddComponent, "Add", colors, dimensions, prominent = true)
-                OrbitAction(OrbitIcons.Settings, "Settings", colors, dimensions)
+                OrbitAction(OrbitIcons.Adjust, "Adjust", colors, dimensions)
             }
         }
     }
@@ -780,7 +780,7 @@ private fun PickerSample(colors: BestMatesColors, dimensions: BestMatesDimension
         PickerRow("Pearl morning", colors.accentContainer, true, colors, dimensions)
         PickerRow("Rose postcard", colors.secondaryContainer, false, colors, dimensions)
         PickerRow("Peach hour", colors.tertiaryContainer, false, colors, dimensions)
-        AtelierButton("Apply", AtelierButtonKind.Primary, OrbitIcons.Confirm, colors, dimensions)
+        AtelierButton("Apply", AtelierButtonKind.Primary, null, colors, dimensions)
     }
 }
 
@@ -1088,7 +1088,7 @@ private fun ColorPickerSample(colors: BestMatesColors, dimensions: BestMatesDime
         }
         AtelierSlider("Brightness", "86%", 0.86f, colors, dimensions)
         AtelierSlider("Opacity", "72%", 0.72f, colors, dimensions)
-        AtelierButton("Apply color", AtelierButtonKind.Primary, OrbitIcons.Confirm, colors, dimensions)
+        AtelierButton("Apply color", AtelierButtonKind.Primary, null, colors, dimensions)
     }
 }
 

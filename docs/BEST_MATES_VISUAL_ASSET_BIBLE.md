@@ -8,6 +8,10 @@ Foundation baseline: `810ada4518be5fef0d82303d91c9e8166278c072`
 
 Applies to: Phase 2D Orbit Charm, Shape Atelier, Celestial Atelier, Type Wardrobe, asset previews, and asset-picker presentation.
 
+Phase status: **CLOSED — VISUAL SYSTEM DIRECTION ESTABLISHED / CELESTIAL ARTWORK FINALIZATION DEFERRED** (2026-09-09).
+
+Phase 2D establishes the visual system, review architecture, and compatibility rules. It does not claim that the current new Sun/Moon candidate geometry is visually approved. Those candidates remain debug-only studies until a later, focused **Celestial Atelier Final Pass** explicitly promotes individual assets.
+
 This document is the source of truth for Phase 2D visual assets. [BEST_MATES_UI_2_SPEC.md](BEST_MATES_UI_2_SPEC.md) remains authoritative for the frozen Phase 2C materials, tokens, interaction states, motion, accessibility, and app-level composition. If the two documents appear to conflict, preserve the Phase 2C foundation and use this Bible only for the visual objects and picker language that live inside it.
 
 ## 1. Product identity
@@ -370,15 +374,14 @@ Approval questions are concrete: Does each object belong to the same studio? Doe
 
 ## 14. Phase 2D sequence and boundaries
 
-| Phase | Deliverable |
+| Stage | Closure result |
 | --- | --- |
-| 2D-0 | This Visual Asset Bible |
-| 2D-0.5 | Golden Visual Asset Set |
-| 2D-1 | Full Orbit Charm 2.0 family |
-| 2D-2 | Shape Atelier |
-| 2D-3 | Celestial Atelier |
-| 2D-4 | Type Wardrobe |
-| 2D-5 | Unified Asset Picker Language |
+| 2D-0 | Visual Asset Bible complete. |
+| 2D-0.5 / Direction Lock | Golden candidate system and debug review structure preserved as history. |
+| Golden Set 3 | Useful object, material, wallpaper, Work Mat, Orbit, Celestial, and Sources studies preserved in the Design Lab. |
+| Phase 2D closure | Visual system direction established. No bulk asset promotion or library expansion is implied. |
+| Celestial Atelier Final Pass | Deferred future task; final Sun/Moon artwork, small-size correction, licensing review, picker population, and production promotion remain unresolved. |
+| Phase 3 | Next implementation phase, subject to its own authorized scope. |
 
 The production color picker is completely outside Phase 2D behavior. Do not redesign its color wheel, hue/SV behavior, ARGB conversion, opacity, gestures, persistence, or selection logic. A later production-UI migration may apply the already frozen surrounding chrome only.
 
@@ -399,7 +402,7 @@ Phase 2D does not authorize changes to production Workspace, Settings, Editor, `
 - [ ] Preserves stable IDs or includes an approved alias/migration.
 - [ ] Does not change production interaction, rendering contracts, or color-picker behavior outside its approved phase.
 
-## 16. Phase 2D Golden Set implementation record
+## 16. Phase 2D Golden Set implementation record (historical)
 
 Phase 2D-0.5 established the original candidate catalog. The Visual Direction Lock expands it into Golden Set 2 under `ui/preview`. Neither stage replaces the provisional production-facing `OrbitIcons`, existing `WidgetShape` values, Sun/Moon enums or SVG files, font strings, renderer paths, or picker behavior. Every candidate ID begins with `golden.` and exists only in the Design Lab; these labels are review handles, not saved-data identifiers.
 
@@ -426,4 +429,28 @@ Rejected concepts are recorded so they are not multiplied later: a literal cramp
 
 ### Freeze and next gate
 
-The Golden Set is implemented for visual review and remains a candidate set. Production stable IDs and output stay unchanged; saved projects, imported resources, color selection, widget rendering, canvas transforms, and TASK-007 are unaffected. Phase 2D-1, family expansion, external font bundling, and production picker migration require a separate approval after this gate.
+The Golden Set is implemented for visual review and remains a candidate set. Production stable IDs and output stay unchanged; saved projects, imported resources, color selection, widget rendering, canvas transforms, and TASK-007 are unaffected. Candidate existence never grants production status.
+
+## 17. Phase 2D closure architecture
+
+Future widget-object work separates four independent concepts:
+
+**Shape × Variant × Material × Appearance**
+
+- **Shape** is the stable semantic base, such as Heart, Cloud, Arch, or Stationery.
+- **Variant** is a distinctive member of that base family, such as Heart Classic, Puffy, or Soft.
+- **Material** is the rendering recipe, such as Original, Mist Glass, Milk Crystal, or Dream Frost.
+- **Appearance** contains supported parameters such as colour, opacity, outline, glow, haze, edge highlight, and shadow.
+
+Material must not be encoded into the persistent Shape ID. Do not create IDs such as `heart_milk_crystal` merely because the same Heart is rendered with another material. Existing transparent components remain valid; future glass, frost, and crystal recipes extend that system rather than replace it. The current production Heart remains the canonical Heart. Golden Set 3 candidates retain separate `golden3.*` review IDs and are not automatically promoted.
+
+The Golden Set 3 pages have these roles:
+
+- **Objects** compares Shape × Variant × Material combinations. It is not a replacement production renderer.
+- **Wallpapers** tests readability on simulated home-screen environments. Production must not depend on wallpaper capture or simulated blur.
+- **Work Mat** records the accepted Soft Atelier direction for a later Editor visual migration while preserving the existing geometry engine, intrinsic proportions, drag, resize, rotate, snap, guides, fixed canvas plus scrolling inspector, and widget geometry behavior.
+- **Sources** separates retained production examples, new candidates, and study-only references with explicit source/licensing cautions.
+
+Orbit Charm closes with Golden Undo/Redo, the global Settings gear, the local Adjust sliders, current production Pin, and the Rotate artwork identified in the Future canvas language accepted or provisionally accepted. Minor optical polish may happen later without reopening the full family. Generic Apply buttons carry no decorative checkmark; a checkmark is reserved for real selection or confirmation semantics.
+
+The debug Celestial gallery, filters, Sources page, retained production collection, candidate comparisons, and local/offline vector workflow remain available. Persisted production Sun/Moon IDs and assets remain intact. The deferred **Celestial Atelier Final Pass** owns final Sun and Moon geometry, reference-quality crescents, star/jewel companions, atmospheric variants, the dedicated Crescent & Star option, small-size correction, picker population, source/license review, and explicit production-promotion decisions.
