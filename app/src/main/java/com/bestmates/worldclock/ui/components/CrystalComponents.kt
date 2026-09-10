@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +47,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
@@ -275,6 +284,28 @@ fun OrbitIconButton(
     destructive: Boolean = false,
     enabled: Boolean = true,
 ) {
+    OrbitCustomIconButton(
+        contentDescription = contentDescription,
+        onClick = onClick,
+        modifier = modifier,
+        selected = selected,
+        destructive = destructive,
+        enabled = enabled,
+    ) { tint ->
+        Icon(icon, null, tint = tint, modifier = Modifier.size(20.dp))
+    }
+}
+
+@Composable
+fun OrbitCustomIconButton(
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    destructive: Boolean = false,
+    enabled: Boolean = true,
+    artwork: @Composable BoxScope.(Color) -> Unit,
+) {
     val colors = BestMatesDesign.colors
     val dimensions = BestMatesDesign.dimensions
     val interactionSource = remember { MutableInteractionSource() }
@@ -290,9 +321,10 @@ fun OrbitIconButton(
         selected -> colors.selectionContent
         else -> colors.textSecondary
     }.copy(alpha = if (enabled) 1f else BestMatesDesign.states.disabledContentAlpha)
-    androidx.compose.foundation.layout.Box(
+    Box(
         modifier = modifier
             .size(dimensions.shared.minimumTouchTarget)
+            .semantics { this.contentDescription = contentDescription }
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -315,7 +347,7 @@ fun OrbitIconButton(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription, tint = tint, modifier = Modifier.size(20.dp))
+        artwork(tint)
     }
 }
 
@@ -397,4 +429,105 @@ fun OrbitChoiceChip(
         }
         Text(label, style = MaterialTheme.typography.labelLarge, color = contentColor)
     }
+}
+
+@Composable
+fun OrbitSwitchRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    val colors = BestMatesDesign.colors
+    val dimensions = BestMatesDesign.dimensions
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = dimensions.shared.minimumSettingsRowHeight),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(dimensions.spacing.space4),
+    ) {
+        Text(
+            label,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (enabled) colors.textPrimary else colors.textMuted,
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = colors.onAccent,
+                checkedTrackColor = colors.accent,
+                checkedBorderColor = colors.secondary,
+                uncheckedThumbColor = colors.textMuted,
+                uncheckedTrackColor = colors.surfaceInset,
+                uncheckedBorderColor = colors.borderControl,
+            ),
+        )
+    }
+}
+
+@Composable
+fun OrbitSliderRow(
+    label: String,
+    valueText: String,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = BestMatesDesign.colors
+    Column(modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(label, style = MaterialTheme.typography.bodyMedium, color = colors.textPrimary)
+            Text(valueText, style = MaterialTheme.typography.labelMedium, color = colors.textSecondary)
+        }
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            valueRange = valueRange,
+            colors = SliderDefaults.colors(
+                thumbColor = colors.accent,
+                activeTrackColor = colors.secondary,
+                inactiveTrackColor = colors.surfaceInset,
+            ),
+        )
+    }
+}
+
+@Composable
+fun CrystalTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = false,
+    enabled: Boolean = true,
+) {
+    val colors = BestMatesDesign.colors
+    val dimensions = BestMatesDesign.dimensions
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.heightIn(min = dimensions.shared.minimumInputHeight),
+        label = label,
+        singleLine = singleLine,
+        enabled = enabled,
+        shape = RoundedCornerShape(dimensions.radii.radiusLg),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = colors.surfaceRaised.copy(alpha = .78f),
+            unfocusedContainerColor = colors.surfaceRaised.copy(alpha = .62f),
+            disabledContainerColor = colors.surfaceInset.copy(alpha = .48f),
+            focusedBorderColor = colors.focusRing,
+            unfocusedBorderColor = colors.borderControl,
+            focusedTextColor = colors.textPrimary,
+            unfocusedTextColor = colors.textPrimary,
+            focusedLabelColor = colors.accent,
+            unfocusedLabelColor = colors.textSecondary,
+            cursorColor = colors.accent,
+        ),
+    )
 }

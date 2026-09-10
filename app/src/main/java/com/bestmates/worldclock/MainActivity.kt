@@ -1,6 +1,18 @@
 package com.bestmates.worldclock
 
 import com.bestmates.worldclock.ui.icons.OrbitIcons
+import com.bestmates.worldclock.ui.components.CrystalPanel
+import com.bestmates.worldclock.ui.components.CrystalTextField
+import com.bestmates.worldclock.ui.components.OrbitButton
+import com.bestmates.worldclock.ui.components.OrbitButtonStyle
+import com.bestmates.worldclock.ui.components.OrbitChoiceChip
+import com.bestmates.worldclock.ui.components.OrbitCustomIconButton
+import com.bestmates.worldclock.ui.components.OrbitIconButton
+import com.bestmates.worldclock.ui.components.OrbitSliderRow
+import com.bestmates.worldclock.ui.components.OrbitSwitchRow
+import com.bestmates.worldclock.ui.editor.EditorChromeStrings
+import com.bestmates.worldclock.ui.editor.EditorControlShelf
+import com.bestmates.worldclock.ui.editor.EditorFrame
 import com.bestmates.worldclock.ui.editor.rotateCanvasVector
 import com.bestmates.worldclock.ui.theme.BestMatesBrightnessMode
 import com.bestmates.worldclock.ui.theme.BestMatesDesign
@@ -454,6 +466,23 @@ private fun settingsStrings() = SettingsStrings(
     versionTemplate = uiText("version_format"),
 )
 
+@Composable
+private fun editorChromeStrings() = EditorChromeStrings(
+    title = uiText("editor"),
+    back = uiText("back"),
+    undo = uiText("undo"),
+    redo = uiText("redo"),
+    autoSave = uiText("auto_save"),
+    addComponent = uiText("add_component"),
+    addCity = uiText("add_city"),
+    addText = uiText("add_text"),
+    snap = uiText("snap"),
+    guides = uiText("guides"),
+    addToHome = uiText("add_home"),
+    save = uiText("save"),
+    selected = uiText("selected"),
+)
+
 private sealed interface CanvasSelection {
     data class ComponentItem(val index: Int) : CanvasSelection
     data class CityItem(val index: Int) : CanvasSelection
@@ -541,31 +570,52 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
         }
     }
     BackHandler { if (cityPicker) cityPicker = false else onBack() }
-    Scaffold(topBar = { TopAppBar(title = { Text(uiText("editor")) }, navigationIcon = { TextButton(onClick = onBack) { Text(uiText("back")) } }, actions = {
-        EditorActionButton(EditorAction.UNDO, uiText("undo"), { if (historyIndex > 0) { historyIndex--; config = history[historyIndex] } }, enabled = historyIndex > 0)
-        EditorActionButton(EditorAction.REDO, uiText("redo"), { if (historyIndex < history.lastIndex) { historyIndex++; config = history[historyIndex] } }, enabled = historyIndex < history.lastIndex)
-        EditorActionButton(EditorAction.AUTO_SAVE, uiText("auto_save"), { applyChange(config.copy(autoSave = !config.autoSave)) }, selected = config.autoSave)
-        EditorActionButton(EditorAction.ADD_COMPONENT, uiText("add_component"), { addShapePicker = true }, enabled = config.layers.size < 6)
-        EditorActionButton(EditorAction.ADD_CITY, uiText("add_city"), { cityPicker = true }, enabled = config.cities.size < 10)
-        EditorActionButton(EditorAction.ADD_TEXT, uiText("add_text"), {
-            if (config.texts.size < 5) {
-                val index = config.texts.size
-                val componentId = (selection as? CanvasSelection.ComponentItem)?.index?.let(config.layers::getOrNull)?.id
-                    ?: config.layers.firstOrNull()?.id ?: 0L
-                applyChange(config.copy(texts = config.texts + CustomText(content = defaultTextLabel, y = -.65f + index * .24f, componentId = componentId)))
-                selection = CanvasSelection.TextItem(index)
-            }
-        }, enabled = config.texts.size < 5)
-    }) }, bottomBar = { BottomAppBar {
-        if (projectId != null) OutlinedButton(onClick = { onSave(config); pinWidget(context, projectId, config) }) { Text(uiText("add_home")) }
-        Spacer(Modifier.weight(1f))
-        Button(onClick = { onSave(config) }) { Text(uiText("save")) }
-    } }) { padding ->
-        Column(Modifier.padding(padding).padding(horizontal = 16.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                FilterChip(selected = snapEnabled, onClick = { snapEnabled = !snapEnabled }, label = { Text(uiText("snap")) })
-                FilterChip(selected = guidesVisible, onClick = { guidesVisible = !guidesVisible }, label = { Text(uiText("guides")) })
-            }
+    EditorFrame(
+        strings = editorChromeStrings(),
+        canUndo = historyIndex > 0,
+        canRedo = historyIndex < history.lastIndex,
+        autoSave = config.autoSave,
+        onBack = onBack,
+        onUndo = { if (historyIndex > 0) { historyIndex--; config = history[historyIndex] } },
+        onRedo = { if (historyIndex < history.lastIndex) { historyIndex++; config = history[historyIndex] } },
+        onAutoSave = { applyChange(config.copy(autoSave = !config.autoSave)) },
+        onSave = { onSave(config) },
+        onAddToHome = projectId?.let { id ->
+            { onSave(config); pinWidget(context, id, config) }
+        },
+    ) {
+            Spacer(Modifier.height(8.dp))
+            EditorControlShelf(
+                strings = editorChromeStrings(),
+                snapEnabled = snapEnabled,
+                guidesVisible = guidesVisible,
+                canAddComponent = config.layers.size < 6,
+                canAddCity = config.cities.size < 10,
+                canAddText = config.texts.size < 5,
+                onSnap = { snapEnabled = !snapEnabled },
+                onGuides = { guidesVisible = !guidesVisible },
+                onAddComponent = { addShapePicker = true },
+                onAddCity = { cityPicker = true },
+                onAddText = {
+                    if (config.texts.size < 5) {
+                        val index = config.texts.size
+                        val componentId = (selection as? CanvasSelection.ComponentItem)?.index
+                            ?.let(config.layers::getOrNull)?.id
+                            ?: config.layers.firstOrNull()?.id ?: 0L
+                        applyChange(
+                            config.copy(
+                                texts = config.texts + CustomText(
+                                    content = defaultTextLabel,
+                                    y = -.65f + index * .24f,
+                                    componentId = componentId,
+                                ),
+                            ),
+                        )
+                        selection = CanvasSelection.TextItem(index)
+                    }
+                },
+            )
+            Spacer(Modifier.height(8.dp))
             LayoutCanvas(config = config, onCityChange = { index, city ->
                 applyLive(config.copy(cities = config.cities.toMutableList().also { list ->
                     if (index in list.indices) list[index] = city
@@ -587,21 +637,23 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             SectionTitle(uiText("selected_cities"))
             if (config.cities.isEmpty()) Text(uiText("no_cities"), style = MaterialTheme.typography.bodySmall)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) { config.cities.forEachIndexed { index, city ->
-                FilterChip(selection == CanvasSelection.CityItem(index), { selection = CanvasSelection.CityItem(index) }, { Text("${index + 1}. ${city.nickname.ifBlank { city.name }}") })
+                OrbitChoiceChip(
+                    label = "${index + 1}. ${city.nickname.ifBlank { city.name }}",
+                    selected = selection == CanvasSelection.CityItem(index),
+                    selectedDescription = uiText("selected"),
+                    onClick = { selection = CanvasSelection.CityItem(index) },
+                )
             } }
 
             SectionTitle(uiText("theme"))
             ThemePicker(config.theme) { applyChange(config.copy(theme = it)) }
 
-            ElevatedCard(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(uiText("time_format"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    SwitchRow(uiText("time_24"), config.use24Hour) { applyChange(config.copy(use24Hour = it)) }
-                }
+            CrystalPanel {
+                Text(uiText("time_format"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                SwitchRow(uiText("time_24"), config.use24Hour) { applyChange(config.copy(use24Hour = it)) }
             }
             Spacer(Modifier.height(24.dp))
             }
-        }
     }
     if (cityPicker) CityPicker(onDismiss = { cityPicker = false }) { city ->
         if (config.cities.none { it.geoId == city.geoId } && config.cities.size < 10) {
@@ -640,8 +692,8 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 ))
                 onClearSelection()
             }
-            ElevatedCard(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            CrystalPanel {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     EditorActionRow(
                         onClear = onClearSelection,
                         onCopy = { onCopy(EditorClipboard.Layer(layer)) },
@@ -673,7 +725,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             var part by remember(selection.index) { mutableStateOf<CityPart?>(null) }
             var replaceCity by remember(selection.index) { mutableStateOf(false) }
             fun update(changed: City) = onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = changed }))
-            ElevatedCard(Modifier.fillMaxWidth()) { Column(Modifier.padding(14.dp)) {
+            CrystalPanel { Column {
                 EditorActionRow(
                     onClear = onClearSelection,
                     onCopy = { onCopy(EditorClipboard.CityValue(city)) },
@@ -683,8 +735,13 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                     onCut = { onCopy(EditorClipboard.CityValue(city)); onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
                     onDelete = { onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
                 )
-                OutlinedButton(onClick = { replaceCity = true }, modifier = Modifier.fillMaxWidth()) { Text(uiText("change_city")) }
-                OutlinedTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
+                OrbitButton(
+                    label = uiText("change_city"),
+                    onClick = { replaceCity = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    style = OrbitButtonStyle.Secondary,
+                )
+                CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
                 Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 EditableDisplayRow(uiText("city_name"), true, null, onEdit = { part = CityPart.NAME })
                 EditableDisplayRow(uiText("show_time"), city.showTime, { value -> update(city.copy(showTime = value)) }, { part = CityPart.TIME })
@@ -706,7 +763,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             }
         }
         is CanvasSelection.TextItem -> config.texts.getOrNull(selection.index)?.let { item ->
-            ElevatedCard(Modifier.fillMaxWidth()) { Column(Modifier.padding(14.dp)) {
+            CrystalPanel { Column {
                 EditorActionRow(
                     onClear = onClearSelection,
                     onCopy = { onCopy(EditorClipboard.TextValue(item)) },
@@ -716,7 +773,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                     onCut = { onCopy(EditorClipboard.TextValue(item)); onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
                     onDelete = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
                 )
-                OutlinedTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
+                CrystalTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
                 FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(font = value) })) }
                 ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(color = value) })) }
                 SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[selection.index] = item.copy(alpha = value) })) }
@@ -729,6 +786,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
 
 private enum class EditorAction { CLEAR, COPY, PASTE, PIN, CUT, DELETE, RENAME, ADD_COMPONENT, ADD_CITY, ADD_TEXT, UNDO, REDO, AUTO_SAVE }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EditorActionRow(
     onClear: () -> Unit,
@@ -739,13 +797,12 @@ private fun EditorActionRow(
     onCut: () -> Unit,
     onDelete: () -> Unit
 ) {
-    Row(
+    FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         EditorActionButton(EditorAction.CLEAR, uiText("deselect"), onClear)
-        Spacer(Modifier.weight(1f))
         EditorActionButton(EditorAction.COPY, uiText("copy"), onCopy)
         EditorActionButton(EditorAction.PASTE, uiText("paste"), onPaste)
         EditorActionButton(EditorAction.PIN, if (locked) uiText("unpin") else uiText("pin"), onLock, selected = locked)
@@ -763,138 +820,55 @@ private fun EditorActionButton(
     enabled: Boolean = true,
     destructive: Boolean = false
 ) {
-    val baseTint = when {
-        destructive -> Color(0xFF9B4D64)
-        selected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    val tint = baseTint.copy(alpha = if (enabled) 1f else .35f)
-    // The visible mark stays modest, while the 40dp button keeps the compact
-    // toolbars comfortably tappable.  Every mark below is drawn on the same
-    // 20dp optical canvas with rounded terminals and joins.
-    IconButton(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier
-            .size(40.dp)
-            .semantics { contentDescription = description }
-    ) {
-        if (action == EditorAction.UNDO || action == EditorAction.REDO) {
-            Icon(if (action == EditorAction.UNDO) OrbitIcons.Undo else OrbitIcons.Redo, null, tint = tint, modifier = Modifier.size(20.dp))
-        } else Canvas(Modifier.size(20.dp)) {
-            val stroke = 1.6.dp.toPx()
-            val roundCap = androidx.compose.ui.graphics.StrokeCap.Round
-            val roundJoin = androidx.compose.ui.graphics.StrokeJoin.Round
-            fun outline() = Stroke(stroke, cap = roundCap, join = roundJoin)
-            fun line(a: Offset, b: Offset) = drawLine(tint, a, b, stroke, cap = roundCap)
-            fun p(x: Float, y: Float) = Offset(size.width * x, size.height * y)
-            fun plus(x: Float, y: Float, radius: Float = .13f) {
-                line(p(x - radius, y), p(x + radius, y))
-                line(p(x, y - radius), p(x, y + radius))
-            }
-            fun roundRect(left: Float, top: Float, width: Float, height: Float, radius: Float = .12f) =
-                drawRoundRect(
-                    color = tint,
-                    topLeft = p(left, top),
-                    size = androidx.compose.ui.geometry.Size(size.width * width, size.height * height),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * radius, size.width * radius),
-                    style = outline()
-                )
-            when (action) {
-                EditorAction.CLEAR -> {
-                    drawCircle(tint.copy(alpha = .12f), size.minDimension * .34f, p(.50f, .50f))
-                    line(p(.35f, .35f), p(.65f, .65f))
-                    line(p(.65f, .35f), p(.35f, .65f))
-                }
-                EditorAction.COPY -> {
-                    roundRect(.18f, .14f, .48f, .56f)
-                    roundRect(.34f, .30f, .48f, .56f)
-                }
-                EditorAction.PASTE -> {
-                    roundRect(.24f, .19f, .52f, .65f)
-                    roundRect(.38f, .09f, .24f, .18f, .07f)
-                    line(p(.39f, .52f), p(.61f, .52f))
-                    line(p(.39f, .67f), p(.57f, .67f))
-                }
-                EditorAction.PIN -> {
-                    drawProductionPin(tint)
-                }
-                EditorAction.CUT -> {
-                    drawCircle(color = tint, radius = size.width * .10f, center = p(.29f, .72f), style = outline())
-                    drawCircle(color = tint, radius = size.width * .10f, center = p(.71f, .72f), style = outline())
-                    line(p(.36f, .62f), p(.78f, .18f))
-                    line(p(.64f, .62f), p(.22f, .18f))
-                }
-                EditorAction.DELETE -> {
-                    roundRect(.28f, .30f, .44f, .54f, .08f)
-                    line(p(.20f, .24f), p(.80f, .24f))
-                    line(p(.42f, .14f), p(.58f, .14f))
-                    line(p(.43f, .43f), p(.43f, .72f))
-                    line(p(.57f, .43f), p(.57f, .72f))
-                }
-                EditorAction.RENAME -> {
-                    // A compact rounded pencil with the same light line language.
-                    line(p(.23f, .76f), p(.66f, .33f))
-                    line(p(.34f, .87f), p(.77f, .44f))
-                    line(p(.66f, .33f), p(.77f, .44f))
-                    line(p(.23f, .76f), p(.34f, .87f))
-                    line(p(.20f, .89f), p(.48f, .89f))
-                }
-                EditorAction.ADD_COMPONENT -> {
-                    roundRect(.13f, .20f, .50f, .50f, .12f)
-                    roundRect(.26f, .33f, .28f, .28f, .08f)
-                    plus(.78f, .71f, .14f)
-                }
-                EditorAction.ADD_CITY -> {
-                    val pin = Path().apply {
-                        moveTo(size.width * .48f, size.height * .14f)
-                        cubicTo(size.width * .28f, size.height * .14f, size.width * .19f, size.height * .29f, size.width * .19f, size.height * .45f)
-                        cubicTo(size.width * .19f, size.height * .65f, size.width * .48f, size.height * .82f, size.width * .48f, size.height * .82f)
-                        cubicTo(size.width * .48f, size.height * .82f, size.width * .77f, size.height * .65f, size.width * .77f, size.height * .45f)
-                        cubicTo(size.width * .77f, size.height * .29f, size.width * .68f, size.height * .14f, size.width * .48f, size.height * .14f)
-                    }
-                    drawPath(pin, tint, style = outline())
-                    drawCircle(tint, size.width * .075f, p(.48f, .43f), style = outline())
-                    plus(.80f, .69f, .10f)
-                }
-                EditorAction.ADD_TEXT -> {
-                    line(p(.18f, .24f), p(.66f, .24f))
-                    line(p(.42f, .24f), p(.42f, .78f))
-                    line(p(.28f, .78f), p(.56f, .78f))
-                    plus(.80f, .72f, .13f)
-                }
-                EditorAction.UNDO, EditorAction.REDO -> {
-                    // Rendered by shared OrbitIcons before this legacy Canvas branch.
-                }
-                EditorAction.AUTO_SAVE -> {
-                    // A save tile with a small looping mark: understandable as a
-                    // persistent auto-save state without using a heavy filled disk.
-                    roundRect(.16f, .14f, .53f, .62f, .10f)
-                    roundRect(.31f, .14f, .22f, .19f, .05f)
-                    line(p(.30f, .59f), p(.44f, .72f))
-                    line(p(.44f, .72f), p(.63f, .49f))
-                    drawArc(
-                        color = tint,
-                        startAngle = -55f,
-                        sweepAngle = 175f,
-                        useCenter = false,
-                        topLeft = p(.53f, .50f),
-                        size = androidx.compose.ui.geometry.Size(size.width * .31f, size.height * .31f),
-                        style = outline()
-                    )
-                    line(p(.85f, .61f), p(.85f, .78f))
-                    line(p(.85f, .61f), p(.70f, .66f))
-                }
-            }
+    if (action == EditorAction.PIN) {
+        OrbitCustomIconButton(
+            contentDescription = description,
+            onClick = onClick,
+            selected = selected,
+            destructive = destructive,
+            enabled = enabled,
+        ) { tint ->
+            Canvas(Modifier.size(20.dp)) { drawProductionPin(tint) }
         }
+        return
     }
+    val icon = when (action) {
+        EditorAction.CLEAR -> OrbitIcons.Close
+        EditorAction.COPY -> OrbitIcons.Copy
+        EditorAction.PASTE -> OrbitIcons.Paste
+        EditorAction.CUT -> OrbitIcons.Cut
+        EditorAction.DELETE -> OrbitIcons.Delete
+        EditorAction.RENAME -> OrbitIcons.Rename
+        EditorAction.ADD_COMPONENT -> OrbitIcons.AddComponent
+        EditorAction.ADD_CITY -> OrbitIcons.AddCity
+        EditorAction.ADD_TEXT -> OrbitIcons.AddText
+        EditorAction.UNDO -> OrbitIcons.Undo
+        EditorAction.REDO -> OrbitIcons.Redo
+        EditorAction.AUTO_SAVE -> OrbitIcons.Confirm
+        EditorAction.PIN -> error("Handled above")
+    }
+    OrbitIconButton(
+        icon = icon,
+        contentDescription = description,
+        onClick = onClick,
+        selected = selected,
+        destructive = destructive,
+        enabled = enabled,
+    )
 }
 
 @Composable private fun EditableDisplayRow(label: String, checked: Boolean, onChecked: ((Boolean) -> Unit)?, onEdit: () -> Unit) {
     Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
         if (onChecked != null) Switch(checked, onChecked) else Spacer(Modifier.width(52.dp))
         Text(label, Modifier.weight(1f).padding(start = 10.dp))
-        TextButton(onClick = onEdit, enabled = checked) { Icon(OrbitIcons.Adjust, null, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text(uiText("tap_edit"), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (checked) .72f else .35f)) }
+        OrbitButton(
+            label = uiText("tap_edit"),
+            onClick = onEdit,
+            icon = OrbitIcons.Adjust,
+            style = OrbitButtonStyle.Quiet,
+            enabled = checked,
+            compact = true,
+        )
     }
 }
 
@@ -1042,14 +1016,15 @@ private fun LayoutCanvas(
     val systemNight = (androidx.compose.ui.platform.LocalContext.current.resources.configuration.uiMode and
         android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
     val previewNight = config.theme == ThemeMode.DARK || (config.theme == ThemeMode.SYSTEM && systemNight)
+    val designColors = BestMatesDesign.colors
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Box(Modifier.width(canvasWidth.dp).height(canvasHeight.dp)
             .onGloballyPositioned { canvasOriginInRoot = it.positionInRoot() }
-            .clip(RoundedCornerShape(18.dp)).background(Color(0xFFF0EDF2)).border(1.dp, Color(0xFFDCD6E2), RoundedCornerShape(18.dp)).pointerInput(Unit) {
+            .clip(RoundedCornerShape(18.dp)).background(designColors.canvasMat).border(1.dp, designColors.borderSubtle, RoundedCornerShape(18.dp)).pointerInput(Unit) {
             detectTapGestures(onTap = { onSelect(null) })
         }) {
             Canvas(Modifier.fillMaxSize()) {
-                val grid = Color(0xFF716A79).copy(alpha = .09f)
+                val grid = designColors.onCanvasMat.copy(alpha = .09f)
                 for (index in 1..15) {
                     if (index % 4 != 0) {
                         val p = size.width * index / 16f
@@ -1063,7 +1038,7 @@ private fun LayoutCanvas(
                     drawLine(grid, Offset(0f, p), Offset(size.width, p), 1f)
                 }
                 if (guidesVisible) {
-                    val guideColor = Color(0xFF7552AE).copy(alpha = .58f)
+                    val guideColor = designColors.guide.copy(alpha = .58f)
                     guideX?.let { drawLine(guideColor, Offset(it, boardBounds.top), Offset(it, boardBounds.bottom), 1.3f) }
                     guideY?.let { drawLine(guideColor, Offset(boardBounds.left, it), Offset(boardBounds.right, it), 1.3f) }
                     guideAngle?.let { angle ->
@@ -1752,7 +1727,7 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
     LaunchedEffect(query) { delay(180); results = withContext(Dispatchers.IO) { catalog.searchEnglish(query) } }
     BackHandler { if (chooser.isNotBlank()) chooser = "" else onDismiss() }
     AlertDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("close")) } }, title = { Text(uiText("choose_city")) }, text = { Column(Modifier.heightIn(max = 620.dp)) {
-        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city")) }, singleLine = true)
+        CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city")) }, singleLine = true)
         if (query.length >= 2) { LazyColumn(Modifier.heightIn(max = 300.dp)) { items(results, key = { it.geoId }) { city -> TextButton(onClick = { onPick(city) }, modifier = Modifier.fillMaxWidth()) { Text("${city.name} · ${city.country} · ${city.zoneId}") } } }; Text(uiText("city_search_note"), style = MaterialTheme.typography.bodySmall) }
         else { ChoiceButton(uiText("continent"), continent?.let { continentName(it, language) } ?: uiText("please_choose")) { chooser = "continent" }; ChoiceButton(uiText("country"), country?.second ?: uiText("choose_continent_first"), continent != null) { chooser = "country" }; ChoiceButton(uiText("city"), if (country == null) uiText("choose_country_first") else uiText("choose_or_search_city"), country != null) { chooser = "city" } }
     } })
@@ -1766,7 +1741,7 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
     var query by remember { mutableStateOf("") }
     val filtered = remember(values, query) { values.filter { it.second.contains(query, ignoreCase = true) || it.first.contains(query, ignoreCase = true) } }
     AlertDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title = { Text(title) }, text = { Column {
-        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(hint) }, singleLine = true)
+        CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(hint) }, singleLine = true)
         LazyColumn(Modifier.heightIn(max=420.dp)) { items(filtered, key={it.first}) { item -> TextButton(onClick={pick(item.first)}, Modifier.fillMaxWidth()){Text(item.second)} } }
     } })
 }
@@ -1781,7 +1756,7 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
         loading = false
     }
     AlertDialog(onDismissRequest=onDismiss, confirmButton={}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title={Text(uiText("choose_city"))}, text={Column {
-        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city_english")) }, singleLine = true)
+        CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city_english")) }, singleLine = true)
         if (loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         Text(if (query.isBlank()) uiText("popular_city_note") else uiFormat("search_results", cities.size), style = MaterialTheme.typography.bodySmall)
         LazyColumn(Modifier.heightIn(max=420.dp)){items(cities,key={it.geoId}){city->TextButton(onClick={pick(city)},Modifier.fillMaxWidth()){Text("${city.name} · ${city.zoneId}")}}}
@@ -1940,9 +1915,10 @@ private fun hsvWheelBitmap(size: Int, value: Float): Bitmap {
     return bitmap
 }
 @Composable private fun SectionTitle(text:String)=Text(text,style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold)
-@Composable private fun SliderRow(label:String,value:Float,range:ClosedFloatingPointRange<Float>,change:(Float)->Unit)=Column{Text("$label：${"%.1f".format(value)}");Slider(value,change,valueRange=range)}
-@Composable private fun SwitchRow(label:String,checked:Boolean,change:(Boolean)->Unit)=Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text(label,Modifier.weight(1f));Switch(checked,change)}
-@Composable private fun ThemePicker(selected:ThemeMode,pick:(ThemeMode)->Unit)=Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){ThemeMode.entries.forEach{FilterChip(selected==it,{pick(it)},{Text(when(it){ThemeMode.SYSTEM->uiText("follow_system");ThemeMode.LIGHT->uiText("light");ThemeMode.DARK->uiText("dark")})})}}
+@Composable private fun SliderRow(label:String,value:Float,range:ClosedFloatingPointRange<Float>,change:(Float)->Unit)=OrbitSliderRow(label,"%.1f".format(value),value,range,change)
+@Composable private fun SwitchRow(label:String,checked:Boolean,change:(Boolean)->Unit)=OrbitSwitchRow(label,checked,change)
+@OptIn(ExperimentalLayoutApi::class)
+@Composable private fun ThemePicker(selected:ThemeMode,pick:(ThemeMode)->Unit)=FlowRow(horizontalArrangement=Arrangement.spacedBy(6.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){ThemeMode.entries.forEach{OrbitChoiceChip(label=when(it){ThemeMode.SYSTEM->uiText("follow_system");ThemeMode.LIGHT->uiText("light");ThemeMode.DARK->uiText("dark")},selected=selected==it,selectedDescription=uiText("selected"),onClick={pick(it)})}}
 
 private fun pinWidget(context: android.content.Context, projectId: String, config: WidgetConfig) {
     val manager = AppWidgetManager.getInstance(context)
