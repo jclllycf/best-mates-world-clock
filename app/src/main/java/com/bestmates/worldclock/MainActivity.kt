@@ -2,6 +2,9 @@ package com.bestmates.worldclock
 
 import com.bestmates.worldclock.ui.icons.OrbitIcons
 import com.bestmates.worldclock.ui.components.CrystalPanel
+import com.bestmates.worldclock.ui.components.CrystalChoiceTile
+import com.bestmates.worldclock.ui.components.CrystalDialog
+import com.bestmates.worldclock.ui.components.CrystalPickerRow
 import com.bestmates.worldclock.ui.components.CrystalTextField
 import com.bestmates.worldclock.ui.components.OrbitButton
 import com.bestmates.worldclock.ui.components.OrbitButtonStyle
@@ -904,17 +907,15 @@ private val FONT_CHOICES: List<FontChoice> = buildList {
 @Composable private fun FontField(label: String, value: String, sample: String, onChange: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
     val choice = FONT_CHOICES.firstOrNull { it.id == value } ?: FONT_CHOICES.first()
-    ElevatedCard(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+    CrystalPickerRow(onClick = { open = true }) {
             Icon(OrbitIcons.Font, null, modifier = Modifier.size(24.dp)); Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) { Text(label, style = MaterialTheme.typography.bodySmall); Text(sample, fontFamily = textFont(choice.id), fontSize = 20.sp, maxLines = 2, lineHeight = 25.sp, overflow = TextOverflow.Ellipsis) }
             Text(uiText("choose"))
-        }
     }
-    if (open) AlertDialog(onDismissRequest = { open = false }, title = { Text(uiText("choose_font")) }, confirmButton = { TextButton(onClick = { open = false }) { Text(uiText("done")) } }, text = {
+    if (open) CrystalDialog(onDismissRequest = { open = false }, title = { Text(uiText("choose_font")) }, confirmButton = { TextButton(onClick = { open = false }) { Text(uiText("done")) } }, text = {
         LazyColumn(Modifier.heightIn(max = 540.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
             items(FONT_CHOICES.chunked(2)) { row -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                row.forEach { item -> ElevatedCard(onClick = { onChange(item.id); open = false }, colors = CardDefaults.elevatedCardColors(containerColor = if (item.id == value) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer), modifier = Modifier.weight(1f).height(82.dp)) {
+                row.forEach { item -> CrystalChoiceTile(selected = item.id == value, selectedDescription = uiText("selected"), onClick = { onChange(item.id); open = false }, modifier = Modifier.weight(1f).height(82.dp)) {
                     Box(Modifier.fillMaxSize().padding(9.dp), contentAlignment = Alignment.Center) { Text(sample, fontFamily = textFont(item.id), fontSize = 18.sp, lineHeight = 23.sp, maxLines = 2, overflow = TextOverflow.Ellipsis) }
                 } }; if(row.size==1) Spacer(Modifier.weight(1f))
             } }
@@ -924,7 +925,7 @@ private val FONT_CHOICES: List<FontChoice> = buildList {
 
 @Composable private fun CityPartDialog(part: CityPart, city: City, use24Hour: Boolean, onDismiss: () -> Unit, onChange: (City) -> Unit) {
     val now = remember(city.zoneId, use24Hour) { runCatching { ZonedDateTime.now(java.time.ZoneId.of(city.zoneId)) }.getOrNull() }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(when(part){CityPart.NAME->uiText("name_country");CityPart.TIME->uiText("time");CityPart.DATE->uiText("date");CityPart.SOLAR->uiText("sun_moon")}) }, confirmButton = { TextButton(onClick = onDismiss) { Text(uiText("done")) } }, text = {
+    CrystalDialog(onDismissRequest = onDismiss, title = { Text(when(part){CityPart.NAME->uiText("name_country");CityPart.TIME->uiText("time");CityPart.DATE->uiText("date");CityPart.SOLAR->uiText("sun_moon")}) }, confirmButton = { TextButton(onClick = onDismiss) { Text(uiText("done")) } }, text = {
         Column(Modifier.heightIn(max = 570.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             when (part) {
                 CityPart.NAME -> { FontField(uiText("city_name_font"), city.nameFont, city.nickname.ifBlank { city.name }) { onChange(city.copy(nameFont = it)) }; ColorField(uiText("city_name_color"), city.nameColor) { onChange(city.copy(nameColor = it)) } }
@@ -943,24 +944,24 @@ private val FONT_CHOICES: List<FontChoice> = buildList {
 
 @Composable private fun SunIconLibraryField(selected: SunIconStyle, moon: MoonIconStyle, color: Long, onChange: (SunIconStyle) -> Unit) {
     var open by remember { mutableStateOf(false) }
-    ElevatedCard(onClick={open=true}, modifier=Modifier.fillMaxWidth()) { Row(Modifier.padding(13.dp), verticalAlignment=Alignment.CenterVertically) {
+    CrystalPickerRow(onClick={open=true}) {
         SolarIconSample(true, selected, moon, color, 34f); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)){Text(uiText("sun_library"),style=MaterialTheme.typography.bodySmall);Text(uiText("browse_icons"),fontWeight=FontWeight.Bold)}; Text(uiText("choose"))
-    } }
-    if(open) AlertDialog(onDismissRequest={open=false},title={Text(uiText("sun_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
+    }
+    if(open) CrystalDialog(onDismissRequest={open=false},title={Text(uiText("sun_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
         LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(SUN_ICON_LIBRARY.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
-            ElevatedCard(onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f),colors=CardDefaults.elevatedCardColors(containerColor=if(style==selected)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(true,style,moon,color,43f)}}
+            CrystalChoiceTile(selected=style==selected,selectedDescription=uiText("selected"),onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(true,style,moon,color,43f)}}
         };repeat(4-row.size){Spacer(Modifier.weight(1f))}}}}
     })
 }
 
 @Composable private fun MoonIconLibraryField(sun: SunIconStyle, selected: MoonIconStyle, color: Long, onChange: (MoonIconStyle) -> Unit) {
     var open by remember { mutableStateOf(false) }
-    ElevatedCard(onClick={open=true}, modifier=Modifier.fillMaxWidth()) { Row(Modifier.padding(13.dp), verticalAlignment=Alignment.CenterVertically) {
+    CrystalPickerRow(onClick={open=true}) {
         SolarIconSample(false, sun, selected, color, 34f); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)){Text(uiText("moon_library"),style=MaterialTheme.typography.bodySmall);Text(uiText("browse_icons"),fontWeight=FontWeight.Bold)}; Text(uiText("choose"))
-    } }
-    if(open) AlertDialog(onDismissRequest={open=false},title={Text(uiText("moon_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
+    }
+    if(open) CrystalDialog(onDismissRequest={open=false},title={Text(uiText("moon_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
         LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(MOON_ICON_LIBRARY.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
-            ElevatedCard(onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f),colors=CardDefaults.elevatedCardColors(containerColor=if(style==selected)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(false,sun,style,color,43f)}}
+            CrystalChoiceTile(selected=style==selected,selectedDescription=uiText("selected"),onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(false,sun,style,color,43f)}}
         };repeat(4-row.size){Spacer(Modifier.weight(1f))}}}}
     })
 }
@@ -1619,25 +1620,23 @@ private fun textFont(value: String): FontFamily = FontFamily(android.graphics.Ty
 @Composable
 private fun ShapePicker(selected: WidgetShape, onSelect: (WidgetShape) -> Unit) {
     var open by remember { mutableStateOf(false) }
-    ElevatedCard(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 11.dp), verticalAlignment = Alignment.CenterVertically) {
+    CrystalPickerRow(onClick = { open = true }) {
             ShapePreviewIcon(selected, Modifier.size(42.dp, 32.dp), true)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) { Text(uiText("shape_library"), style = MaterialTheme.typography.bodySmall); Text(shapeLabel(selected), fontWeight = FontWeight.Bold) }
             Text(uiText("choose"))
-        }
     }
     if (open) ShapePickerDialog(selected, uiText("choose_shape"), { open = false }) { shape -> onSelect(shape); open = false }
 }
 
 @Composable
 private fun ShapePickerDialog(selected: WidgetShape?, title: String, onDismiss: () -> Unit, onSelect: (WidgetShape) -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(title) }, confirmButton = { TextButton(onClick = onDismiss) { Text(uiText("cancel")) } }, text = {
+    CrystalDialog(onDismissRequest = onDismiss, title = { Text(title) }, confirmButton = { TextButton(onClick = onDismiss) { Text(uiText("cancel")) } }, text = {
         LazyColumn(Modifier.heightIn(max = 560.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
             items(WidgetShape.entries.chunked(3)) { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     row.forEach { shape ->
-                        ElevatedCard(onClick = { onSelect(shape) }, modifier = Modifier.weight(1f).height(78.dp), colors = CardDefaults.elevatedCardColors(containerColor = if(shape == selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)) {
+                        CrystalChoiceTile(selected = shape == selected, selectedDescription = uiText("selected"), onClick = { onSelect(shape) }, modifier = Modifier.weight(1f).height(78.dp)) {
                             Column(Modifier.fillMaxSize().padding(7.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                                 ShapePreviewIcon(shape, Modifier.size(42.dp, 30.dp), shape == selected)
                                 Spacer(Modifier.height(4.dp)); Text(shapeLabel(shape), fontSize = 10.sp, maxLines = 1)
@@ -1708,13 +1707,6 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
     } */
 }
 
-@Composable private fun CityEditor(index: Int, city: City, onRemove: () -> Unit) = ElevatedCard(Modifier.fillMaxWidth()) {
-    Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("${index + 1}. ${city.name} (${city.country})", Modifier.weight(1f), fontWeight = FontWeight.Bold)
-        TextButton(onClick = onRemove) { Text("🗑", fontSize = 18.sp) }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun CityPicker(onDismiss: () -> Unit, onPick: (City) -> Unit) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -1726,9 +1718,9 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
     LaunchedEffect(continent) { countries = continent?.let { withContext(Dispatchers.IO) { catalog.countries(it) } }.orEmpty(); country = null }
     LaunchedEffect(query) { delay(180); results = withContext(Dispatchers.IO) { catalog.searchEnglish(query) } }
     BackHandler { if (chooser.isNotBlank()) chooser = "" else onDismiss() }
-    AlertDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("close")) } }, title = { Text(uiText("choose_city")) }, text = { Column(Modifier.heightIn(max = 620.dp)) {
+    CrystalDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("close")) } }, title = { Text(uiText("choose_city")) }, text = { Column(Modifier.heightIn(max = 620.dp)) {
         CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city")) }, singleLine = true)
-        if (query.length >= 2) { LazyColumn(Modifier.heightIn(max = 300.dp)) { items(results, key = { it.geoId }) { city -> TextButton(onClick = { onPick(city) }, modifier = Modifier.fillMaxWidth()) { Text("${city.name} · ${city.country} · ${city.zoneId}") } } }; Text(uiText("city_search_note"), style = MaterialTheme.typography.bodySmall) }
+        if (query.length >= 2) { LazyColumn(Modifier.heightIn(max = 300.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { items(results, key = { it.geoId }) { city -> PickerResultRow("${city.name} · ${city.country} · ${city.zoneId}") { onPick(city) } } }; Text(uiText("city_search_note"), style = MaterialTheme.typography.bodySmall) }
         else { ChoiceButton(uiText("continent"), continent?.let { continentName(it, language) } ?: uiText("please_choose")) { chooser = "continent" }; ChoiceButton(uiText("country"), country?.second ?: uiText("choose_continent_first"), continent != null) { chooser = "country" }; ChoiceButton(uiText("city"), if (country == null) uiText("choose_country_first") else uiText("choose_or_search_city"), country != null) { chooser = "city" } }
     } })
     if (chooser == "continent") SimpleChoiceDialog(uiText("choose_continent"), uiText("search_continent"), catalog.continents().map { it to continentName(it, language) }, onDismiss = { chooser = "" }) { continent = it; chooser = "" }
@@ -1736,13 +1728,14 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
     if (chooser == "city" && country != null) CityListDialog(catalog, country!!.first, onDismiss = { chooser = "" }) { onPick(it); chooser = "" }
 }
 
-@Composable private fun ChoiceButton(label: String, value: String, enabled: Boolean = true, action: () -> Unit) = OutlinedButton(onClick = action, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Text("$label：$value") }
+@Composable private fun ChoiceButton(label: String, value: String, enabled: Boolean = true, action: () -> Unit) = OrbitButton(label="$label：$value",onClick=action,enabled=enabled,modifier=Modifier.fillMaxWidth(),style=OrbitButtonStyle.Secondary)
+@Composable private fun PickerResultRow(label: String, action: () -> Unit) = CrystalPickerRow(onClick=action){Text(label,Modifier.weight(1f),style=MaterialTheme.typography.bodyMedium)}
 @Composable private fun SimpleChoiceDialog(title: String, hint: String, values: List<Pair<String,String>>, onDismiss: () -> Unit, pick: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
     val filtered = remember(values, query) { values.filter { it.second.contains(query, ignoreCase = true) || it.first.contains(query, ignoreCase = true) } }
-    AlertDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title = { Text(title) }, text = { Column {
+    CrystalDialog(onDismissRequest = onDismiss, confirmButton = {}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title = { Text(title) }, text = { Column {
         CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(hint) }, singleLine = true)
-        LazyColumn(Modifier.heightIn(max=420.dp)) { items(filtered, key={it.first}) { item -> TextButton(onClick={pick(item.first)}, Modifier.fillMaxWidth()){Text(item.second)} } }
+        LazyColumn(Modifier.heightIn(max=420.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { items(filtered, key={it.first}) { item -> PickerResultRow(item.second){pick(item.first)} } }
     } })
 }
 
@@ -1755,11 +1748,11 @@ private fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<Int
         cities = withContext(Dispatchers.IO) { catalog.cities(countryCode, query, 120) }
         loading = false
     }
-    AlertDialog(onDismissRequest=onDismiss, confirmButton={}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title={Text(uiText("choose_city"))}, text={Column {
+    CrystalDialog(onDismissRequest=onDismiss, confirmButton={}, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("back")) } }, title={Text(uiText("choose_city"))}, text={Column {
         CrystalTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(uiText("search_city_english")) }, singleLine = true)
         if (loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         Text(if (query.isBlank()) uiText("popular_city_note") else uiFormat("search_results", cities.size), style = MaterialTheme.typography.bodySmall)
-        LazyColumn(Modifier.heightIn(max=420.dp)){items(cities,key={it.geoId}){city->TextButton(onClick={pick(city)},Modifier.fillMaxWidth()){Text("${city.name} · ${city.zoneId}")}}}
+        LazyColumn(Modifier.heightIn(max=420.dp), verticalArrangement = Arrangement.spacedBy(6.dp)){items(cities,key={it.geoId}){city->PickerResultRow("${city.name} · ${city.zoneId}"){pick(city)}}}
     }})
 }
 
@@ -1788,23 +1781,22 @@ private val DAY_NIGHT_PALETTES = listOf(
     var open by remember { mutableStateOf(false) }
     var custom by remember { mutableStateOf(false) }
     val match = DAY_NIGHT_PALETTES.firstOrNull { it.day == day && it.night == night }
-    ElevatedCard(onClick = { custom = match == null; open = true }, modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+    CrystalPickerRow(onClick = { custom = match == null; open = true }) {
             Column(Modifier.weight(1f)) { Text(uiText("palette"), style = MaterialTheme.typography.bodySmall); Text(match?.name ?: uiText("custom"), fontWeight = FontWeight.Medium) }
             PalettePair(day, night)
             Spacer(Modifier.width(12.dp)); Text(uiText("choose"))
-        }
     }
-    if (open) AlertDialog(
+    if (open) CrystalDialog(
         onDismissRequest = { open = false },
         title = { Text(uiText("choose_palette")) },
         confirmButton = { TextButton(onClick = { open = false }) { Text(uiText("done")) } },
         text = {
             Column(Modifier.heightIn(max = 610.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 DAY_NIGHT_PALETTES.forEach { item ->
-                    ElevatedCard(
+                    CrystalChoiceTile(
+                        selected = !custom && item.day == day && item.night == night,
+                        selectedDescription = uiText("selected"),
                         onClick = { change(item.day, item.night); custom = false },
-                        colors = CardDefaults.elevatedCardColors(containerColor = if (!custom && item.day == day && item.night == night) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -1813,9 +1805,10 @@ private val DAY_NIGHT_PALETTES = listOf(
                         }
                     }
                 }
-                ElevatedCard(
+                CrystalChoiceTile(
+                    selected = custom || match == null,
+                    selectedDescription = uiText("selected"),
                     onClick = { custom = true },
-                    colors = CardDefaults.elevatedCardColors(containerColor = if (custom || match == null) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -1846,12 +1839,10 @@ private val DAY_NIGHT_PALETTES = listOf(
 }
 @Composable private fun ColorField(label:String,value:Long,change:(Long)->Unit){
     var open by remember { mutableStateOf(false) }
-    ElevatedCard(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+    CrystalPickerRow(onClick = { open = true }) {
             Box(Modifier.size(34.dp).clip(RoundedCornerShape(17.dp)).background(Color(value)).border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(17.dp)))
             Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(label, fontWeight = FontWeight.Medium); Text(uiText("open_color"), style = MaterialTheme.typography.bodySmall) }
             Text(uiText("choose"))
-        }
     }
     if (open) VisualColorPickerDialog(label, value, onDismiss = { open = false }, onApply = { change(it); open = false })
 }
@@ -1867,7 +1858,7 @@ private val DAY_NIGHT_PALETTES = listOf(
     // sweep-gradient approximation was visually reversed in parts of the circle,
     // so its picked location could disagree with the applied colour.
     val wheel = remember(brightness) { hsvWheelBitmap(512, brightness).asImageBitmap() }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(title) }, confirmButton = { Button(onClick = { onApply(result()) }) { Text(uiText("apply")) } }, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("cancel")) } }, text = {
+    CrystalDialog(onDismissRequest = onDismiss, title = { Text(title) }, confirmButton = { OrbitButton(label = uiText("apply"), onClick = { onApply(result()) }, style = OrbitButtonStyle.Primary, compact = true) }, dismissButton = { TextButton(onClick = onDismiss) { Text(uiText("cancel")) } }, text = {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(Modifier.size(252.dp).pointerInput(Unit) {
                 fun update(position: Offset) {
