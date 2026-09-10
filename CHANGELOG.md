@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.3.0 — Best Mates 2.0 production migration baseline
+
+This milestone moves the production app onto the shared Cute Atelier, Soft Crystal and Orbit foundation while retaining existing projects, widget data and editor behavior.
+
+### Included
+
+- Reconstructed production Workspace with compact project cards and Orbit selection actions.
+- Extracted production Settings with Cloud, Dream, Midnight and Mono identity choices, app brightness, language, resource import and About/version information.
+- Migrated production Editor chrome, inspector controls and Soft Atelier Work Mat colors without changing the canvas coordinate engine.
+- Unified city, shape, font, color, palette and Sun/Moon picker/dialog presentation.
+- Preserved the physically verified TASK-007 rotation-after-drag fix.
+- Kept saved project IDs, WidgetConfig JSON, component IDs, city/timezone behavior, Add to Home and widget rendering contracts compatible.
+
+### Deferred
+
+- Phase 4 production experience and whole-app layout reconstruction.
+- Celestial Atelier Final Pass and any wholesale Sun/Moon artwork replacement.
+- Complete language packs, imported-resource registry/resolution, weather and automated UI tests.
+
+### Release status
+
+The source and debug APK are prepared for manual v0.3 smoke testing. No remote tag or GitHub Release is created by this change.
+
 ## 0.1.0 — Public preview
 
 First public testing release of the standalone Android editor and widget.

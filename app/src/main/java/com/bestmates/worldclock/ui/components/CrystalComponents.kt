@@ -50,6 +50,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bestmates.worldclock.ui.icons.OrbitIcons
@@ -270,7 +271,13 @@ fun OrbitButton(
             Icon(icon, null, tint = content, modifier = Modifier.size(if (compact) 18.dp else 20.dp))
             Spacer(Modifier.width(dimensions.shared.iconLabelGap))
         }
-        Text(label, style = MaterialTheme.typography.labelLarge, color = content)
+        Text(
+            label,
+            style = MaterialTheme.typography.labelLarge,
+            color = content,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

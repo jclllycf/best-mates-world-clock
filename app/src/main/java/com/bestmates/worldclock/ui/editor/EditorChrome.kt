@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bestmates.worldclock.ui.components.CrystalLevel
 import com.bestmates.worldclock.ui.components.OrbitButton
@@ -138,6 +139,8 @@ private fun EditorTopBar(
             modifier = Modifier.weight(1f).padding(start = dimensions.spacing.space2),
             style = MaterialTheme.typography.titleLarge,
             color = colors.textPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         OrbitIconButton(OrbitIcons.Undo, strings.undo, onUndo, enabled = canUndo)
         OrbitIconButton(OrbitIcons.Redo, strings.redo, onRedo, enabled = canRedo)

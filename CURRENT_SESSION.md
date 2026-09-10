@@ -1,26 +1,34 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 3B.1 Workspace layout reconstruction; Phase 2 visual foundation remains frozen
+Codex — Phase 3 production migration completion and v0.3 baseline preparation
 
 ## Current task
-Best Mates 2.0 — Phase 3B.1 reconstructs the Workspace hierarchy and compact selection layout after successful physical functional QA. Build passes; focused visual QA remains pending. Stop before Phase 3C. TASK-007 is COMPLETE / CLOSED after physical-device acceptance; Golden Set 3/Celestial status is unchanged.
+Best Mates 2.0 — Phase 3C/3D/3E/3F implementation is complete. Settings, Editor chrome and production pickers/dialogs share the Best Mates 2.0 foundation. The repository is being validated and prepared as v0.3.0; manual release QA remains with the user. Stop before Phase 4. TASK-007 is COMPLETE / CLOSED and Celestial Final Pass remains deferred.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 3B.1 started from clean `fec1e2d5d661839eaf5bd0ee456bfc0e87a527b6`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Read current HEAD/history for the Phase 3B.1 completion commit; do not infer subjective visual acceptance from a buildable commit.
+Phase 3 completion started from clean `53ff13270f5727f796b1568cd28f708d0354fb15`. Phase 3C is `42f0cd5`, Phase 3D is `403df02`, and Phase 3E is `6f82748`. Read current HEAD/history for the final Phase 3F commit; do not infer subjective device acceptance from deterministic validation.
 
 ## Task status
 
 BM2-P3A: AUDIT_COMPLETE / BOUNDED_IMPLEMENTATION_COMPLETE
 
+BM2-P3: COMPLETE / BUILD_PASS / V0.3_BASELINE / MANUAL_RELEASE_QA_PENDING
+
+BM2-P3C: COMPLETE / SETTINGS_MIGRATED
+
+BM2-P3D: COMPLETE / EDITOR_PRESENTATION_MIGRATED / ENGINE_PRESERVED
+
+BM2-P3E: COMPLETE / PICKERS_AND_DIALOGS_MIGRATED
+
+BM2-P3F: COMPLETE / BUILD_PASS / DEVICE_NOT_CONNECTED
+
 BM2-P3B.1: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
 
 BM2-P3B: FUNCTIONALLY_VERIFIED_ON_DEVICE / LAYOUT_SUPERSEDED_BY_P3B.1
-
-BM2-P3C: NOT_STARTED / SEPARATE_SCOPE_AND_GPT6_CONTRACT_REVIEW_REQUIRED
 
 BM2-P2D-CLOSURE: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
 
@@ -49,6 +57,27 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 BM2-P1: APPROVED / COMPLETE
 
 TASK-007: COMPLETE / CLOSED / PHYSICALLY_VERIFIED
+
+## Best Mates 2.0 — Phase 3 completion result (2026-09-10)
+
+- Started from clean `53ff13270f5727f796b1568cd28f708d0354fb15`.
+- Phase 3C commit `42f0cd5` extracts Settings, adopts the production theme and preserves old app preference values. The optional `appearance_mode` preference affects only app chrome; a missing value preserves the legacy identity-based brightness mapping.
+- Phase 3D commit `403df02` extracts Editor chrome and migrates visible controls/Inspector/Work Mat colors while retaining LayoutCanvas geometry, gestures, history, persistence and TASK-007.
+- Phase 3E commit `6f82748` unifies production picker/dialog presentation while retaining city, font, shape, color and Celestial IDs and behavior.
+- Phase 3F prepares version `0.3.0`, audits compatibility, removes the remaining obsolete production theme glue, records Phase 4 layout debt and runs final deterministic validation.
+- `assembleDebug --warning-mode all` and release manifest processing pass. `testDebugUnitTest` reports `NO-SOURCE`; the release manifest and built APK contain no debug Design Lab entry or private-reference path.
+- No Android device was connected at final validation. The APK is `app/build/outputs/apk/debug/app-debug.apk`; install/launch and manual release QA remain pending.
+- Source compatibility contracts and intentional legacy boundaries are recorded in `docs/PHASE_3_PRODUCTION_MIGRATION_BASELINE.md`.
+- Phase 4 must begin with the planning gate in `docs/PHASE_4_LAYOUT_DEBT_AND_RECONSTRUCTION.md`; it is not started here.
+
+Manual v0.3 release QA:
+
+1. Workspace: normal/selection/multi-selection, rename, copy, cut, paste, delete, create and open.
+2. Settings: all four identities, Follow system/Light/Dark, language, font/icon import and persistence after restart.
+3. Editor: open old project; add component/city/text; move, resize, rotate and rotated drag; snap/guides; Undo/Redo; Pin; font/color; save/reopen; Add to Home.
+4. Pickers: city, component, font, color, Sun, Moon and imported-resource entry points.
+5. Theme/compatibility: Cloud Light, Dream Light, Midnight Dark, v0.1/v0.2 projects and no missing saved assets.
+6. Widget: home-screen addition, time/timezone, day/night icon and saved appearance.
 
 ## Best Mates 2.0 — Phase 3B.1 result (2026-09-10)
 

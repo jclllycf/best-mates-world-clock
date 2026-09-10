@@ -4,7 +4,7 @@
 
 Best Mates 是一个开源 Android 世界时钟小组件编辑器。它面向想制作个性化桌面小组件、但不想学习公式编辑器的用户。
 
-> **状态：v0.1.0 公开预览版。** 可用于测试和收集建议，仍有部分功能在完善中。
+> **状态：v0.3.0 生产迁移预览版。** 全部生产界面已接入 Best Mates 2.0 基础；Phase 4 布局重构与最终日月视觉仍留待后续。
 
 ## 当前可用
 
@@ -18,7 +18,7 @@ Best Mates 是一个开源 Android 世界时钟小组件编辑器。它面向想
 
 ## 安装测试版
 
-从仓库的 [Releases](../releases) 下载 **`BestMates-v0.1.0-debug.apk`**。这是供测试的 Debug 签名 APK，并非商店正式版。
+发布后可从仓库的 [Releases](../releases) 下载 **`BestMates-v0.3.0-debug.apk`**。这是供测试的 Debug 签名 APK，并非商店正式版。
 
 1. 在 Android 手机上下载 APK。
 2. 按 Android 提示允许浏览器或文件管理器安装未知应用。

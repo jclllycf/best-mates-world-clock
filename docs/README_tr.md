@@ -4,7 +4,7 @@
 
 Best Mates, formül tabanlı bir düzenleyici öğrenmeden kişisel dünya saati widget'ları oluşturmak için açık kaynaklı bir Android uygulamasıdır.
 
-> **Durum: v0.1.0 herkese açık önizleme.** Test ve geri bildirim için kullanılabilir.
+> **Durum: v0.3.0 herkese açık önizleme.** Üretim arayüzü artık Best Mates 2.0 temeline taşındı.
 
 ## Şu anda kullanılabilir
 
@@ -17,7 +17,7 @@ Best Mates, formül tabanlı bir düzenleyici öğrenmeden kişisel dünya saati
 
 ## Kurulum
 
-[Releases](../releases) sayfasından **`BestMates-v0.1.0-debug.apk`** dosyasını indirin. Bu, mağaza sürümü değil, test için debug imzalı APK'dır.
+Yayınlandıktan sonra [Releases](../releases) sayfasından **`BestMates-v0.3.0-debug.apk`** dosyasını indirin. Bu, mağaza sürümü değil, test için debug imzalı APK'dır.
 
 ## Geri bildirim
 

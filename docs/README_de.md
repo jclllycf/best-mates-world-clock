@@ -4,7 +4,7 @@
 
 Best Mates ist ein quelloffener Android-Editor für Weltzeit-Widgets. Er ermöglicht persönliche Widgets ohne formelbasierten Editor.
 
-> **Status: öffentliche Vorschau v0.1.0.** Für Tests und Rückmeldungen nutzbar.
+> **Status: öffentliche Vorschau v0.3.0.** Die Produktionsoberfläche nutzt jetzt die Best-Mates-2.0-Grundlage.
 
 ## Bereits verfügbar
 
@@ -17,7 +17,7 @@ Best Mates ist ein quelloffener Android-Editor für Weltzeit-Widgets. Er ermögl
 
 ## Installation
 
-Laden Sie **`BestMates-v0.1.0-debug.apk`** über [Releases](../releases) herunter. Dies ist eine debug-signierte Test-APK und keine Store-Version.
+Nach der Veröffentlichung können Sie **`BestMates-v0.3.0-debug.apk`** über [Releases](../releases) herunterladen. Dies ist eine debug-signierte Test-APK und keine Store-Version.
 
 ## Feedback
 

@@ -2,8 +2,8 @@
 
 ## Current development priority (2026-09-10)
 
-1. Best Mates 2.0 — Phase 2D is closed: **Visual System Direction Established / Celestial Artwork Finalization Deferred**.
-2. Phase 3B Workspace behavior is physically verified. Phase 3B.1 reconstructs its production layout and awaits focused visual QA. Phase 3C Settings 2.0 remains the next separately authorized slice.
+1. Best Mates 2.0 — Phase 3 production migration is **IMPLEMENTATION COMPLETE / v0.3 BASELINE / MANUAL RELEASE QA PENDING**.
+2. Phase 4 Production Experience Reconstruction is the next separately directed stage. Celestial Artwork Finalization remains deferred and separate.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -12,6 +12,27 @@ Phase 2D asset language: [docs/BEST_MATES_VISUAL_ASSET_BIBLE.md](docs/BEST_MATES
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 TASK-007 passed the required production physical-device verification and is now COMPLETE / CLOSED. Do not reopen or modify its coordinate engine without a new, evidenced regression and separate scope.
+
+### BM2-P3 — Production Migration Baseline → v0.3
+Status: COMPLETE / BUILD_PASS / V0.3_BASELINE / MANUAL_RELEASE_QA_PENDING
+Scope: Settings 2.0 migration, Editor production migration, unified pickers/dialogs, compatibility audit, integration cleanup and v0.3 preparation
+
+Completed implementation:
+- Moved the root production app to `BestMatesDesignTheme` so Workspace, Settings, Editor and secondary surfaces share the frozen semantic foundation.
+- Extracted Settings into `ui/settings/` and preserved `app_theme`, `language`, `font_name` and `icon_name`. Added an app-only `appearance_mode` preference whose missing-value fallback exactly preserves the former identity-dependent light/dark behavior.
+- Extracted Editor chrome into `ui/editor/EditorChrome.kt`; adopted Crystal/Orbit actions, fields, switches, sliders, chips, inspector panels and Work Mat colors without changing LayoutCanvas geometry or pointer behavior.
+- Unified city, font, shape, palette, color and current Sun/Moon picker/dialog presentation through shared production components. Persisted IDs and picker engines remain unchanged.
+- Added [Phase 3 production migration baseline](docs/PHASE_3_PRODUCTION_MIGRATION_BASELINE.md) and [Phase 4 layout debt](docs/PHASE_4_LAYOUT_DEBT_AND_RECONSTRUCTION.md).
+- Prepared application version `0.3.0` and release notes. No remote tag or release is created.
+
+Compatibility boundaries:
+- Existing project UUIDs, `WidgetConfig` JSON, `layoutVersion = 8`, widget keys, layer IDs, `WidgetShape`, Sun/Moon enum names, city/timezone fields, colors, fonts, save/reopen, Add to Home and provider/renderer behavior are retained.
+- Widget-specific `ThemeMode` and `use24Hour` remain concrete authored values. The new app appearance preference does not rewrite them.
+- Celestial Atelier Final Pass, Phase 4 layout reconstruction, full imported-resource resolution, complete translations and automated UI tests remain deferred.
+
+Exit gate:
+- `assembleDebug --warning-mode all` and the release manifest task pass; `testDebugUnitTest` is `NO-SOURCE`. The release manifest and APK contain no debug Activity or private-reference paths.
+- No Android device was connected at the final check, so install/launch and the consolidated manual v0.3 checklist remain with the user. Do not begin Phase 4 automatically.
 
 ### BM2-P3B.1 — Workspace Layout Reconstruction
 Status: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
