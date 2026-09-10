@@ -2,7 +2,7 @@
 
 ## 1. PROJECT OVERVIEW
 
-Best Mates is intended to be an open, creator-friendly Android world-clock widget editor. Users create a widget inside the app, choose cities, shape, colors, text, fonts and day/night icons, preview the result, and add it to the Android home screen. The long-term product goal includes many cities, local time/date, solar day/night state and optional weather. The current repository is the Android-only v0.3 Best Mates 2.0 production-migration baseline; iOS is not implemented.
+Best Mates is intended to be an open, creator-friendly Android world-clock widget editor. Users create a widget inside the app, choose cities, shape, colors, text, fonts and day/night icons, preview the result, and add it to the Android home screen. The long-term product goal includes many cities, local time/date, solar day/night state and optional weather. The current repository is the Android-only Best Mates 2.0 production-migration baseline prepared for public v0.2.0; iOS is not implemented.
 
 ## 2. TECH STACK
 
@@ -216,9 +216,9 @@ Preserve proven behavior, engines, persistence, IDs, saved data and navigation s
 
 ## 16. NEXT DEVELOPMENT STAGE
 
-Best Mates 2.0 Phase 3 production migration is implemented as the v0.3 baseline. See [the Phase 3 baseline](docs/PHASE_3_PRODUCTION_MIGRATION_BASELINE.md) for architecture and compatibility contracts, and [the Phase 4 debt register](docs/PHASE_4_LAYOUT_DEBT_AND_RECONSTRUCTION.md) for the next planning gate.
+Best Mates 2.0 Phase 3 production migration is implemented as the internal migration baseline and prepared for public v0.2.0. See [the Phase 3 baseline](docs/PHASE_3_PRODUCTION_MIGRATION_BASELINE.md) for architecture and compatibility contracts, and [the Phase 4 debt register](docs/PHASE_4_LAYOUT_DEBT_AND_RECONSTRUCTION.md) for the next planning gate.
 
-Phase 3C–3F are implemented as the v0.3 production-migration baseline. The next separately directed stage is **Phase 4 — Production Experience Reconstruction**. Begin from the layout debt register and perform the required seven-point layout planning pass before changing a screen. Do not start Phase 4 from this handoff alone.
+Phase 3C–3F are implemented as the internal production-migration baseline for public v0.2.0. The next separately directed stage is **Phase 4 — Production Experience Reconstruction**. Begin from the layout debt register and perform the required seven-point layout planning pass before changing a screen. Do not start Phase 4 from this handoff alone.
 
 TASK-007 is **COMPLETE / CLOSED / PHYSICALLY_VERIFIED**. Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Do not begin Phase 4, reopen TASK-007, or begin Celestial work without explicit scope.
 

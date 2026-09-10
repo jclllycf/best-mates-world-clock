@@ -1,6 +1,6 @@
 # Phase 3 — Production Migration Baseline
 
-Status: **COMPLETE / BUILD PASS / v0.3 BASELINE / MANUAL RELEASE QA PENDING**  
+Status: **COMPLETE / BUILD PASS / INTERNAL BASELINE / PUBLIC v0.2.0 PREPARATION**
 Date: 2026-09-10
 
 Phase 3 moved the proven application into one Best Mates 2.0 production foundation. It deliberately preserved engines, persistence and navigation contracts. Phase 4 owns substantial information-architecture and layout reconstruction.
@@ -61,7 +61,7 @@ Phase 3 moved the proven application into one Best Mates 2.0 production foundati
 
 ## Intentional remaining legacy boundary
 
-`MainActivity.kt` still owns localization, Editor state, LayoutCanvas, renderer-backed previews and picker behavior. Moving the pointer engine or the tightly coupled editor state solely to reduce file size would add risk without improving the v0.3 migration baseline. Phase 4 should plan state and layout boundaries before further extraction.
+`MainActivity.kt` still owns localization, Editor state, LayoutCanvas, renderer-backed previews and picker behavior. Moving the pointer engine or the tightly coupled editor state solely to reduce file size would add risk without improving the production migration baseline. Phase 4 should plan state and layout boundaries before further extraction.
 
 Debug Design Lab activities remain debug-manifest-only. Golden candidates and visual references were not promoted into production resources. Reference directories `1/`, `2/` and ignored `design_refs/` are outside the application package.
 
@@ -73,4 +73,4 @@ Debug Design Lab activities remain debug-manifest-only. Golden candidates and vi
 - Built APK inspection: no `design_refs/`, `1/` or `2/` reference path is packaged.
 - APK: `app/build/outputs/apk/debug/app-debug.apk`.
 - Device: no connected Android device at final validation, so install/launch remains pending.
-- The v0.3 manual checklist in `CURRENT_SESSION.md` remains the release acceptance step; deterministic build success is not a claim of physical-device approval.
+- The v0.2.0 manual checklist in `CURRENT_SESSION.md` remains the release acceptance step; deterministic build success is not a claim of physical-device approval.

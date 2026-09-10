@@ -1,10 +1,10 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 3 production migration completion and v0.3 baseline preparation
+Codex — Phase 3 production migration completion and v0.2.0 public-release preparation
 
 ## Current task
-Best Mates 2.0 — Phase 3C/3D/3E/3F implementation is complete. Settings, Editor chrome and production pickers/dialogs share the Best Mates 2.0 foundation. The repository is being validated and prepared as v0.3.0; manual release QA remains with the user. Stop before Phase 4. TASK-007 is COMPLETE / CLOSED and Celestial Final Pass remains deferred.
+Best Mates 2.0 — Phase 3C/3D/3E/3F implementation is complete. Settings, Editor chrome and production pickers/dialogs share the Best Mates 2.0 foundation. The internal Phase 3 migration baseline is being prepared for the public v0.2.0 release; manual release QA remains with the user. Stop before Phase 4. TASK-007 is COMPLETE / CLOSED and Celestial Final Pass remains deferred.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
@@ -70,7 +70,7 @@ TASK-007: COMPLETE / CLOSED / PHYSICALLY_VERIFIED
 - Source compatibility contracts and intentional legacy boundaries are recorded in `docs/PHASE_3_PRODUCTION_MIGRATION_BASELINE.md`.
 - Phase 4 must begin with the planning gate in `docs/PHASE_4_LAYOUT_DEBT_AND_RECONSTRUCTION.md`; it is not started here.
 
-Manual v0.3 release QA:
+Manual v0.2.0 release QA:
 
 1. Workspace: normal/selection/multi-selection, rename, copy, cut, paste, delete, create and open.
 2. Settings: all four identities, Follow system/Light/Dark, language, font/icon import and persistence after restart.

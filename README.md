@@ -4,7 +4,7 @@
 
 Best Mates is an open-source Android world-clock widget editor. It is being built for people who want a personal, visual home-screen widget without having to learn a formula-driven editor.
 
-> **Status: v0.3.0 production-migration preview.** The full production app now uses the Best Mates 2.0 foundation; Phase 4 layout reconstruction and the final Celestial pass remain future work.
+> **Status: v0.2.0.** Best Mates is usable as an early public Android release. The core widget editor works, the main interface has moved onto the Best Mates 2.0 visual system, and further layout, visual and asset refinements are still planned.
 
 ## What works today
 
@@ -17,10 +17,12 @@ Best Mates is an open-source Android world-clock widget editor. It is being buil
 - Add the result to the Android home screen through the app, with declared widget sizes from 1×1 through 4×6.
 - Choose day/night colours, shape treatments, fonts and solar icon styles.
 - Store all projects locally. The app has no account, analytics SDK, ad SDK or device-location permission.
+- Use the Best Mates 2.0 visual foundation: the reconstructed Workspace, migrated Settings, refreshed Editor controls and Inspector, Soft Atelier work canvas, Crystal pickers/dialogs and Orbit Charm controls.
+- Use Cloud, Dream, Midnight and Mono identities with light, dark and system appearance modes.
 
-## Try the preview APK
+## Download Best Mates
 
-When published, download **`BestMates-v0.3.0-debug.apk`** from this repository’s [Releases](../../releases) page. It is a debug-signed preview for testing, not a Play Store build.
+The public release asset is **`BestMates-v0.2.0.apk`**, published from this repository’s [Releases](../../releases) page after release signing is configured. Debug builds are for development and are not public release assets.
 
 1. Download the APK on an Android device.
 2. Allow installation from the browser or file manager when Android asks.
@@ -36,7 +38,7 @@ Please use [Issues](../../issues) for bug reports and feature ideas. The most us
 - exact steps to reproduce the problem;
 - a screenshot or short screen recording, with private information hidden.
 
-The current priorities are editor interaction, full UI localisation, clearer solar-icon choices, robust shape rendering and better widget sizing across launchers. See [CHANGELOG.md](CHANGELOG.md) and [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) for the detailed current state.
+Current priorities include Phase 4 layout and production-experience reconstruction, final Sun/Moon refinement, expressive display typography, localisation polish, widget/object material refinement, minor UI and interaction fixes, and formal automated testing. Weather remains exploratory future work. See [CHANGELOG.md](CHANGELOG.md) and [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) for the detailed current state.
 
 ## Build from source
 

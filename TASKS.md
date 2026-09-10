@@ -2,7 +2,7 @@
 
 ## Current development priority (2026-09-10)
 
-1. Best Mates 2.0 — Phase 3 production migration is **IMPLEMENTATION COMPLETE / v0.3 BASELINE / MANUAL RELEASE QA PENDING**.
+1. Best Mates 2.0 — Phase 3 production migration is **IMPLEMENTATION COMPLETE / INTERNAL BASELINE / v0.2.0 RELEASE PREPARATION**.
 2. Phase 4 Production Experience Reconstruction is the next separately directed stage. Celestial Artwork Finalization remains deferred and separate.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
@@ -13,9 +13,9 @@ The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historic
 
 TASK-007 passed the required production physical-device verification and is now COMPLETE / CLOSED. Do not reopen or modify its coordinate engine without a new, evidenced regression and separate scope.
 
-### BM2-P3 — Production Migration Baseline → v0.3
+### BM2-P3 — Production Migration Baseline → public v0.2.0
 Status: COMPLETE / BUILD_PASS / V0.3_BASELINE / MANUAL_RELEASE_QA_PENDING
-Scope: Settings 2.0 migration, Editor production migration, unified pickers/dialogs, compatibility audit, integration cleanup and v0.3 preparation
+Scope: Settings 2.0 migration, Editor production migration, unified pickers/dialogs, compatibility audit, integration cleanup and public v0.2.0 preparation
 
 Completed implementation:
 - Moved the root production app to `BestMatesDesignTheme` so Workspace, Settings, Editor and secondary surfaces share the frozen semantic foundation.
@@ -32,7 +32,7 @@ Compatibility boundaries:
 
 Exit gate:
 - `assembleDebug --warning-mode all` and the release manifest task pass; `testDebugUnitTest` is `NO-SOURCE`. The release manifest and APK contain no debug Activity or private-reference paths.
-- No Android device was connected at the final check, so install/launch and the consolidated manual v0.3 checklist remain with the user. Do not begin Phase 4 automatically.
+- No Android device was connected at the final check, so install/launch and the consolidated manual v0.2.0 checklist remain with the user. Do not begin Phase 4 automatically.
 
 ### BM2-P3B.1 — Workspace Layout Reconstruction
 Status: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING

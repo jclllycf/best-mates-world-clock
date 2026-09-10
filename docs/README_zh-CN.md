@@ -4,7 +4,7 @@
 
 Best Mates 是一个开源 Android 世界时钟小组件编辑器。它面向想制作个性化桌面小组件、但不想学习公式编辑器的用户。
 
-> **状态：v0.3.0 生产迁移预览版。** 全部生产界面已接入 Best Mates 2.0 基础；Phase 4 布局重构与最终日月视觉仍留待后续。
+> **状态：v0.2.0。** Best Mates 已可作为早期公开 Android 版本使用。核心小组件编辑器可用，主界面已迁移到 Best Mates 2.0 视觉系统，后续仍会继续完善布局、视觉与素材。
 
 ## 当前可用
 
@@ -12,13 +12,15 @@ Best Mates 是一个开源 Android 世界时钟小组件编辑器。它面向想
 - 添加最多 10 个城市和 5 个自定义文本图层。
 - 通过大洲 → 国家 → 城市目录选择地点，或按英文城市名搜索。
 - 显示当地时间、日期、国家和基于日出日落计算的日/月图标。
-- 在画布中调整背景、城市和文本的位置、大小与旋转。
+- 在画布中调整背景、城市和文本的位置、大小与旋转，并支持复制、粘贴、固定、撤销和重做。
 - 通过 App 添加到 Android 桌面；支持 1×1 至 4×6 的小组件声明尺寸。
 - 选择昼夜配色、形状、字体和日月图标风格。
+- 使用重构后的 Workspace、迁移后的 Settings、Editor 控件与 Inspector、Soft Atelier 工作画布、Crystal 选择器/对话框和 Orbit Charm 控件。
+- 使用 Cloud、Dream、Midnight、Mono 主题，以及浅色、深色或跟随系统外观。
 
-## 安装测试版
+## 下载 Best Mates
 
-发布后可从仓库的 [Releases](../releases) 下载 **`BestMates-v0.3.0-debug.apk`**。这是供测试的 Debug 签名 APK，并非商店正式版。
+公开发行文件为 **`BestMates-v0.2.0.apk`**。完成 release 签名配置后，可从仓库的 [Releases](../releases) 下载；Debug 构建仅用于开发，不作为公开发行文件。
 
 1. 在 Android 手机上下载 APK。
 2. 按 Android 提示允许浏览器或文件管理器安装未知应用。

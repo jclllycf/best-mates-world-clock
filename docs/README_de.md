@@ -4,7 +4,7 @@
 
 Best Mates ist ein quelloffener Android-Editor für Weltzeit-Widgets. Er ermöglicht persönliche Widgets ohne formelbasierten Editor.
 
-> **Status: öffentliche Vorschau v0.3.0.** Die Produktionsoberfläche nutzt jetzt die Best-Mates-2.0-Grundlage.
+> **Status: v0.2.0.** Best Mates ist als frühe öffentliche Android-Version nutzbar. Der Kern-Widget-Editor funktioniert und die Hauptoberfläche nutzt das Best-Mates-2.0-Designsystem; weitere Layout-, visuelle und Asset-Verbesserungen sind geplant.
 
 ## Bereits verfügbar
 
@@ -12,12 +12,14 @@ Best Mates ist ein quelloffener Android-Editor für Weltzeit-Widgets. Er ermögl
 - Bis zu 10 Städte und 5 Textebenen pro Projekt.
 - Auswahl Kontinent → Land → Stadt oder englische Stadtnamenssuche.
 - Ortszeit, Datum, Land und Tag-/Nacht-Symbol aus lokalem Sonnenauf- und -untergang.
-- Hintergrund, Städte und Text auf einer Bearbeitungsfläche anpassen.
+- Hintergrund, Städte und Text auf einer Bearbeitungsfläche anpassen – mit Verschieben, Skalieren, Drehen, Kopieren, Einfügen, Anheften, Rückgängig und Wiederholen.
 - Zum Android-Startbildschirm hinzufügen; deklarierte Größen von 1×1 bis 4×6.
+- Rekonstruierter Workspace, migrierte Settings, Editor- und Inspector-Steuerelemente, Soft-Atelier-Arbeitsfläche, Crystal-Auswahldialoge und Orbit-Charm-Steuerelemente.
+- Cloud-, Dream-, Midnight- und Mono-Identitäten mit hellem, dunklem oder System-Erscheinungsbild.
 
-## Installation
+## Best Mates herunterladen
 
-Nach der Veröffentlichung können Sie **`BestMates-v0.3.0-debug.apk`** über [Releases](../releases) herunterladen. Dies ist eine debug-signierte Test-APK und keine Store-Version.
+Die öffentliche Release-Datei heißt **`BestMates-v0.2.0.apk`**. Nach der Einrichtung der Release-Signierung ist sie auf der [Releases](../releases)-Seite verfügbar; Debug-Builds sind nur für die Entwicklung bestimmt.
 
 ## Feedback
 

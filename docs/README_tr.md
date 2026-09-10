@@ -4,7 +4,7 @@
 
 Best Mates, formül tabanlı bir düzenleyici öğrenmeden kişisel dünya saati widget'ları oluşturmak için açık kaynaklı bir Android uygulamasıdır.
 
-> **Durum: v0.3.0 herkese açık önizleme.** Üretim arayüzü artık Best Mates 2.0 temeline taşındı.
+> **Durum: v0.2.0.** Best Mates erken bir herkese açık Android sürümü olarak kullanılabilir. Temel widget düzenleyicisi çalışır ve ana arayüz Best Mates 2.0 görsel sistemine taşınmıştır; düzen, görsel ve varlık iyileştirmeleri planlanmaktadır.
 
 ## Şu anda kullanılabilir
 
@@ -12,12 +12,14 @@ Best Mates, formül tabanlı bir düzenleyici öğrenmeden kişisel dünya saati
 - Proje başına en fazla 10 şehir ve 5 metin katmanı.
 - Kıta → ülke → şehir seçimi veya İngilizce şehir adıyla arama.
 - Yerel saat, tarih, ülke ve gün doğumu/gün batımına göre gün/gece simgesi.
-- Tasarım tuvalinde arka plan, şehir ve metin düzenleme.
+- Tasarım tuvalinde arka plan, şehir ve metin düzenleme; taşıma, yeniden boyutlandırma, döndürme, kopyalama, yapıştırma, sabitleme, geri alma ve yineleme.
 - Android ana ekrana ekleme ve 1×1–4×6 boyutları.
+- Yeniden oluşturulan Workspace, taşınan Settings, Editor ve Inspector denetimleri, Soft Atelier çalışma tuvali, Crystal seçicileri/iletişim kutuları ve Orbit Charm denetimleri.
+- Açık, koyu veya sistem görünümüyle Cloud, Dream, Midnight ve Mono kimlikleri.
 
-## Kurulum
+## Best Mates’i indirin
 
-Yayınlandıktan sonra [Releases](../releases) sayfasından **`BestMates-v0.3.0-debug.apk`** dosyasını indirin. Bu, mağaza sürümü değil, test için debug imzalı APK'dır.
+Genel sürüm dosyası **`BestMates-v0.2.0.apk`** olacaktır. Release imzalama yapılandırıldıktan sonra [Releases](../releases) sayfasında yer alır; debug derlemeleri yalnızca geliştirme içindir.
 
 ## Geri bildirim
 

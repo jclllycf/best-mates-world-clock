@@ -1,27 +1,28 @@
 # Changelog
 
-## 0.3.0 — Best Mates 2.0 production migration baseline
+## v0.2.0
 
-This milestone moves the production app onto the shared Cute Atelier, Soft Crystal and Orbit foundation while retaining existing projects, widget data and editor behavior.
+Best Mates 2.0 production migration release.
 
-### Included
+### Added / Changed
 
-- Reconstructed production Workspace with compact project cards and Orbit selection actions.
-- Extracted production Settings with Cloud, Dream, Midnight and Mono identity choices, app brightness, language, resource import and About/version information.
-- Migrated production Editor chrome, inspector controls and Soft Atelier Work Mat colors without changing the canvas coordinate engine.
-- Unified city, shape, font, color, palette and Sun/Moon picker/dialog presentation.
-- Preserved the physically verified TASK-007 rotation-after-drag fix.
-- Kept saved project IDs, WidgetConfig JSON, component IDs, city/timezone behavior, Add to Home and widget rendering contracts compatible.
+- Introduced the Best Mates 2.0 visual foundation.
+- Reconstructed the main Workspace.
+- Migrated Settings to the Crystal interface.
+- Migrated Editor controls and Inspector.
+- Unified city, font, shape, colour and other pickers/dialogs.
+- Added the Soft Atelier working canvas.
+- Integrated updated Orbit Charm controls.
+- Improved drag behavior for rotated objects.
+- Improved theme and light/dark presentation.
+- Preserved existing projects and widget configuration compatibility.
 
-### Deferred
+### Known limitations
 
-- Phase 4 production experience and whole-app layout reconstruction.
-- Celestial Atelier Final Pass and any wholesale Sun/Moon artwork replacement.
-- Complete language packs, imported-resource registry/resolution, weather and automated UI tests.
-
-### Release status
-
-The source and debug APK are prepared for manual v0.3 smoke testing. No remote tag or GitHub Release is created by this change.
+- Final Sun/Moon visual redesign is deferred.
+- Some UI layouts will receive a larger reconstruction in Phase 4.
+- A small number of visual and interaction bugs remain.
+- Automated test coverage is still limited.
 
 ## 0.1.0 — Public preview
 
