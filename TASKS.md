@@ -3,7 +3,7 @@
 ## Current development priority (2026-09-10)
 
 1. Best Mates 2.0 — Phase 2D is closed: **Visual System Direction Established / Celestial Artwork Finalization Deferred**.
-2. Phase 3A audit and bounded implementation are complete. TASK-007 has a scoped drag-coordinate correction with host numerical checks passed; physical gesture acceptance remains pending. Phase 3B is the next separately authorized implementation slice.
+2. Phase 3B Workspace 2.0 is implemented and awaiting manual visual/functional QA. Phase 3C Settings 2.0 is the next separately authorized slice.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -12,6 +12,24 @@ Phase 2D asset language: [docs/BEST_MATES_VISUAL_ASSET_BIBLE.md](docs/BEST_MATES
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
 The explicit Phase 3A request authorized one TASK-007 investigation/repair attempt, now consumed. Do not mark it DONE or perform repeated alternative repairs without the next user/device decision.
+
+### BM2-P3B — Workspace 2.0 Production UI Migration
+Status: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
+Scope: production Workspace presentation, route extraction, and first shared Crystal components
+
+Completed:
+- Extracted Workspace state/commands and presentation from `MainActivity.kt` into `ui/workspace/WorkspaceScreen.kt`; app-root destination state remains unchanged.
+- Preserved existing ProjectStore UUID/load/create/open/rename/copy/cut/paste/delete behavior, complete-config clipboard copies, multi-selection, back-to-deselect, metadata, Editor navigation and renderer-backed background thumbnails.
+- Added a count-aware delete confirmation. Copy/cut still clear selection and now leave an enabled normal-mode Paste action visible.
+- Migrated the production Workspace to token-driven atmosphere, Pearl controls, Milk cards/dialogs/selection surface, Jelly Create action, Quiet Motion, safe insets and 48dp targets. Selection uses one check without a decorative dot.
+- Added shared production `crystalSurface`, `OrbitButton` and `OrbitIconButton`; the Design Lab material wrapper delegates to the same implementation.
+- Adopted the Phase 2 design foundation only in Workspace with legacy mapping: Cloud/Dream/Mono Light and Midnight Dark. Settings and Editor retain their current presentation.
+- Added [Phase 3B Workspace migration](docs/PHASE_3B_WORKSPACE_MIGRATION.md) as the behavior, compatibility and Phase 3C handoff.
+- `assembleDebug --warning-mode all` passes; `testDebugUnitTest` remains NO-SOURCE. No device was connected, so physical launch and subjective approval remain pending.
+- Did not change persistence/models/providers/widgets/assets/time/solar/weather/Editor/canvas/TASK-007 or reference directories `1/` and `2/`.
+
+Stop condition:
+- Await Workspace manual QA. Do not start Phase 3C automatically. TASK-007 remains implemented with manual Editor QA pending, independently of Workspace acceptance.
 
 ### BM2-P3A — Core Engine Audit & Production Migration Foundation
 Status: AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE / AWAITING_USER_GESTURE_VERIFICATION
@@ -27,7 +45,7 @@ Completed:
 - No storage/asset/provider change, UI migration, Celestial artwork change, or inspection/modification of reference directories `1/` and `2/`.
 
 Stop condition:
-- Await the user's manual production-editor gesture verification. Phase 3B is not started; its first slice is Workspace route/presentation plus first-used Crystal components, with existing project commands and persistence retained.
+- Await the user's manual production-editor gesture verification. The historical Phase 3A handoff into Phase 3B has been completed; TASK-007 acceptance remains independent of the Workspace migration.
 
 ### BM2-P2D-CLOSURE — Phase 2D Closure & Phase 3 Handoff
 Status: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED

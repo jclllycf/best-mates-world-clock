@@ -17,7 +17,9 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 
 ## 3. PROJECT STRUCTURE
 
-- `app/src/main/java/com/bestmates/worldclock/MainActivity.kt` — single-activity Compose workspace, settings, editor, dialogs, canvas interactions and localization/theme UI.
+- `app/src/main/java/com/bestmates/worldclock/MainActivity.kt` — single-activity entry, legacy app theme/language and destination state, Settings, Editor, canvas interactions and remaining dialogs.
+- `app/src/main/java/com/bestmates/worldclock/ui/workspace/WorkspaceScreen.kt` — Phase 3B production Workspace route/state, project collection, selection actions, empty state and dialogs.
+- `app/src/main/java/com/bestmates/worldclock/ui/components/CrystalComponents.kt` — first shared production Crystal surfaces and Orbit buttons.
 - `app/src/main/java/com/bestmates/worldclock/model/Models.kt` — widget, layer, city, text, shape and icon-style data models.
 - `app/src/main/java/com/bestmates/worldclock/data/ConfigStore.kt` — JSON persistence/migrations for projects and widget instances.
 - `app/src/main/java/com/bestmates/worldclock/data/ProjectStore.kt` — project list/create/copy/delete persistence.
@@ -34,12 +36,13 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 - `app/src/main/assets/cities.db` — city/country database.
 - `app/src/main/java/com/bestmates/worldclock/ui/editor/CanvasCoordinates.kt` — shared vector rotation used by body drag conversion and existing rotation-handle anchoring.
 - `docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md` — current architecture/compatibility audit, bounded TASK-007 result and production migration plan.
+- `docs/PHASE_3B_WORKSPACE_MIGRATION.md` — Workspace behavior/architecture/compatibility record and exact Phase 3C gate.
 
 ## 4. CURRENTLY IMPLEMENTED FEATURES
 
 ### COMPLETED (confirmed in source)
 
-- Compose single-activity workspace and editor navigation.
+- Compose single-activity navigation with a Phase 3B extracted production Workspace route and existing Settings/Editor destinations.
 - Project persistence and widget-instance persistence through SharedPreferences JSON.
 - Empty-scene support and layout migration through `layoutVersion = 8`.
 - Model support for up to ten cities and five custom text layers.
@@ -50,6 +53,7 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 - Native Android widget receivers for multiple declared sizes; RemoteViews time zones and periodic update metadata.
 - SVG solar rendering at supersampled resolution.
 - App theme enum (Cloud/Dream/Midnight/Mono) and language enum/state infrastructure.
+- Workspace 2.0 production adoption of the frozen Best Mates foundation with legacy theme mapping, shared Crystal components and Orbit actions.
 
 ### PARTIALLY IMPLEMENTED
 
@@ -148,6 +152,7 @@ Current source behavior, not future intent:
 ## 12. TECHNICAL DEBT
 
 - `MainActivity.kt` is a very large monolithic Compose file; state, rendering helpers, dialogs and localization should eventually be separated carefully.
+- Workspace is now extracted, but `MainActivity.kt` remains large because Settings, Editor, localization and the legacy app shell are still colocated. Continue by bounded route slices.
 - Editor and widget renderer duplicate layout concepts and can drift.
 - No automated regression suite covers persistence migrations, shape bounds, live gestures, city search or widget rendering. Phase 3A adds an opt-in debug numerical coordinate check; host compiled-helper checks pass, and these do not replace live gesture tests.
 - Network city search has no explicit error/result-state abstraction in the inspected repository.
@@ -158,10 +163,10 @@ Current source behavior, not future intent:
 - Required JDK: bundled Java 17 at `.tooling/jdk/jdk-17.0.20.1+1`.
 - Local SDK used for verification: `.android-sdk`.
 - Build command from project root (PowerShell): set `JAVA_HOME` to the bundled JDK, set `ANDROID_HOME`/`ANDROID_SDK_ROOT` to `.android-sdk`, then run `./gradlew.bat assembleDebug`.
-- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-10 for Phase 3A. Output: `app/build/outputs/apk/debug/app-debug.apk`. Release merged manifest excludes the Design Lab Activity.
+- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-10 for Phase 3B. Output: `app/build/outputs/apk/debug/app-debug.apk`. Phase 3B did not change debug infrastructure or manifests.
 - Install/run: install the debug APK on an Android device, launch Best Mates, create/edit a project, then add a widget through the launcher. Verify both generic and resized widget receivers.
 - Existing `testDebugUnitTest` task reports NO-SOURCE. Host validation of compiled coordinate-helper bytecode passed 110 affine-oracle cases. Optional Android Matrix checks are available via the debug Activity's `runEngineChecks=true` extra but have not run on-device in Phase 3A.
-- No device was connected during Phase 3A validation. See the Phase 3A document §15 for exact install/launch commands and manual production-editor acceptance steps.
+- No device was connected during Phase 3B validation. See the Phase 3B document for exact install/launch commands and the Workspace checklist; Phase 3A retains the separate Editor/TASK-007 checklist.
 
 ## 14. MANUAL DEVICE REVIEW POLICY
 
@@ -188,11 +193,11 @@ Do not continue subjective refinement after preparing the review surface until t
 
 ## 15. NEXT DEVELOPMENT STAGE
 
-Best Mates 2.0 Phase 3A audit and bounded implementation are complete. See [the Phase 3A handoff](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md) for the actual architecture, protected contracts, ranked deferred work and exact Phase 3B task. TASK-007 has a local-coordinate correction with numerical checks passed, but remains awaiting physical gesture acceptance. Do not declare it DONE or automatically perform another repair.
+Best Mates 2.0 Phase 3B Workspace migration is implemented and build-verified. See [the Phase 3B handoff](docs/PHASE_3B_WORKSPACE_MIGRATION.md) for architecture, exact preserved behavior, compatibility boundaries, manual QA and the Phase 3C starting task. Workspace visual/functional acceptance is pending because no device was connected.
 
-Phase 3B is the next separately authorized slice: extract/rebuild Workspace list, empty state, Create, selection and rename using the frozen theme and first-used Crystal components. Preserve ProjectStore commands/UUIDs, existing Editor/Settings entry and saved field copy semantics. Do not include theme/time inheritance, new thumbnails, live widget links, asset promotion or Editor extraction in that slice.
+Phase 3C Settings 2.0 is the next separately authorized slice. Extract Settings presentation and reuse production Crystal components while preserving existing preference keys/values. GPT-6 must review theme/time inheritance and fallback contracts before any schema or saved-project behavior changes; do not silently rewrite existing concrete widget settings.
 
-Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Stop after Phase 3A for user device verification; no Phase 3B work has started.
+TASK-007 remains implemented with numerical checks passed and manual Editor QA pending. Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Do not begin Phase 3C, another TASK-007 repair, or Celestial work without explicit scope.
 
 ### P0 — Must prioritize
 

@@ -69,6 +69,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bestmates.worldclock.ui.icons.OrbitIconMetrics
 import com.bestmates.worldclock.ui.icons.OrbitIcons
+import com.bestmates.worldclock.ui.components.CrystalLevel
+import com.bestmates.worldclock.ui.components.crystalSurface
 import com.bestmates.worldclock.ui.theme.BestMatesBrightnessMode
 import com.bestmates.worldclock.ui.theme.BestMatesColors
 import com.bestmates.worldclock.ui.theme.BestMatesDesign
@@ -1381,135 +1383,19 @@ private fun Modifier.atelierCrystalSurface(
     borderColor: Color = Color.Unspecified,
     borderWidth: Dp = 1.dp,
     intensity: Float = 1f,
-): Modifier {
-    val colors = BestMatesDesign.colors
-    val motion = BestMatesDesign.motion
-    val crystal = BestMatesDesign.elevation.crystalDepth
-    val recipe = when (level) {
-        AtelierCrystalLevel.PearlGlass -> crystal.pearlGlass
-        AtelierCrystalLevel.MilkCrystal -> crystal.milkCrystal
-        AtelierCrystalLevel.JellyCrystal -> crystal.jellyCrystal
-    }
-    val duration = if (pressed) motion.durations.motionPress else motion.durations.motionRelease
-    val easing = motion.easings.easeStandard
-    val elevation by animateDpAsState(
-        targetValue = if (pressed) crystal.pressedElevation else recipe.elevation * intensity,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button elevation",
-    )
-    val translationY by animateDpAsState(
-        targetValue = if (pressed && motion.spatialMotionEnabled) crystal.pressedTranslationY else 0.dp,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button translation",
-    )
-    val scale by animateFloatAsState(
-        targetValue = if (pressed && motion.spatialMotionEnabled) crystal.pressedScale else 1f,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button scale",
-    )
-    val pressedDarken by animateFloatAsState(
-        targetValue = if (pressed) crystal.pressedDarkenMix else 0f,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button pressed tone",
-    )
-    val shadowAlpha by animateFloatAsState(
-        targetValue = recipe.shadowAlpha * intensity * if (pressed) crystal.pressedShadowMultiplier else 1f,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button shadow",
-    )
-    val highlightAlpha by animateFloatAsState(
-        targetValue = recipe.upperHighlightAlpha * intensity * if (pressed) crystal.pressedHighlightMultiplier else 1f,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button highlight",
-    )
-    val highlightLength by animateFloatAsState(
-        targetValue = if (pressed) crystal.pressedHighlightLength else recipe.highlightLength,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button highlight length",
-    )
-    val refractionAlpha by animateFloatAsState(
-        targetValue = recipe.lowerRefractionAlpha * intensity * if (pressed) crystal.pressedRefractionMultiplier else 1f,
-        animationSpec = tween(durationMillis = duration, easing = easing),
-        label = "button lower refraction",
-    )
-    val topColor = lerp(baseColor, Color.White, recipe.topToneMix * intensity * if (pressed) 0.55f else 1f)
-        .copy(alpha = recipe.fillAlpha)
-    val middleColor = lerp(baseColor, Color.Black, pressedDarken).copy(alpha = recipe.fillAlpha)
-    val bottomColor = lerp(
-        baseColor,
-        Color.Black,
-        recipe.bottomToneMix * intensity + pressedDarken,
-    ).copy(alpha = recipe.fillAlpha)
-    val resolvedBorder = if (borderColor == Color.Unspecified) colors.borderSubtle else borderColor
-    val borderAlpha = (recipe.edgeAlpha * (0.72f + intensity * 0.28f)).coerceIn(0f, 1f)
-    val warmReflectionAlpha = recipe.warmReflectionAlpha * intensity
-    val themeContaminationAlpha = recipe.themeContaminationAlpha * intensity
-
-    return this
-        .graphicsLayer {
-            this.translationY = translationY.toPx()
-            scaleX = scale
-            scaleY = scale
-        }
-        .shadow(
-            elevation = elevation,
-            shape = shape,
-            clip = false,
-            ambientColor = colors.shadowColor.copy(alpha = shadowAlpha),
-            spotColor = colors.shadowColor.copy(alpha = shadowAlpha),
-        )
-        .clip(shape)
-        .drawWithCache {
-            val body = Brush.verticalGradient(listOf(topColor, middleColor, bottomColor))
-            val themeContamination = Brush.linearGradient(
-                colors = listOf(
-                    colors.atmosphereA.copy(alpha = themeContaminationAlpha),
-                    Color.Transparent,
-                    colors.atmosphereB.copy(alpha = themeContaminationAlpha * 0.82f),
-                ),
-                start = Offset.Zero,
-                end = Offset(size.width, size.height),
-            )
-            val pearlVeil = Brush.verticalGradient(
-                colors = listOf(
-                    Color.White.copy(alpha = highlightAlpha * 0.16f),
-                    Color.Transparent,
-                ),
-                endY = size.height * 0.46f,
-            )
-            val lineInset = 10.dp.toPx().coerceAtMost(size.width * 0.20f)
-            val highlightEnd = (size.width * highlightLength).coerceAtLeast(lineInset)
-            val lineWidth = 1.dp.toPx()
-            onDrawWithContent {
-                drawRect(body)
-                drawRect(themeContamination)
-                drawRect(pearlVeil)
-                drawContent()
-                drawLine(
-                    color = Color.White.copy(alpha = highlightAlpha),
-                    start = Offset(lineInset, lineWidth),
-                    end = Offset(highlightEnd, lineWidth),
-                    strokeWidth = lineWidth,
-                    cap = StrokeCap.Round,
-                )
-                drawLine(
-                    color = lerp(baseColor, colors.secondary, 0.36f).copy(alpha = refractionAlpha),
-                    start = Offset(lineInset, size.height - lineWidth),
-                    end = Offset(size.width - lineInset, size.height - lineWidth),
-                    strokeWidth = lineWidth,
-                    cap = StrokeCap.Round,
-                )
-                drawLine(
-                    color = colors.tertiary.copy(alpha = warmReflectionAlpha),
-                    start = Offset(size.width * 0.62f, size.height - lineWidth * 2f),
-                    end = Offset(size.width * 0.82f, size.height - lineWidth * 2f),
-                    strokeWidth = lineWidth,
-                    cap = StrokeCap.Round,
-                )
-            }
-        }
-        .border(borderWidth, resolvedBorder.copy(alpha = borderAlpha), shape)
-}
+): Modifier = crystalSurface(
+    baseColor = baseColor,
+    shape = shape,
+    level = when (level) {
+        AtelierCrystalLevel.PearlGlass -> CrystalLevel.PearlGlass
+        AtelierCrystalLevel.MilkCrystal -> CrystalLevel.MilkCrystal
+        AtelierCrystalLevel.JellyCrystal -> CrystalLevel.JellyCrystal
+    },
+    pressed = pressed,
+    borderColor = borderColor,
+    borderWidth = borderWidth,
+    intensity = intensity,
+)
 
 @Composable
 private fun ToggleRow(

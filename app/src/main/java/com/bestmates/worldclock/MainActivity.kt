@@ -2,6 +2,11 @@ package com.bestmates.worldclock
 
 import com.bestmates.worldclock.ui.icons.OrbitIcons
 import com.bestmates.worldclock.ui.editor.rotateCanvasVector
+import com.bestmates.worldclock.ui.theme.BestMatesBrightnessMode
+import com.bestmates.worldclock.ui.theme.BestMatesDesignTheme
+import com.bestmates.worldclock.ui.theme.BestMatesVisualIdentity
+import com.bestmates.worldclock.ui.workspace.WorkspaceRoute
+import com.bestmates.worldclock.ui.workspace.WorkspaceStrings
 import androidx.compose.ui.unit.Dp
 
 import android.app.Activity
@@ -31,6 +36,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -121,10 +127,10 @@ private val BestMatesTypography = Typography(
 @Composable private fun uiFormat(key: String, vararg values: Any): String = String.format(uiText(key), *values)
 private fun translated(language: AppLanguage, key: String): String {
     val english = mapOf(
-        "workspace" to "Workspace", "workspace_title" to "Best Mates Workspace", "selected_count" to "%d selected", "settings" to "Settings", "editor" to "Editor", "back" to "Back", "component" to "Component", "city" to "City", "text" to "Text", "save" to "Save", "save_auto" to "Save · Auto", "auto_save" to "Auto-save", "undo" to "Undo", "redo" to "Redo", "add_home" to "Add to Home", "app_theme" to "App theme", "display_language" to "Display language", "wallpaper" to "Wallpaper preview", "neutral_bg" to "Neutral background", "canvas" to "Canvas", "snap" to "Snap", "guides" to "Guides", "copy" to "Copy", "paste" to "Paste", "pin" to "Pin", "unpin" to "Unpin", "cut" to "Cut", "delete" to "Delete", "deselect" to "Deselect", "apply" to "Apply", "cancel" to "Cancel", "done" to "Done", "close" to "Close", "rename" to "Rename", "create_widget" to "Create widget", "widget_name" to "Widget name", "new_widget" to "New widget", "unnamed" to "Untitled widget", "empty_workspace" to "No widgets yet\nTap Create widget to begin", "backgrounds_cities" to "%d backgrounds · %d cities", "auto_save_on" to "Auto-save on", "edited_locally" to "Edited locally", "selected" to "Selected", "change_city" to "Change city", "selected_cities" to "Selected cities", "no_cities" to "No cities yet. Added cities will appear on the canvas.", "theme" to "Theme", "time_format" to "Time format", "time_24" to "24-hour time (turn off for AM/PM)", "resource_import" to "Resource import", "import_font" to "Import font file · %s", "import_icon" to "Import icon file · %s", "not_imported" to "Not imported", "import_note" to "Imported files stay on this device and appear in the font and icon libraries.", "add_component" to "Component +", "add_city" to "City +", "add_text" to "Text +", "empty_canvas" to "Add a city or text from the top right", "select_hint" to "Tap a background, city, or text on the canvas to edit it. Drag to move and use the corner handle to resize.", "drag_shape_hint" to "Drag directly on the canvas. Use the fine corner handle to resize width and height.", "drag_city_hint" to "Drag the city on the canvas; use the lower-right handle to resize it.", "drag_text_hint" to "Drag the text on the canvas; use the lower-right handle to change its size.", "shape_library" to "Built-in background", "choose" to "Choose", "choose_shape" to "Choose background shape", "choose_new_shape" to "Choose new component shape", "palette" to "Day / night palette", "custom" to "Custom", "custom_palette_note" to "Edit colour and opacity separately", "choose_palette" to "Choose day / night palette", "day_color" to "Day colour", "night_color" to "Night colour", "open_color" to "Open colour wheel and opacity", "brightness" to "Brightness: %d%%", "opacity" to "Opacity: %d%%", "original" to "Original", "new_color" to "New colour", "font" to "Font", "choose_font" to "Choose font", "text_content" to "Text content", "text_color" to "Text colour", "name_country" to "City name and country", "time" to "Time", "date" to "Date", "sun_moon" to "Sun and moon", "city_name_font" to "City-name font", "city_name_color" to "City name and country colour", "time_font" to "Time font", "time_color" to "Time colour", "date_font" to "Date font", "date_color" to "Date colour", "sun_library" to "Sun icon library", "moon_library" to "Moon icon library", "browse_icons" to "Tap to browse icons", "sun_color" to "Sun colour · warm cream by default", "moon_color" to "Moon colour · lavender moonlight by default", "display_name_hint" to "Display name (blank uses the English city name)", "city_name" to "City name", "show_time" to "Show time", "show_date" to "Show date", "show_country" to "Show country", "show_solar" to "Show sun / moon", "tap_edit" to "Tap to edit", "outline_light" to "Outline and glow", "outline_width" to "Outline width", "outline_opacity" to "Outline opacity", "ambient_glow" to "Ambient softness", "glow_strength" to "Glow strength", "depth" to "Floating depth", "shadow_spread" to "Shadow spread", "shadow_opacity" to "Shadow opacity", "shadow_offset" to "Vertical shadow offset", "choose_city" to "Choose city", "search_city" to "Enter city name in English", "city_search_note" to "Only notable matches are shown. If your city is missing, choose it manually.", "continent" to "Continent", "country" to "Country", "please_choose" to "Please choose", "choose_continent" to "Choose continent", "search_continent" to "Search continents", "choose_country" to "Choose country", "search_country" to "Search countries", "choose_or_search_city" to "Choose or search a city", "choose_country_first" to "Choose a country first", "choose_continent_first" to "Choose a continent first", "search_results" to "%d results", "popular_city_note" to "Popular cities are shown first. Type in English to filter.", "search_city_english" to "Search city in English", "follow_system" to "Follow system"
+        "workspace" to "Workspace", "workspace_title" to "Best Mates Workspace", "workspace_collection" to "Your worlds", "workspace_collection_count" to "%d little time companions", "selected_count" to "%d selected", "settings" to "Settings", "editor" to "Editor", "back" to "Back", "component" to "Component", "city" to "City", "text" to "Text", "save" to "Save", "save_auto" to "Save · Auto", "auto_save" to "Auto-save", "undo" to "Undo", "redo" to "Redo", "add_home" to "Add to Home", "app_theme" to "App theme", "display_language" to "Display language", "wallpaper" to "Wallpaper preview", "neutral_bg" to "Neutral background", "canvas" to "Canvas", "snap" to "Snap", "guides" to "Guides", "copy" to "Copy", "paste" to "Paste", "pin" to "Pin", "unpin" to "Unpin", "cut" to "Cut", "delete" to "Delete", "deselect" to "Deselect", "apply" to "Apply", "cancel" to "Cancel", "done" to "Done", "close" to "Close", "rename" to "Rename", "create_widget" to "Create widget", "widget_name" to "Widget name", "new_widget" to "New widget", "unnamed" to "Untitled widget", "version" to "Best Mates · v0.1", "empty_workspace" to "No widgets yet\nTap Create widget to begin", "empty_workspace_title" to "A quiet space for your worlds", "empty_workspace_body" to "Create your first time companion when you are ready.", "delete_projects_title" to "Delete selected worlds?", "delete_projects_message" to "This will permanently delete %d selected project(s) from this device.", "backgrounds_cities" to "%d backgrounds · %d cities", "auto_save_on" to "Auto-save on", "edited_locally" to "Edited locally", "selected" to "Selected", "change_city" to "Change city", "selected_cities" to "Selected cities", "no_cities" to "No cities yet. Added cities will appear on the canvas.", "theme" to "Theme", "time_format" to "Time format", "time_24" to "24-hour time (turn off for AM/PM)", "resource_import" to "Resource import", "import_font" to "Import font file · %s", "import_icon" to "Import icon file · %s", "not_imported" to "Not imported", "import_note" to "Imported files stay on this device and appear in the font and icon libraries.", "add_component" to "Component +", "add_city" to "City +", "add_text" to "Text +", "empty_canvas" to "Add a city or text from the top right", "select_hint" to "Tap a background, city, or text on the canvas to edit it. Drag to move and use the corner handle to resize.", "drag_shape_hint" to "Drag directly on the canvas. Use the fine corner handle to resize width and height.", "drag_city_hint" to "Drag the city on the canvas; use the lower-right handle to resize it.", "drag_text_hint" to "Drag the text on the canvas; use the lower-right handle to change its size.", "shape_library" to "Built-in background", "choose" to "Choose", "choose_shape" to "Choose background shape", "choose_new_shape" to "Choose new component shape", "palette" to "Day / night palette", "custom" to "Custom", "custom_palette_note" to "Edit colour and opacity separately", "choose_palette" to "Choose day / night palette", "day_color" to "Day colour", "night_color" to "Night colour", "open_color" to "Open colour wheel and opacity", "brightness" to "Brightness: %d%%", "opacity" to "Opacity: %d%%", "original" to "Original", "new_color" to "New colour", "font" to "Font", "choose_font" to "Choose font", "text_content" to "Text content", "text_color" to "Text colour", "name_country" to "City name and country", "time" to "Time", "date" to "Date", "sun_moon" to "Sun and moon", "city_name_font" to "City-name font", "city_name_color" to "City name and country colour", "time_font" to "Time font", "time_color" to "Time colour", "date_font" to "Date font", "date_color" to "Date colour", "sun_library" to "Sun icon library", "moon_library" to "Moon icon library", "browse_icons" to "Tap to browse icons", "sun_color" to "Sun colour · warm cream by default", "moon_color" to "Moon colour · lavender moonlight by default", "display_name_hint" to "Display name (blank uses the English city name)", "city_name" to "City name", "show_time" to "Show time", "show_date" to "Show date", "show_country" to "Show country", "show_solar" to "Show sun / moon", "tap_edit" to "Tap to edit", "outline_light" to "Outline and glow", "outline_width" to "Outline width", "outline_opacity" to "Outline opacity", "ambient_glow" to "Ambient softness", "glow_strength" to "Glow strength", "depth" to "Floating depth", "shadow_spread" to "Shadow spread", "shadow_opacity" to "Shadow opacity", "shadow_offset" to "Vertical shadow offset", "choose_city" to "Choose city", "search_city" to "Enter city name in English", "city_search_note" to "Only notable matches are shown. If your city is missing, choose it manually.", "continent" to "Continent", "country" to "Country", "please_choose" to "Please choose", "choose_continent" to "Choose continent", "search_continent" to "Search continents", "choose_country" to "Choose country", "search_country" to "Search countries", "choose_or_search_city" to "Choose or search a city", "choose_country_first" to "Choose country first", "choose_continent_first" to "Choose continent first", "search_results" to "%d results", "popular_city_note" to "Popular cities are shown first. Type in English to filter.", "search_city_english" to "Search city in English", "follow_system" to "Follow system"
     )
     val chinese = english + mapOf(
-        "workspace" to "工作区", "workspace_title" to "Best Mates 工作区", "selected_count" to "已选择 %d 项", "settings" to "应用设置", "editor" to "编辑器", "back" to "返回", "component" to "组件", "city" to "城市", "text" to "文字", "save" to "保存", "save_auto" to "保存 · 自动", "add_home" to "添加到桌面", "app_theme" to "应用主题", "display_language" to "显示语言", "wallpaper" to "壁纸预览", "neutral_bg" to "灰白背景", "canvas" to "画布", "snap" to "吸附", "guides" to "辅助线", "copy" to "复制", "paste" to "粘贴", "pin" to "固定", "unpin" to "取消固定", "cut" to "剪切", "delete" to "删除", "deselect" to "取消选择", "apply" to "应用", "cancel" to "取消", "done" to "完成", "close" to "关闭", "rename" to "重命名", "create_widget" to "创建组件", "widget_name" to "组件名称", "new_widget" to "新组件", "unnamed" to "未命名组件", "empty_workspace" to "还没有组件方案\n点击“创建组件”开始", "backgrounds_cities" to "%d 个背景 · %d 个城市", "auto_save_on" to "自动保存已开启", "edited_locally" to "本机编辑", "selected" to "已选择", "change_city" to "更改城市", "selected_cities" to "已选择城市", "no_cities" to "还没有选择城市。添加后会显示在上方画布中。", "theme" to "主题", "time_format" to "时间格式", "time_24" to "24 小时制（关闭后显示 AM/PM）", "resource_import" to "资源导入", "import_font" to "导入字体文件 · %s", "import_icon" to "导入 Icon 文件 · %s", "not_imported" to "未导入", "import_note" to "导入的文件仅保存在本机，并会显示在字体和日月图标库中。", "add_component" to "组件＋", "add_city" to "城市＋", "add_text" to "文字＋", "empty_canvas" to "从右上角添加城市或文字", "select_hint" to "点击画布中的背景、城市或文字即可编辑；拖动可移动，右下角手柄可缩放。", "drag_shape_hint" to "可直接在画布拖动；拖动右下角细线手柄可自由调整宽高。", "drag_city_hint" to "请直接在画布拖动城市；拖动右下角手柄可调整整体大小。", "drag_text_hint" to "请直接在画布拖动文字；拖动右下角手柄可调整字号。", "shape_library" to "内置背景", "choose" to "选择", "choose_shape" to "选择内置背景", "choose_new_shape" to "选择新组件形状", "palette" to "昼夜配色", "custom" to "自定义", "custom_palette_note" to "分别编辑颜色与透明度", "choose_palette" to "选择昼夜配色", "day_color" to "白天颜色", "night_color" to "夜晚颜色", "open_color" to "点击打开色轮与透明度", "brightness" to "亮度：%d%%", "opacity" to "透明度：%d%%", "original" to "原色", "new_color" to "新颜色", "font" to "字体", "choose_font" to "选择字体", "text_content" to "文字内容", "text_color" to "文字颜色", "name_country" to "城市名称与国家", "time" to "时间", "date" to "日期", "sun_moon" to "太阳与月亮", "city_name_font" to "城市名称字体", "city_name_color" to "城市名称与国家颜色", "time_font" to "时间字体", "time_color" to "时间颜色", "date_font" to "日期字体", "date_color" to "日期颜色", "sun_library" to "太阳图标库", "moon_library" to "月亮图标库", "browse_icons" to "点击浏览图标", "sun_color" to "太阳颜色 · 默认淡暖奶油色", "moon_color" to "月亮颜色 · 默认浅紫薰衣草色", "display_name_hint" to "显示名称（留空使用城市英文名）", "city_name" to "城市名称", "show_time" to "显示时间", "show_date" to "显示日期", "show_country" to "显示国家", "show_solar" to "显示日月", "tap_edit" to "点击编辑", "outline_light" to "轮廓与光感", "outline_width" to "轮廓宽度", "outline_opacity" to "轮廓通透度", "ambient_glow" to "环境柔光", "glow_strength" to "柔光强度", "depth" to "悬浮层次", "shadow_spread" to "阴影扩散", "shadow_opacity" to "阴影浓度", "shadow_offset" to "阴影纵向偏移", "choose_city" to "选择城市", "search_city" to "请输入城市英文名", "city_search_note" to "仅优先显示部分知名城市；如未显示您的城市请手动选择。", "continent" to "大洲", "country" to "国家", "please_choose" to "请选择", "choose_continent" to "选择大洲", "search_continent" to "搜索大洲", "choose_country" to "选择国家", "search_country" to "搜索国家", "choose_or_search_city" to "选择或搜索城市", "choose_country_first" to "请先选择国家", "choose_continent_first" to "请先选择大洲", "search_results" to "搜索结果 %d 个", "popular_city_note" to "默认显示人口较多的城市，可输入英文继续筛选", "search_city_english" to "搜索城市英文名", "follow_system" to "跟随系统"
+        "workspace" to "工作区", "workspace_title" to "Best Mates 工作区", "workspace_collection" to "我的世界", "workspace_collection_count" to "%d 个时间伙伴", "selected_count" to "已选择 %d 项", "settings" to "应用设置", "editor" to "编辑器", "back" to "返回", "component" to "组件", "city" to "城市", "text" to "文字", "save" to "保存", "save_auto" to "保存 · 自动", "add_home" to "添加到桌面", "app_theme" to "应用主题", "display_language" to "显示语言", "wallpaper" to "壁纸预览", "neutral_bg" to "灰白背景", "canvas" to "画布", "snap" to "吸附", "guides" to "辅助线", "copy" to "复制", "paste" to "粘贴", "pin" to "固定", "unpin" to "取消固定", "cut" to "剪切", "delete" to "删除", "deselect" to "取消选择", "apply" to "应用", "cancel" to "取消", "done" to "完成", "close" to "关闭", "rename" to "重命名", "create_widget" to "创建组件", "widget_name" to "组件名称", "new_widget" to "新组件", "unnamed" to "未命名组件", "empty_workspace" to "还没有组件方案\n点击“创建组件”开始", "empty_workspace_title" to "为你的世界留一片安静空间", "empty_workspace_body" to "准备好时，创建第一个时间伙伴。", "delete_projects_title" to "删除选中的世界？", "delete_projects_message" to "将从此设备永久删除选中的 %d 个项目。", "backgrounds_cities" to "%d 个背景 · %d 个城市", "auto_save_on" to "自动保存已开启", "edited_locally" to "本机编辑", "selected" to "已选择", "change_city" to "更改城市", "selected_cities" to "已选择城市", "no_cities" to "还没有选择城市。添加后会显示在上方画布中。", "theme" to "主题", "time_format" to "时间格式", "time_24" to "24 小时制（关闭后显示 AM/PM）", "resource_import" to "资源导入", "import_font" to "导入字体文件 · %s", "import_icon" to "导入 Icon 文件 · %s", "not_imported" to "未导入", "import_note" to "导入的文件仅保存在本机，并会显示在字体和日月图标库中。", "add_component" to "组件＋", "add_city" to "城市＋", "add_text" to "文字＋", "empty_canvas" to "从右上角添加城市或文字", "select_hint" to "点击画布中的背景、城市或文字即可编辑；拖动可移动，右下角手柄可缩放。", "drag_shape_hint" to "可直接在画布拖动；拖动右下角细线手柄可自由调整宽高。", "drag_city_hint" to "请直接在画布拖动城市；拖动右下角手柄可调整整体大小。", "drag_text_hint" to "请直接在画布拖动文字；拖动右下角手柄可调整字号。", "shape_library" to "内置背景", "choose" to "选择", "choose_shape" to "选择内置背景", "choose_new_shape" to "选择新组件形状", "palette" to "昼夜配色", "custom" to "自定义", "custom_palette_note" to "分别编辑颜色与透明度", "choose_palette" to "选择昼夜配色", "day_color" to "白天颜色", "night_color" to "夜晚颜色", "open_color" to "点击打开色轮与透明度", "brightness" to "亮度：%d%%", "opacity" to "透明度：%d%%", "original" to "原色", "new_color" to "新颜色", "font" to "字体", "choose_font" to "选择字体", "text_content" to "文字内容", "text_color" to "文字颜色", "name_country" to "城市名称与国家", "time" to "时间", "date" to "日期", "sun_moon" to "太阳与月亮", "city_name_font" to "城市名称字体", "city_name_color" to "城市名称与国家颜色", "time_font" to "时间字体", "time_color" to "时间颜色", "date_font" to "日期字体", "date_color" to "日期颜色", "sun_library" to "太阳图标库", "moon_library" to "月亮图标库", "browse_icons" to "点击浏览图标", "sun_color" to "太阳颜色 · 默认淡暖奶油色", "moon_color" to "月亮颜色 · 默认浅紫薰衣草色", "display_name_hint" to "显示名称（留空使用城市英文名）", "city_name" to "城市名称", "show_time" to "显示时间", "show_date" to "显示日期", "show_country" to "显示国家", "show_solar" to "显示日月", "tap_edit" to "点击编辑", "outline_light" to "轮廓与光感", "outline_width" to "轮廓宽度", "outline_opacity" to "轮廓通透度", "ambient_glow" to "环境柔光", "glow_strength" to "柔光强度", "depth" to "悬浮层次", "shadow_spread" to "阴影扩散", "shadow_opacity" to "阴影浓度", "shadow_offset" to "阴影纵向偏移", "choose_city" to "选择城市", "search_city" to "请输入城市英文名", "city_search_note" to "仅优先显示部分知名城市；如未显示您的城市请手动选择。", "continent" to "大洲", "country" to "国家", "please_choose" to "请选择", "choose_continent" to "选择大洲", "search_continent" to "搜索大洲", "choose_country" to "选择国家", "search_country" to "搜索国家", "choose_or_search_city" to "选择或搜索城市", "choose_country_first" to "请先选择国家", "choose_continent_first" to "请先选择大洲", "search_results" to "搜索结果 %d 个", "popular_city_note" to "默认显示人口较多的城市，可输入英文继续筛选", "search_city_english" to "搜索城市英文名", "follow_system" to "跟随系统"
     )
     val translated = when (language) {
         AppLanguage.CHINESE -> chinese
@@ -225,7 +231,12 @@ private fun AppLanguage.dateLocale(): Locale = when (this) {
 
 /** Keeps the persistent editor chrome translated even when a screen uses a newer string key. */
 private fun completeLanguageOverride(language: AppLanguage, key: String): String? = when (language) {
-    AppLanguage.ENGLISH -> mapOf("light" to "Light", "dark" to "Dark")[key]
+    AppLanguage.ENGLISH -> mapOf(
+        "light" to "Light",
+        "dark" to "Dark",
+        "choose_country_first" to "Choose a country first",
+        "choose_continent_first" to "Choose a continent first",
+    )[key]
     AppLanguage.CHINESE -> mapOf("light" to "浅色", "dark" to "深色")[key]
     AppLanguage.GERMAN -> mapOf(
         "selected_count" to "%d ausgewählt", "app_theme" to "App-Design", "display_language" to "Anzeigesprache",
@@ -376,76 +387,62 @@ class MainActivity : ComponentActivity() {
                         refreshProjectWidgets(activity, projectId)
                     }
                 }
-                else -> WorkspaceScreen(onEdit = { editingProject = it }, onSettings = { showSettings = true })
-            }
-        }
-    }
-    }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable private fun WorkspaceScreen(onEdit: (String) -> Unit, onSettings: () -> Unit) {
-    val currentLanguage = LocalBestMatesLanguage.current
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val store = remember { ProjectStore(context) }
-    var revision by remember { mutableIntStateOf(0) }
-    var selected by remember { mutableStateOf(setOf<String>()) }
-    var clipboard by remember { mutableStateOf<WidgetConfig?>(null) }
-    var namingMode by remember { mutableStateOf<String?>(null) }
-    var nameDraft by remember { mutableStateOf("") }
-    val projects = remember(revision) { store.ids().map { it to store.load(it) } }
-    BackHandler(enabled = selected.isNotEmpty()) { selected = emptySet() }
-    Scaffold(topBar = { TopAppBar(title = { Text(if (selected.isEmpty()) uiText("workspace_title") else uiFormat("selected_count", selected.size)) }, navigationIcon = { IconButton(onClick = onSettings) { Icon(OrbitIcons.Settings, uiText("settings"), modifier = Modifier.size(24.dp)) } }, actions = {
-        EditorActionButton(EditorAction.PASTE, uiText("paste"), { clipboard?.let { store.create(it.copy(title = it.title.ifBlank { translated(currentLanguage, "unnamed") })); revision++ } }, selected = clipboard != null)
-        if (selected.size == 1) {
-            EditorActionButton(EditorAction.RENAME, uiText("rename"), { val id = selected.first(); nameDraft = store.load(id).title; namingMode = id })
-            EditorActionButton(EditorAction.COPY, uiText("copy"), { clipboard = store.load(selected.first()); selected = emptySet() })
-            EditorActionButton(EditorAction.CUT, uiText("cut"), { clipboard = store.load(selected.first()); store.delete(selected.first()); selected = emptySet(); revision++ })
-        }
-        if (selected.isNotEmpty()) EditorActionButton(EditorAction.DELETE, uiText("delete"), { selected.forEach(store::delete); selected = emptySet(); revision++ }, destructive = true)
-    }) }, bottomBar = { BottomAppBar { Text(uiText("version"), Modifier.padding(horizontal = 18.dp)); Spacer(Modifier.weight(1f)); Button(onClick = { nameDraft = ""; namingMode = "__create__" }, modifier = Modifier.padding(8.dp)) { Text("＋ ${uiText("create_widget")}") } } }) { padding ->
-        if (projects.isEmpty()) Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) { Text(uiText("empty_workspace"), style = MaterialTheme.typography.titleMedium) }
-        else LazyColumn(Modifier.fillMaxSize().padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(projects, key = { it.first }) { (id, config) -> ElevatedCard(Modifier.fillMaxWidth().combinedClickable(onClick = { if (selected.isEmpty()) onEdit(id) else selected = selected.toggle(id) }, onLongClick = { selected = selected.toggle(id) }), elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp)) { Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                WorkspaceThumbnail(config)
-                Spacer(Modifier.width(14.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(config.title.ifBlank { uiText("unnamed") }, style = MaterialTheme.typography.titleMedium)
-                    Text(uiFormat("backgrounds_cities", config.layers.size, config.cities.size), style = MaterialTheme.typography.bodySmall)
-                    Text(if (config.autoSave) uiText("auto_save_on") else uiText("edited_locally"), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    if (selected.contains(id)) Text("✓ ${uiText("selected")}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelMedium)
+                else -> BestMatesDesignTheme(
+                    systemIsDark = isSystemInDarkTheme(),
+                    identity = when (appTheme) {
+                        AppThemeStyle.CLOUD -> BestMatesVisualIdentity.CLOUD
+                        AppThemeStyle.DREAM -> BestMatesVisualIdentity.DREAM
+                        AppThemeStyle.MIDNIGHT -> BestMatesVisualIdentity.MIDNIGHT
+                        AppThemeStyle.MONO -> BestMatesVisualIdentity.MONO
+                    },
+                    // Keep legacy brightness until Settings owns an independent mode.
+                    brightnessMode = if (appTheme == AppThemeStyle.MIDNIGHT) {
+                        BestMatesBrightnessMode.DARK
+                    } else {
+                        BestMatesBrightnessMode.LIGHT
+                    },
+                ) {
+                    WorkspaceRoute(
+                        strings = workspaceStrings(),
+                        onOpenProject = { editingProject = it },
+                        onSettings = { showSettings = true },
+                    )
                 }
-            } }
             }
         }
     }
-    if (namingMode != null) {
-        val creating = namingMode == "__create__"
-        AlertDialog(
-            onDismissRequest = { namingMode = null },
-            title = { Text(if (creating) uiText("create_widget") else uiText("rename")) },
-            text = { OutlinedTextField(nameDraft, { nameDraft = it.take(40) }, label = { Text(uiText("widget_name")) }, singleLine = true, modifier = Modifier.fillMaxWidth()) },
-            dismissButton = { TextButton(onClick = { namingMode = null }) { Text(uiText("cancel")) } },
-            confirmButton = { Button(onClick = {
-                val title = nameDraft.trim().ifBlank { translated(currentLanguage, "unnamed") }
-                if (creating) onEdit(store.create(WidgetConfig(title = title)))
-                else namingMode?.let { id -> store.save(id, store.load(id).copy(title = title)); revision++; selected = emptySet() }
-                namingMode = null
-            }) { Text(if (creating) uiText("create_widget") else uiText("apply")) } }
-        )
+    }
     }
 }
 
-@Composable private fun WorkspaceThumbnail(config: WidgetConfig) {
-    val density = LocalDensity.current
-    val night = config.theme == ThemeMode.DARK
-    val bitmap = remember(config.layers, night) { BackgroundRenderer.renderLayers(config, 88, 88, density.density, night).asImageBitmap() }
-    Box(Modifier.size(72.dp).clip(RoundedCornerShape(18.dp)).background(MaterialTheme.colorScheme.surfaceContainer), contentAlignment = Alignment.Center) {
-        if (config.layers.isEmpty()) Text("＋", color = MaterialTheme.colorScheme.primary, fontSize = 22.sp)
-        else Image(bitmap, null, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
-    }
-}
+@Composable
+private fun workspaceStrings() = WorkspaceStrings(
+    brand = "Best Mates",
+    collectionTitle = uiText("workspace_collection"),
+    collectionCountTemplate = uiText("workspace_collection_count"),
+    selectedCountTemplate = uiText("selected_count"),
+    settings = uiText("settings"),
+    createWidget = uiText("create_widget"),
+    widgetName = uiText("widget_name"),
+    unnamed = uiText("unnamed"),
+    emptyTitle = uiText("empty_workspace_title"),
+    emptyBody = uiText("empty_workspace_body"),
+    backgroundsCitiesTemplate = uiText("backgrounds_cities"),
+    autoSaveOn = uiText("auto_save_on"),
+    editedLocally = uiText("edited_locally"),
+    selected = uiText("selected"),
+    rename = uiText("rename"),
+    copy = uiText("copy"),
+    cut = uiText("cut"),
+    paste = uiText("paste"),
+    delete = uiText("delete"),
+    cancel = uiText("cancel"),
+    apply = uiText("apply"),
+    close = uiText("close"),
+    deleteTitle = uiText("delete_projects_title"),
+    deleteMessageTemplate = uiText("delete_projects_message"),
+    version = uiText("version"),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun SettingsScreen(onBack: () -> Unit, currentTheme: AppThemeStyle, onThemeChange: (AppThemeStyle) -> Unit, currentLanguage: AppLanguage, onLanguageChange: (AppLanguage) -> Unit) {
@@ -477,8 +474,6 @@ class MainActivity : ComponentActivity() {
         Spacer(Modifier.weight(1f)); Text("Best Mates v0.1\nApache-2.0 · GeoNames city data", style = MaterialTheme.typography.bodySmall)
     } }
 }
-
-private fun Set<String>.toggle(id: String) = if (contains(id)) this - id else this + id
 
 private sealed interface CanvasSelection {
     data class ComponentItem(val index: Int) : CanvasSelection
