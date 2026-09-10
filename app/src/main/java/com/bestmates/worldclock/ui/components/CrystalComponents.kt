@@ -9,8 +9,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,8 +39,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.bestmates.worldclock.ui.icons.OrbitIcons
 import com.bestmates.worldclock.ui.theme.BestMatesDesign
 
 enum class CrystalLevel { PearlGlass, MilkCrystal, JellyCrystal }
@@ -310,5 +316,85 @@ fun OrbitIconButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription, tint = tint, modifier = Modifier.size(20.dp))
+    }
+}
+
+@Composable
+fun CrystalPanel(
+    modifier: Modifier = Modifier,
+    level: CrystalLevel = CrystalLevel.MilkCrystal,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val colors = BestMatesDesign.colors
+    val dimensions = BestMatesDesign.dimensions
+    val shape = RoundedCornerShape(dimensions.radii.radiusXl)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .crystalSurface(
+                baseColor = colors.surfaceRaised,
+                shape = shape,
+                level = level,
+                borderColor = colors.borderSubtle,
+                intensity = if (level == CrystalLevel.PearlGlass) .62f else .72f,
+            )
+            .padding(dimensions.shared.inspectorContentPadding),
+        content = content,
+    )
+}
+
+@Composable
+fun OrbitChoiceChip(
+    label: String,
+    selected: Boolean,
+    selectedDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    val colors = BestMatesDesign.colors
+    val dimensions = BestMatesDesign.dimensions
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val shape = dimensions.radii.radiusFull
+    val contentColor = when {
+        !enabled -> colors.textMuted.copy(alpha = BestMatesDesign.states.disabledContentAlpha)
+        selected -> colors.selectionContent
+        else -> colors.textSecondary
+    }
+    Row(
+        modifier = modifier
+            .heightIn(min = dimensions.shared.minimumTouchTarget)
+            .semantics { this.selected = selected }
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.RadioButton,
+                onClick = onClick,
+            )
+            .crystalSurface(
+                baseColor = if (selected) colors.selectionFill else colors.surfaceRaised,
+                shape = shape,
+                level = CrystalLevel.PearlGlass,
+                pressed = pressed && enabled,
+                borderColor = if (selected) colors.selectionOutline else colors.borderControl,
+                borderWidth = if (selected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
+                intensity = if (enabled) .64f else .28f,
+            )
+            .padding(horizontal = dimensions.spacing.space4),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (selected) {
+            Icon(
+                OrbitIcons.Confirm,
+                contentDescription = selectedDescription,
+                modifier = Modifier.size(16.dp),
+                tint = contentColor,
+            )
+            Spacer(Modifier.width(dimensions.spacing.space3))
+        }
+        Text(label, style = MaterialTheme.typography.labelLarge, color = contentColor)
     }
 }
