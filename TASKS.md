@@ -1,9 +1,9 @@
 # BEST MATES TASKS
 
-## Current development priority (2026-09-09)
+## Current development priority (2026-09-10)
 
 1. Best Mates 2.0 — Phase 2D is closed: **Visual System Direction Established / Celestial Artwork Finalization Deferred**.
-2. Phase 3 is the next implementation phase. Start it only under a separate explicit scope; do not infer bulk asset promotion or Celestial approval from Phase 2D closure.
+2. Phase 3A audit and bounded implementation are complete. TASK-007 has a scoped drag-coordinate correction with host numerical checks passed; physical gesture acceptance remains pending. Phase 3B is the next separately authorized implementation slice.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,7 +11,23 @@ Phase 2D asset language: [docs/BEST_MATES_VISUAL_ASSET_BIBLE.md](docs/BEST_MATES
 
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
-TASK-007 is deferred. Do not resume its remaining movement investigation unless the maintainer explicitly reprioritizes it.
+The explicit Phase 3A request authorized one TASK-007 investigation/repair attempt, now consumed. Do not mark it DONE or perform repeated alternative repairs without the next user/device decision.
+
+### BM2-P3A — Core Engine Audit & Production Migration Foundation
+Status: AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE / AWAITING_USER_GESTURE_VERIFICATION
+Scope: architecture/contracts, time/solar/weather feasibility, Work Mat comparison, one bounded TASK-007 repair, and the Phase 3B–3F handoff
+
+Completed:
+- Created [Phase 3A core engine and migration](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md) with traced state ownership, protected contracts, SAFE NOW / DEFER / REJECT decisions, regression gates and an exact Sol-ready Phase 3B starting task.
+- Confirmed Work Mat uses the same `LayoutCanvas` as production; its smoother feel is not evidence of a separate engine. No measured performance claim or engine replacement.
+- Corrected layer/city/text body drag deltas from rotated local space into canvas space before the existing density/normalization/snap/bounds steps. Extracted the existing rotation-vector helper without changing rotation/resize/handle geometry.
+- Added an opt-in debug Android Matrix check. Host validation of the compiled production helper passed 110 affine-oracle cases, three densities, moving origins and the former 90-degree failure fixture. Live gestures are not covered by this numerical result.
+- Preserved IANA time and native widget TextClock; deferred full solar events, weather, widget linkage/scheduling, storage recovery and preference inheritance with specific reasons.
+- `assembleDebug --warning-mode all` passes; existing unit-test task is NO-SOURCE. Release merged manifest has no debug Activity. No connected device was detected; no install/launch or physical acceptance is claimed. Exact commands and checklist are in the Phase 3A document.
+- No storage/asset/provider change, UI migration, Celestial artwork change, or inspection/modification of reference directories `1/` and `2/`.
+
+Stop condition:
+- Await the user's manual production-editor gesture verification. Phase 3B is not started; its first slice is Workspace route/presentation plus first-used Crystal components, with existing project commands and persistence retained.
 
 ### BM2-P2D-CLOSURE — Phase 2D Closure & Phase 3 Handoff
 Status: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
@@ -233,8 +249,8 @@ Review record:
 ## P0 — Editor stability and correctness
 
 ### TASK-007 — Unlimited rotation and correct movement
-Status: PARTIALLY_COMPLETE / DEFERRED
-Priority: DEFERRED
+Status: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE_VERIFICATION
+Priority: P1 — manual interaction acceptance gate
 
 Requirements:
 - Remove the effective ±180° interaction limitation.
@@ -264,8 +280,14 @@ Implementation awaiting verification (2026-09-08):
 Deferred physical-device finding (2026-09-08):
 - Rotation sensitivity is acceptable in the current build.
 - Post-rotation drag movement does not consistently follow the user's finger direction on physical device.
-- Do not investigate or patch this remaining movement defect while TASK-007 is deferred.
+- At that point further movement investigation was deferred; Phase 3A later explicitly authorized one bounded attempt below.
 - TASK-007 is not DONE.
+
+Phase 3A bounded repair (2026-09-10):
+- Found that body handlers receive local-space deltas through the rotated graphics layer. Recovered canvas deltas with positive gesture-start rotation for component/city/text, using shared `ui/editor/CanvasCoordinates.kt`.
+- Preserved existing pointer keys, fresh start-state capture, snapping, guides, bounds, resize, unlimited rotation, history and persistence.
+- Host checks against the compiled helper pass; debug Matrix checker is available through the existing Design Lab Activity's `runEngineChecks` extra. No Android device was connected for this session, so live gesture and on-device Matrix checks remain pending.
+- The single bounded attempt is consumed. Use the [Phase 3A checklist](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md#15-validation-and-manual-device-review-checklist); if it fails beyond this isolated conversion, record evidence and re-defer for a separately scoped review.
 
 Files involved:
 - app/src/main/java/com/bestmates/worldclock/MainActivity.kt

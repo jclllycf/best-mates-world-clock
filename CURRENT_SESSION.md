@@ -1,18 +1,23 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 2D closure and Phase 3 handoff; Phase 2C foundation remains visually frozen
+Codex — Phase 3A core audit, bounded drag correction and production migration handoff; Phase 2 visual foundation remains frozen
 
 ## Current task
-Best Mates 2.0 — Phase 2D is closed with Visual System Direction Established and Celestial Artwork Finalization Deferred. Golden Set 3 remains available in the Design Lab. Phase 3 is next but has not started; do not resume TASK-007 or infer bulk candidate promotion.
+Best Mates 2.0 — Phase 3A audit and bounded implementation are complete. The authorized TASK-007 attempt corrected rotated local drag deltas; host numerical checks pass and physical gesture acceptance remains pending. Stop before Phase 3B. Golden Set 3 remains available; Celestial artwork finalization and bulk candidate promotion remain deferred.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 2D closure starts from `769cf26abda06fe181a41efe1007061e5c98b63e`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Use the current clean HEAD after the closure commit as the Phase 3 baseline.
+Phase 3A started from clean `29414893ab71ef4168a778fd365840243124ac19` (Phase 2D closure). The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Read current HEAD/history for the Phase 3A completion commit; do not infer physical acceptance from a buildable commit.
 
 ## Task status
+
+BM2-P3A: AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE / AWAITING_USER_GESTURE_VERIFICATION
+
+BM2-P3B: NOT_STARTED / SEPARATE_SCOPE_REQUIRED
+
 BM2-P2D-CLOSURE: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
 
 BM2-CELESTIAL-FINAL: DEFERRED / FUTURE_FOCUSED_TASK
@@ -39,7 +44,20 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 
 BM2-P1: APPROVED / COMPLETE
 
-TASK-007: PARTIALLY_COMPLETE / DEFERRED
+TASK-007: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE_VERIFICATION
+
+## Best Mates 2.0 — Phase 3A result (2026-09-10)
+
+- Source of truth and handoff: [docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md). It maps production/debug/legacy responsibilities, compatibility contracts, time/solar/weather, Work Mat, ranked opportunities, incremental architecture, 3B–3F gates and the exact next Workspace slice.
+- Corrected the isolated rotated-drag root cause for component/city/text. Compose pointer deltas are local to the graphics layer; apply the captured positive rotation before existing canvas normalization/snapping. Existing rotation-vector math was extracted into `ui/editor/CanvasCoordinates.kt` and reused.
+- Rotation/resize, handle placement, pointer keys, snaps/guides/bounds, history, IDs, JSON, widget rendering/providers and existing assets remain unchanged. No visual redesign or bulk UI migration.
+- Work Mat calls the same `LayoutCanvas`; its disposable/simple state is different, but a performance advantage has not been measured. Preserve this shared engine when adopting visual chrome.
+- Existing IANA/DST clock logic and native widget TextClock are retained. Offline coordinate-based solar day/night already exists; full events/twilight and weather are deferred. Widget snapshot/live-link behavior, recovery and Settings inheritance each require separate contract work.
+- Validation: `assembleDebug --warning-mode all` PASS; unit-test task NO-SOURCE; release manifest excludes the debug Activity. Compiled-helper host checks PASS (110 affine-oracle cases, 3 densities, moving origins and former defect). Debug Android Matrix checks compile but have not run on-device.
+- Device: not connected during this session. APK: `app/build/outputs/apk/debug/app-debug.apk`. No install/launch/screenshots/physical acceptance claimed. Install and launch commands plus the production-editor review path are in §15 of the Phase 3A document.
+- TASK-007 is not DONE. One bounded attempt is consumed; await component/city/text drag tests at normal/multi-turn angles with snap off/on, then resize/Undo/Redo/save/reopen. Do not begin another speculative repair.
+- Next separately authorized task: Phase 3B Workspace route extraction, project list/empty state/Create/selection/rename and first production Crystal components, preserving existing ProjectStore commands and legacy brightness mapping. No preference inheritance, new thumbnails, live links, asset promotion or Editor extraction in that first slice.
+- Phase 3B remains unstarted. Celestial Atelier Final Pass stays separate. Reference directories `1/` and `2/` were not inspected or modified.
 
 ## Best Mates 2.0 — Phase 2D closure result (2026-09-09)
 

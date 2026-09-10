@@ -22,7 +22,7 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 - `app/src/main/java/com/bestmates/worldclock/data/ConfigStore.kt` — JSON persistence/migrations for projects and widget instances.
 - `app/src/main/java/com/bestmates/worldclock/data/ProjectStore.kt` — project list/create/copy/delete persistence.
 - `app/src/main/java/com/bestmates/worldclock/data/CityCatalog.kt` — bundled SQLite continent/country/city lookup.
-- `app/src/main/java/com/bestmates/worldclock/data/CitySearchRepository.kt` — Open-Meteo network search fallback.
+- `app/src/main/java/com/bestmates/worldclock/data/CitySearchRepository.kt` — Open-Meteo network search implementation with no current production caller; the picker uses bundled CityCatalog.
 - `app/src/main/java/com/bestmates/worldclock/widget/BackgroundRenderer.kt` — normalized shape paths, fills, borders, glow/shadow and layer rendering.
 - `app/src/main/java/com/bestmates/worldclock/widget/SolarIconRenderer.kt` — high-resolution SVG solar icon rendering/cropping.
 - `app/src/main/java/com/bestmates/worldclock/widget/WorldClockWidgetProvider.kt` — RemoteViews widget updates, city/time/date binding and sizing.
@@ -32,6 +32,8 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 - `app/src/main/res/layout/widget_world.xml`, `widget_preview.xml` — RemoteViews layout/preview.
 - `app/src/main/assets/solar_icons/` — bundled BM and third-party-style SVG solar assets; `THIRD_PARTY_NOTICES.md` records notices.
 - `app/src/main/assets/cities.db` — city/country database.
+- `app/src/main/java/com/bestmates/worldclock/ui/editor/CanvasCoordinates.kt` — shared vector rotation used by body drag conversion and existing rotation-handle anchoring.
+- `docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md` — current architecture/compatibility audit, bounded TASK-007 result and production migration plan.
 
 ## 4. CURRENTLY IMPLEMENTED FEATURES
 
@@ -70,9 +72,9 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 
 Current source behavior, not future intent:
 
-- Drag/move: pointer-based canvas drag updates normalized positions; rotation-aware interaction is not fully reliable.
+- Drag/move: pointer-based canvas drag updates normalized positions. Phase 3A corrects graphics-layer-local deltas into canvas direction for component/city/text; host numerical checks pass, physical gesture acceptance remains pending.
 - Resize: corner handle exists. Background layer snapping uses quarter-cell (`0.25`) increments; city/text helpers use finer subdivision in parts of the editor. Free, continuous non-proportional resizing is not consistently enforced for every shape.
-- Rotation: handle exists, but `MainActivity.kt` currently normalizes/clamps rotation to approximately `[-180, 180]`; unlimited rotation is not implemented.
+- Rotation: `RotationHandleUnified` uses an unrotated sibling and root-coordinate tracking; angle unwrapping supports continuous multi-turn raw rotation. The former ±180° limitation is no longer the current source behavior. TASK-007 still needs final physical acceptance.
 - Snapping/guides: center/edge/grid guide logic exists; PPT-style linked guides, symmetry matching, equal-size snapping and haptic feedback are not confirmed.
 - Selection: canvas selection drives a lower editor/action area; blank-canvas deselection and all gesture/back edge cases need verification.
 - Bounds: renderer/editor clamp some centers and widget RemoteViews clamp content to design bounds. The requested “allow outside component” behavior is not a verified universal rule.
@@ -94,7 +96,7 @@ Current source behavior, not future intent:
 - Time zones: IANA `zoneId` is stored per city; `WorldClockWidgetProvider` applies it to RemoteViews time/date fields.
 - Day/night: `SolarCalculator.isDay(city)` uses longitude, latitude, date and timezone; `SolarIconRenderer` chooses sun/moon assets and colors.
 - Widget rendering: `BackgroundRenderer.renderLayers()` produces a bitmap background; RemoteViews overlays title/subtitle, city fields and custom text.
-- Update mechanism: provider reacts to time/timezone/date broadcasts and declares a 30-minute update period; exact minute-level refresh is not implemented.
+- Update mechanism: native TextClock time/date advance independently of the 30-minute provider bitmap/solar refresh. The generic receiver declares time/timezone/date broadcasts but enumerates generic provider IDs; sized-receiver solar refresh coverage needs separate lifecycle validation.
 - Preview: Compose canvas is a normalized design preview and is not yet a pixel/launcher-size guarantee across devices.
 - Android home screen: generic and many fixed-size receivers are declared; launcher sizing/options are read where available. iOS is outside current scope.
 
@@ -123,9 +125,9 @@ Current source behavior, not future intent:
 ## 10. KNOWN BUGS
 
 - Localization is incomplete: non-Chinese locales fall back to many English strings. Affected: `MainActivity.kt` translation map.
-- Wallpaper preview controls and related code still exist although the latest product direction asked to remove them. Affected: `MainActivity.kt`.
+- Golden Set 3 Wallpapers are review-only; they are not current production-editor wallpaper controls. Preview sources/bridges are in the main source set even though their Activity entry is debug-only.
 - Editor toolbar contains duplicate/verbose actions and rough custom icons. Affected: `MainActivity.kt`.
-- Rotation is limited to `[-180,180]`; rotated dragging can use inconsistent coordinate transforms. Affected: `MainActivity.kt`.
+- Rotated dragging received one bounded Phase 3A coordinate fix. Live component/city/text tracking is awaiting user verification; TASK-007 is not DONE.
 - Background canvas/design bounds remain square and can mismatch selected 1x1–4x6 launcher proportions. Affected: `MainActivity.kt`, `BackgroundRenderer.kt`, widget XML/provider sizing.
 - Some shape paths (notably capsule/cloud/petal/wave/ticket) are placeholders or visually rough and do not always fill the selected bounds naturally. Affected: `Models.kt`, `BackgroundRenderer.kt`.
 - Background snapping is quarter-cell rather than the requested finer/linked grid behavior. Affected: `MainActivity.kt`.
@@ -141,12 +143,13 @@ Current source behavior, not future intent:
 - Natural shape geometry and shape-specific aspect recommendations.
 - Fully device-faithful preview and launcher cell mapping across manufacturers.
 - Weather fields and future extensible city data.
+- Settings font/icon import copies files and remembers display names; no complete imported-asset registry/resolver is currently connected to production rendering.
 
 ## 12. TECHNICAL DEBT
 
 - `MainActivity.kt` is a very large monolithic Compose file; state, rendering helpers, dialogs and localization should eventually be separated carefully.
 - Editor and widget renderer duplicate layout concepts and can drift.
-- No automated regression tests cover persistence migrations, shape bounds, rotation, city search or widget rendering.
+- No automated regression suite covers persistence migrations, shape bounds, live gestures, city search or widget rendering. Phase 3A adds an opt-in debug numerical coordinate check; host compiled-helper checks pass, and these do not replace live gesture tests.
 - Network city search has no explicit error/result-state abstraction in the inspected repository.
 - Typeface identifiers are stringly typed and do not guarantee availability on every device.
 
@@ -155,9 +158,10 @@ Current source behavior, not future intent:
 - Required JDK: bundled Java 17 at `.tooling/jdk/jdk-17.0.20.1+1`.
 - Local SDK used for verification: `.android-sdk`.
 - Build command from project root (PowerShell): set `JAVA_HOME` to the bundled JDK, set `ANDROID_HOME`/`ANDROID_SDK_ROOT` to `.android-sdk`, then run `./gradlew.bat assembleDebug`.
-- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-09 for the Phase 2D closure. Output: `app/build/outputs/apk/debug/app-debug.apk`.
+- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-10 for Phase 3A. Output: `app/build/outputs/apk/debug/app-debug.apk`. Release merged manifest excludes the Design Lab Activity.
 - Install/run: install the debug APK on an Android device, launch Best Mates, create/edit a project, then add a widget through the launcher. Verify both generic and resized widget receivers.
-- No automated tests were found or run.
+- Existing `testDebugUnitTest` task reports NO-SOURCE. Host validation of compiled coordinate-helper bytecode passed 110 affine-oracle cases. Optional Android Matrix checks are available via the debug Activity's `runEngineChecks=true` extra but have not run on-device in Phase 3A.
+- No device was connected during Phase 3A validation. See the Phase 3A document §15 for exact install/launch commands and manual production-editor acceptance steps.
 
 ## 14. MANUAL DEVICE REVIEW POLICY
 
@@ -184,13 +188,17 @@ Do not continue subjective refinement after preparing the review surface until t
 
 ## 15. NEXT DEVELOPMENT STAGE
 
-Best Mates 2.0 Phase 2D is closed with the visual system direction established and Celestial artwork finalization deferred. Phase 3 is the next implementation phase and requires a separate explicit scope. Golden Set 3 candidates are not automatically production assets; the later `Celestial Atelier Final Pass` owns unresolved Sun/Moon artwork. TASK-007 remains deferred.
+Best Mates 2.0 Phase 3A audit and bounded implementation are complete. See [the Phase 3A handoff](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md) for the actual architecture, protected contracts, ranked deferred work and exact Phase 3B task. TASK-007 has a local-coordinate correction with numerical checks passed, but remains awaiting physical gesture acceptance. Do not declare it DONE or automatically perform another repair.
+
+Phase 3B is the next separately authorized slice: extract/rebuild Workspace list, empty state, Create, selection and rename using the frozen theme and first-used Crystal components. Preserve ProjectStore commands/UUIDs, existing Editor/Settings entry and saved field copy semantics. Do not include theme/time inheritance, new thumbnails, live widget links, asset promotion or Editor extraction in that slice.
+
+Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Stop after Phase 3A for user device verification; no Phase 3B work has started.
 
 ### P0 — Must prioritize
 
-The legacy backlog below is context, not authorization to resume TASK-007 or the deferred Celestial pass. Phase 3 must begin from its own scoped request.
+The legacy backlog below is context, not authorization to extend the consumed TASK-007 repair attempt or reopen Celestial. Future phases require their own scope and the gates in the Phase 3A handoff.
 
-1. Address separately authorized editor stability issues without changing persistence contracts; rotated drag and unlimited-rotation follow-up remain deferred under TASK-007.
+1. Obtain manual acceptance of the bounded TASK-007 fix without changing persistence contracts; any broader engine follow-up needs separate authorization and review.
 2. Make the preview/render coordinate system and all shape bounds deterministic; verify every declared launcher size and free/non-proportional resize.
 3. Complete localization coverage and add a testable locale string audit.
 

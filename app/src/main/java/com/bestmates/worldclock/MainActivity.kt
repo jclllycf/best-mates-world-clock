@@ -1,6 +1,7 @@
 package com.bestmates.worldclock
 
 import com.bestmates.worldclock.ui.icons.OrbitIcons
+import com.bestmates.worldclock.ui.editor.rotateCanvasVector
 import androidx.compose.ui.unit.Dp
 
 import android.app.Activity
@@ -1146,12 +1147,11 @@ private fun LayoutCanvas(
                             }, onDragEnd = { guideX = null; guideY = null; onGestureFinished() }, onDragCancel = { guideX = null; guideY = null; onGestureFinished() }) { change, drag ->
                                 change.consume()
                                 total += drag
-                                // graphicsLayer{rotationZ} is a draw modifier only; it does not
-                                // rotate the input coordinate system. Drag deltas are in canvas
-                                // (layout) space regardless of the object's visual rotation.
-                                val localDelta = with(density) { Offset(total.x.toDp().value, total.y.toDp().value) }
-                                val dx = localDelta.x / boardBounds.width()
-                                val dy = localDelta.y / boardBounds.height()
+                                // Undo the input layer's inverse mapping before canvas snapping.
+                                val canvasPixels = rotateCanvasVector(total, start.rotation)
+                                val canvasDelta = with(density) { Offset(canvasPixels.x.toDp().value, canvasPixels.y.toDp().value) }
+                                val dx = canvasDelta.x / boardBounds.width()
+                                val dy = canvasDelta.y / boardBounds.height()
                                 val left0 = ((start.x + 1f) * .5f - start.width * .5f)
                                 val top0 = ((start.y + 1f) * .5f - start.height * .5f)
                                 val otherLayers = config.layers.filterIndexed { otherIndex, _ -> otherIndex != index }
@@ -1267,7 +1267,8 @@ private fun LayoutCanvas(
                             if (!city.locked) detectDragGestures(onDragStart = { start = liveCity; total = Offset.Zero; onGestureStart(); onSelect(CanvasSelection.CityItem(index)) }, onDragEnd = { guideX = null; guideY = null; onGestureFinished() }, onDragCancel = { guideX = null; guideY = null; onGestureFinished() }) { change, drag ->
                                 change.consume()
                                 total += drag
-                                val canvasDelta = with(density) { Offset(total.x.toDp().value, total.y.toDp().value) }
+                                val canvasPixels = rotateCanvasVector(total, start.rotation)
+                                val canvasDelta = with(density) { Offset(canvasPixels.x.toDp().value, canvasPixels.y.toDp().value) }
                                 val cx = shapeBounds.centerX() + start.x * shapeBounds.width() * .5f + canvasDelta.x
                                 val cy = shapeBounds.centerY() + start.y * shapeBounds.height() * .5f + canvasDelta.y
                                 val safe = freeCanvasCenter(cx, cy, blockWidth / 2f, blockHeight / 2f, boardBounds)
@@ -1357,7 +1358,8 @@ private fun LayoutCanvas(
                             if (!item.locked) detectDragGestures(onDragStart = { start = liveText; total = Offset.Zero; onGestureStart(); onSelect(CanvasSelection.TextItem(index)) }, onDragEnd = { guideX = null; guideY = null; onGestureFinished() }, onDragCancel = { guideX = null; guideY = null; onGestureFinished() }) { change, drag ->
                                 change.consume()
                                 total += drag
-                                val canvasDelta = with(density) { Offset(total.x.toDp().value, total.y.toDp().value) }
+                                val canvasPixels = rotateCanvasVector(total, start.rotation)
+                                val canvasDelta = with(density) { Offset(canvasPixels.x.toDp().value, canvasPixels.y.toDp().value) }
                                 val cx = shapeBounds.centerX() + start.x * shapeBounds.width() * .5f + canvasDelta.x
                                 val cy = shapeBounds.centerY() + start.y * shapeBounds.height() * .5f + canvasDelta.y
                                 val safe = freeCanvasCenter(cx, cy, widthDp/2f, heightDp/2f, boardBounds)
@@ -1442,17 +1444,6 @@ private data class SnapResult(val value: Float, val guide: Float?)
  */
 private fun angleBetween(from: Offset, to: Offset): Float =
     Math.toDegrees(atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())).toFloat()
-
-/** Rotates a canvas-space vector using Compose's clockwise-on-screen degree convention. */
-private fun rotateCanvasVector(vector: Offset, rotationDegrees: Float): Offset {
-    val radians = Math.toRadians(rotationDegrees.toDouble())
-    val cosine = cos(radians).toFloat()
-    val sine = sin(radians).toFloat()
-    return Offset(
-        x = vector.x * cosine - vector.y * sine,
-        y = vector.x * sine + vector.y * cosine
-    )
-}
 
 /**
  * Continuously unwrap a raw angle delta so that a smooth gesture can exceed ±180°.

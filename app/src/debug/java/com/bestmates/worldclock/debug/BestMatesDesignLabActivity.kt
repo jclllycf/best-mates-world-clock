@@ -12,6 +12,7 @@ import com.bestmates.worldclock.ui.preview.BestMatesFoundationDesignLab
 class BestMatesDesignLabActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.getBooleanExtra("runEngineChecks", false)) EditorDragRegressionChecks.run()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             BestMatesFoundationDesignLab { isDark, background ->
