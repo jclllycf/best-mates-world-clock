@@ -2,9 +2,9 @@
 
 Date: 2026-09-10
 Starting HEAD: `7bbf2638d5913105fe99a3a86070d411b4046d6c`
-Status: **IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING**
+Status: **FUNCTIONALLY_VERIFIED / 3B.1_LAYOUT_RECONSTRUCTED / MANUAL_VISUAL_QA_PENDING**
 
-Phase 3B migrates only the production Workspace. Settings and Editor remain on their existing presentation and navigation paths. TASK-007 remains **IMPLEMENTED — MANUAL QA PENDING** and its code is unchanged in this phase.
+Phase 3B migrates only the production Workspace. The user physically verified its project operations and existing-project compatibility before Phase 3B.1. Settings and Editor remain on their existing presentation and navigation paths. The user also physically accepted the Phase 3A rotation-after-drag correction; TASK-007 is now **COMPLETE / CLOSED** and its code is unchanged in Phase 3B.1.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ BestMatesApp
             ├─ ProjectStore commands and local selection/clipboard/dialog state
             └─ WorkspaceScreen presentation
                  ├─ identity/top bar
-                 ├─ contextual selection bar
+                 ├─ fixed-height collection/selection mode region
                  ├─ empty state or project collection
                  ├─ project cards and existing background thumbnails
                  └─ Jelly Crystal Create action
@@ -59,11 +59,20 @@ Project ordering remains the existing SharedPreferences string-set order. Clipbo
 - Soft identity header with a Pearl Glass Settings action; selection mode uses a selected surface and one Close action.
 - Milk Crystal project collection with larger renderer-backed thumbnails, clearer title/metadata hierarchy and comfortable spacing.
 - Selection uses selected fill + controlled edge + one rounded Confirm check. It never displays a dot and check together.
-- Contextual horizontally scrollable action surface for Paste, Rename, Copy, Cut and restrained destructive Delete. Every action retains a 48dp minimum target.
+- Phase 3B.1 replaces the text-heavy scrolling action strip with five fixed 48dp Orbit actions: Rename, Copy, Cut, Paste and Delete. Single-item actions and unavailable Paste remain visible with semantic disabled treatment.
 - Calm empty personal-creation state built from local drawing primitives only; no illustration or network asset.
 - Jelly Crystal Create widget action fixed at the bottom of the Workspace content region.
 - Token-driven Quiet Motion for material press/release and the contextual toolbar transition; no springs, bounce or overshoot.
 - Milk Crystal naming and deletion dialogs with explicit primary/destructive hierarchy.
+
+## Phase 3B.1 layout reconstruction
+
+- The identity header now has one job: communicate Best Mates in normal mode and a clear selected count in selection mode. Settings stays available in normal mode; Close occupies the same action position while selecting.
+- A fixed 64dp mode region displays the collection heading/count in normal mode and the compact icon toolbar in selection mode. Quiet Motion crossfades between them without pushing the project list vertically.
+- The collection heading is no longer duplicated inside the scrolling list.
+- Project cards use tighter vertical padding, 8dp list rhythm, a 72 × 64dp meaningful preview, a single-line project title and retained count/state metadata. Selected cards still use one Confirm indicator.
+- The Create widget action stays persistent and prominent. The visible `Best Mates · v0.1` label was removed from the Workspace; version/About ownership remains available to Settings rather than the primary creation area.
+- The toolbar does not scroll horizontally. If later actions exceed compact width, lower-priority actions must move behind a semantic More action instead of extending the primary toolbar.
 
 ## Compatibility boundaries
 
@@ -83,8 +92,8 @@ The existing outer app theme remains around Settings and Editor. Workspace alone
 
 - `assembleDebug --warning-mode all`: **PASS**.
 - `:app:testDebugUnitTest`: **NO-SOURCE**; no test framework was added.
-- Static structure: the selection actions scroll horizontally, cards can grow with text, names are limited to the existing 40 characters, interactive targets are at least 48dp, and root content applies safe-drawing insets.
-- Device: no device was connected during the implementation check. No physical launch or subjective visual approval is claimed.
+- Static structure: the five selection actions fit a non-scrolling compact row, the normal/selection mode region keeps a fixed height, names remain limited to the existing 40 characters, interactive targets are at least 48dp, and root content applies safe-drawing insets.
+- Device: the user physically verified Phase 3B behavior before this reconstruction. No device was connected for the Phase 3B.1 install/launch step; its visual approval remains pending and is intentionally left to the user.
 
 APK: `app/build/outputs/apk/debug/app-debug.apk`
 
@@ -99,9 +108,9 @@ When a phone is available, run from the repository root:
 
 ## Manual acceptance
 
-Install and open the Workspace, then inspect the first launch/empty state and existing project collection. Create and open a project; long-press one and several cards; use Back/Close to deselect; verify Rename, Copy → Paste, Cut → Paste and the Delete confirmation with disposable projects. Confirm the Jelly Create action, Settings entry, Editor return, Cloud/Dream/Midnight appearance, system insets and large-text layout. Verify that no saved project disappeared or changed.
+Install and open the Workspace, then inspect normal mode, one selected card, multiple selected cards, disabled Paste, Rename, the Delete confirmation, Light, Dark, Dream or Midnight, and compact width if available. Verify that the fixed mode region does not jump, the toolbar does not scroll or clip, cards remain readable, and the Jelly Create action stays prominent.
 
-TASK-007 testing is not part of Phase 3B acceptance and remains pending.
+TASK-007 is physically accepted and closed. It is not part of the remaining Workspace visual gate.
 
 ## Exact Phase 3C starting point
 

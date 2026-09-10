@@ -441,7 +441,6 @@ private fun workspaceStrings() = WorkspaceStrings(
     close = uiText("close"),
     deleteTitle = uiText("delete_projects_title"),
     deleteMessageTemplate = uiText("delete_projects_message"),
-    version = uiText("version"),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

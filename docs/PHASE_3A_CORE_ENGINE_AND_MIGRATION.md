@@ -2,7 +2,7 @@
 
 Date: 2026-09-10. Starting HEAD: `29414893ab71ef4168a778fd365840243124ac19`, clean, on `maintenance/repository-cleanup`.
 
-Status: **AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE**. Build and host numerical checks pass. Physical gesture acceptance is pending; TASK-007 is **not DONE**. Phase 3B has not started.
+Status: **AUDIT_COMPLETE / BOUNDED_IMPLEMENTATION_COMPLETE**. Build and host numerical checks passed. The user later accepted rotation-after-drag on a physical device during the Phase 3B.1 gate, so TASK-007 is **COMPLETE / CLOSED**. Phase 3B has since been implemented; this document remains the compatibility and migration contract.
 
 Authority: repository implementation/history, [AI rules](../AI_RULES.md), [UI foundation](BEST_MATES_UI_2_SPEC.md), [Visual Asset Bible](BEST_MATES_VISUAL_ASSET_BIBLE.md), [Phase 2D closure/review](PHASE_2D_GOLDEN_SET_3_REVIEW.md), and the explicitly scoped Phase 3A request. Frozen Cute Atelier / Soft Crystal / Orbit Charm direction is preserved. This document authorizes no future implementation by itself.
 
@@ -233,12 +233,30 @@ model/         current persisted identities retained
 
 Future widget objects keep **Shape × Variant × Material × Appearance** separate. Production `WidgetShape` identity remains stable; variant metadata must not rename saved shapes. Transparent/legacy, Mist Glass, Milk Crystal, Dream Frost and Jelly Veil are possible content materials, distinct from app-chrome recipes even when names overlap. Material/appearance metadata and resolver integration require the 3E compatibility gate; transparent legacy components stay valid.
 
+### Phase 3 production UX reconstruction rule
+
+Every remaining screen migration begins with a short layout plan before Compose implementation. The legacy screen is a behavioral reference, not a layout specification. Preserve proven engines, behavior, navigation semantics, persistence contracts, stable IDs and saved data; reconstruct obsolete hierarchy, grouping, spacing, toolbar placement, density, fixed/scrolling regions and visual rhythm when the Best Mates 2.0 product model needs it.
+
+For each screen, record:
+
+1. Behaviors that must survive.
+2. Data and controls that must remain accessible.
+3. Legacy layout decisions that can be discarded.
+4. The new Best Mates 2.0 information hierarchy.
+5. Primary and secondary actions.
+6. Fixed and scrolling regions.
+7. Safe-area and compact-width behavior.
+
+This planning gate applies to Settings, Editor, asset pickers, appearance controls, and Font, Color, Celestial and Shape selection surfaces. Do not migrate them as legacy composition with new tokens.
+
+Typography follows semantic roles. Expressive typography may later support brand moments, display headings, collection titles and selected empty/editorial moments. Functional typography remains highly readable for actions, Inspector controls, Settings, data labels, fields, menus and accessibility-critical text. Future Type Wardrobe integration assigns fonts through these roles; it does not assign arbitrary fonts screen by screen or alter persisted font behavior without its own compatibility gate.
+
 ## 12. Phase 3 migration sequence
 
 | Phase | Goal / likely files | Protected behavior / main risk | Model and manual gate |
 | --- | --- | --- | --- |
-| 3A (this phase) | Engine map; isolated drag correction; this migration contract | Protected IDs/stores/renderers; actual finger tracking still unverified | GPT-6 judgment completed; user tests TASK-007. |
-| 3B | Workspace 2.0; extract `WorkspaceScreen` into `ui/workspace`; first `ui/components` and route theme wrapper | Project create/open/rename/selection/copy/cut/paste/delete, UUIDs, editor/settings entry. Risk: callback/state or saved-value loss. | Sol implementation; user checks existing + empty projects, actions/back, light/Midnight, font scale/insets. |
+| 3A | Engine map; isolated drag correction; this migration contract | Protected IDs/stores/renderers; live finger tracking required a device gate | GPT-6 judgment and host checks completed; user later passed TASK-007 on the physical production Editor. |
+| 3B / 3B.1 | Workspace 2.0; extract `WorkspaceScreen`, introduce first production components, then reconstruct hierarchy and compact selection/card layout | Project create/open/rename/selection/copy/cut/paste/delete, UUIDs, editor/settings entry. Risk: callback/state or saved-value loss. | Core operations physically verified; reconstructed layout awaits the focused 3B.1 visual gate. |
 | 3C | Settings 2.0; `ui/settings`, settings store/resolver only after contract approval | Language/import references and retained project/standalone-widget theme/time values. Risk: silent global overwrite or incomplete editor-control relocation. | Sol for UI; GPT-6 before inheritance/schema policy. Check old 12/24-hour projects, standalone/linked instances, copies, new defaults and both editor routes. |
 | 3D | Editor 2.0; route/state/inspector/tool/picker extraction, Work Mat chrome around existing LayoutCanvas | Drag/resize/rotate/snap/guides, history, locks, autosave/save/back and fixed-canvas structure. Risk: coordinate frame/lifecycle/recomposition regressions. | Sol for small presentation slices; mandatory GPT-6 gate before moving gesture ownership or geometry. User tests all three object types, edge/multi-turn/snap/Undo cases. |
 | 3E | Approved asset/material/appearance integration; registry/resolvers, picker models, explicit compatibility metadata | Stable IDs/imports/transparency, thumbnail/canonical/widget agreement and licences. Risk: render drift or broken old project assets. | GPT-6 contracts, Sol bounded integration; user checks old/new projects + actual pinned widgets, missing imports and selection fidelity. Celestial final pass remains separate. |
@@ -308,4 +326,4 @@ Shortest path: Best Mates → open a disposable/copy project → Editor. Use a s
 4. Check lock/Pin, blank deselection, Undo/Redo after a complete drag, Save → reopen, and a copied project retaining its settings. Existing widget time/rendering should remain unchanged.
 5. Optional comparison: Design Lab → Golden Set 3 → Work Mat; same engine, disposable scene. Celestial and Sources remain available but are outside this acceptance task.
 
-Report failures with object type, approximate angle, snap on/off and movement direction. **Stop here for user verification. Do not start 3B, polish visuals or reopen Celestial artwork.**
+This checklist was later completed successfully on the production Editor: the user accepted rotation-after-drag and TASK-007 is closed. Any future coordinate change requires a separately scoped, evidenced regression. Celestial artwork remains separate.

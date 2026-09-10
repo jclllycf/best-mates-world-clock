@@ -3,7 +3,7 @@
 ## Current development priority (2026-09-10)
 
 1. Best Mates 2.0 — Phase 2D is closed: **Visual System Direction Established / Celestial Artwork Finalization Deferred**.
-2. Phase 3B Workspace 2.0 is implemented and awaiting manual visual/functional QA. Phase 3C Settings 2.0 is the next separately authorized slice.
+2. Phase 3B Workspace behavior is physically verified. Phase 3B.1 reconstructs its production layout and awaits focused visual QA. Phase 3C Settings 2.0 remains the next separately authorized slice.
 
 Design foundation: [docs/BEST_MATES_UI_2_SPEC.md](docs/BEST_MATES_UI_2_SPEC.md).
 
@@ -11,10 +11,28 @@ Phase 2D asset language: [docs/BEST_MATES_VISUAL_ASSET_BIBLE.md](docs/BEST_MATES
 
 The earlier UI-polish order (TASK-004, TASK-005, TASK-009, TASK-003) is historical backlog context, not authorization to start implementation during the Phase 2C review gate. TASK-004/005 remain implemented and awaiting physical-device visual review.
 
-The explicit Phase 3A request authorized one TASK-007 investigation/repair attempt, now consumed. Do not mark it DONE or perform repeated alternative repairs without the next user/device decision.
+TASK-007 passed the required production physical-device verification and is now COMPLETE / CLOSED. Do not reopen or modify its coordinate engine without a new, evidenced regression and separate scope.
+
+### BM2-P3B.1 — Workspace Layout Reconstruction
+Status: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
+Scope: production Workspace hierarchy, vertical rhythm, compact project cards, fixed selection toolbar, and the Phase 3 global layout-planning rule
+
+Completed:
+- Preserved the physically verified Phase 3B project operations, persistence, UUIDs, WidgetConfig values and navigation callbacks without touching their route logic.
+- Replaced the duplicated header/list heading composition with a deliberate identity header and one fixed-height mode region: collection title/count in normal mode, icon actions in selection mode.
+- Replaced the text-heavy horizontally scrolling selection strip with fixed 48dp Rename, Copy, Cut, Paste and Delete Orbit icon actions. Single-item operations and unavailable Paste remain visible with proper disabled states and content descriptions.
+- Kept selection count in the related identity header and crossfaded the fixed-height mode region with Quiet Motion, avoiding a large vertical list jump.
+- Tightened project-card padding, preview size and list spacing while retaining the thumbnail, project name, background/city counts, save/edit state and one semantic check indicator.
+- Kept the Jelly Crystal Create widget action prominent and removed the visible version label from the primary Workspace composition. Version/About ownership remains available to Settings.
+- Added the Phase 3 production UX reconstruction and semantic typography rules to the long-term migration documentation.
+- `assembleDebug --warning-mode all` passes with only the two existing MainActivity system-bar deprecation warnings. No device was connected for the Phase 3B.1 install/launch step; focused visual QA remains with the user.
+- Did not change ProjectStore, ConfigStore, models, Widget rendering/providers, Editor/canvas/coordinates, TASK-007 implementation, assets, color picker or reference directories `1/` and `2/`.
+
+Stop condition:
+- Await focused Workspace layout review. Do not begin Phase 3C automatically.
 
 ### BM2-P3B — Workspace 2.0 Production UI Migration
-Status: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
+Status: FUNCTIONALLY_VERIFIED_ON_DEVICE / LAYOUT_SUPERSEDED_BY_P3B.1
 Scope: production Workspace presentation, route extraction, and first shared Crystal components
 
 Completed:
@@ -25,14 +43,14 @@ Completed:
 - Added shared production `crystalSurface`, `OrbitButton` and `OrbitIconButton`; the Design Lab material wrapper delegates to the same implementation.
 - Adopted the Phase 2 design foundation only in Workspace with legacy mapping: Cloud/Dream/Mono Light and Midnight Dark. Settings and Editor retain their current presentation.
 - Added [Phase 3B Workspace migration](docs/PHASE_3B_WORKSPACE_MIGRATION.md) as the behavior, compatibility and Phase 3C handoff.
-- `assembleDebug --warning-mode all` passes; `testDebugUnitTest` remains NO-SOURCE. No device was connected, so physical launch and subjective approval remain pending.
+- `assembleDebug --warning-mode all` passes; `testDebugUnitTest` remains NO-SOURCE. The user later physically verified all core Workspace operations and confirmed existing projects remained intact.
 - Did not change persistence/models/providers/widgets/assets/time/solar/weather/Editor/canvas/TASK-007 or reference directories `1/` and `2/`.
 
 Stop condition:
-- Await Workspace manual QA. Do not start Phase 3C automatically. TASK-007 remains implemented with manual Editor QA pending, independently of Workspace acceptance.
+- Functional gate passed. Phase 3B.1 owns the remaining Workspace layout review; do not start Phase 3C automatically.
 
 ### BM2-P3A — Core Engine Audit & Production Migration Foundation
-Status: AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE / AWAITING_USER_GESTURE_VERIFICATION
+Status: AUDIT_COMPLETE / BOUNDED_IMPLEMENTATION_COMPLETE
 Scope: architecture/contracts, time/solar/weather feasibility, Work Mat comparison, one bounded TASK-007 repair, and the Phase 3B–3F handoff
 
 Completed:
@@ -45,7 +63,7 @@ Completed:
 - No storage/asset/provider change, UI migration, Celestial artwork change, or inspection/modification of reference directories `1/` and `2/`.
 
 Stop condition:
-- Await the user's manual production-editor gesture verification. The historical Phase 3A handoff into Phase 3B has been completed; TASK-007 acceptance remains independent of the Workspace migration.
+- Historical Phase 3A gate is satisfied: the user physically accepted rotation-after-drag and TASK-007 is closed. The handoff into Phase 3B has also been completed.
 
 ### BM2-P2D-CLOSURE — Phase 2D Closure & Phase 3 Handoff
 Status: COMPLETE / VISUAL_DIRECTION_ESTABLISHED / CELESTIAL_FINAL_ART_DEFERRED
@@ -267,8 +285,8 @@ Review record:
 ## P0 — Editor stability and correctness
 
 ### TASK-007 — Unlimited rotation and correct movement
-Status: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE_VERIFICATION
-Priority: P1 — manual interaction acceptance gate
+Status: COMPLETE / CLOSED / PHYSICALLY_VERIFIED
+Priority: Closed
 
 Requirements:
 - Remove the effective ±180° interaction limitation.
@@ -287,25 +305,25 @@ Physical-device verification feedback (Reopened 2026-09-07):
 - Rotation sensitivity feels slightly low (needs modest increase without crude multiplier overshoot).
 - Tracking begins to feel wrong around 45°–60°.
 - Beyond roughly 60°, rotation no longer follows the finger correctly.
-- Note: Do NOT mark TASK-007 as DONE until physical-device verification passes.
+- Historical gate: do not mark complete until physical-device verification passes. This gate was satisfied on 2026-09-10.
 
-Implementation awaiting verification (2026-09-08):
+Implementation completed before final verification (2026-09-08):
 - Rotation is now calculated in root coordinates: the canvas origin and rotation-control origin are measured, and the object's canvas centre is converted to the same root-pixel space before `atan2`.
 - The rotation control is an unrotated sibling of the rotated object, removing the previous moving-reference-frame feedback loop.
 - All component, city, and text calls share `RotationHandleUnified`: 17dp visible control, 42dp touch target, same icon/opacity/anchor, 15-degree snapping, guide feedback, and existing haptics.
-- A modest 1.04x response adjustment is applied only after the coordinate-space correction. `assembleDebug` passes; physical-device verification is still required.
+- A modest 1.04x response adjustment is applied only after the coordinate-space correction. `assembleDebug` passed; final physical verification was completed later.
 
 Deferred physical-device finding (2026-09-08):
 - Rotation sensitivity is acceptable in the current build.
 - Post-rotation drag movement does not consistently follow the user's finger direction on physical device.
 - At that point further movement investigation was deferred; Phase 3A later explicitly authorized one bounded attempt below.
-- TASK-007 is not DONE.
+- TASK-007 remained open at that point pending the later Phase 3A repair and device gate.
 
 Phase 3A bounded repair (2026-09-10):
 - Found that body handlers receive local-space deltas through the rotated graphics layer. Recovered canvas deltas with positive gesture-start rotation for component/city/text, using shared `ui/editor/CanvasCoordinates.kt`.
 - Preserved existing pointer keys, fresh start-state capture, snapping, guides, bounds, resize, unlimited rotation, history and persistence.
-- Host checks against the compiled helper pass; debug Matrix checker is available through the existing Design Lab Activity's `runEngineChecks` extra. No Android device was connected for this session, so live gesture and on-device Matrix checks remain pending.
-- The single bounded attempt is consumed. Use the [Phase 3A checklist](docs/PHASE_3A_CORE_ENGINE_AND_MIGRATION.md#15-validation-and-manual-device-review-checklist); if it fails beyond this isolated conversion, record evidence and re-defer for a separately scoped review.
+- Host checks against the compiled helper pass; debug Matrix checker remains available through the existing Design Lab Activity's `runEngineChecks` extra. No Android device was connected during that implementation session.
+- Physical-device closure (2026-09-10): the user verified rotation-after-drag in the production Editor and reported that it works correctly. TASK-007 is COMPLETE / CLOSED. Do not modify the coordinate engine again without a separately scoped, evidenced regression.
 
 Files involved:
 - app/src/main/java/com/bestmates/worldclock/MainActivity.kt

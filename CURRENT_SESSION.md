@@ -1,22 +1,24 @@
 ﻿# CURRENT SESSION
 
 ## Current owner
-Codex — Phase 3B Workspace 2.0 production migration; Phase 2 visual foundation remains frozen
+Codex — Phase 3B.1 Workspace layout reconstruction; Phase 2 visual foundation remains frozen
 
 ## Current task
-Best Mates 2.0 — Phase 3B Workspace 2.0 is implemented and build-verified. Manual Workspace visual/functional QA remains pending. Stop before Phase 3C. TASK-007 remains implemented with separate manual Editor QA pending; Golden Set 3/Celestial status is unchanged.
+Best Mates 2.0 — Phase 3B.1 reconstructs the Workspace hierarchy and compact selection layout after successful physical functional QA. Build passes; focused visual QA remains pending. Stop before Phase 3C. TASK-007 is COMPLETE / CLOSED after physical-device acceptance; Golden Set 3/Celestial status is unchanged.
 
 ## Current branch
 `maintenance/repository-cleanup`. Re-check git branch/status before resuming.
 
 ## Last known good commit
-Phase 3B started from clean `7bbf2638d5913105fe99a3a86070d411b4046d6c`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Read current HEAD/history for the Phase 3B completion commit; do not infer physical acceptance from a buildable commit.
+Phase 3B.1 started from clean `fec1e2d5d661839eaf5bd0ee456bfc0e87a527b6`. The frozen Phase 2C.3 baseline is `810ada4518be5fef0d82303d91c9e8166278c072`. Read current HEAD/history for the Phase 3B.1 completion commit; do not infer subjective visual acceptance from a buildable commit.
 
 ## Task status
 
-BM2-P3A: AUDIT / BOUNDED_IMPLEMENTATION_COMPLETE / AWAITING_USER_GESTURE_VERIFICATION
+BM2-P3A: AUDIT_COMPLETE / BOUNDED_IMPLEMENTATION_COMPLETE
 
-BM2-P3B: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
+BM2-P3B.1: IMPLEMENTED / BUILD_PASS / MANUAL_VISUAL_QA_PENDING
+
+BM2-P3B: FUNCTIONALLY_VERIFIED_ON_DEVICE / LAYOUT_SUPERSEDED_BY_P3B.1
 
 BM2-P3C: NOT_STARTED / SEPARATE_SCOPE_AND_GPT6_CONTRACT_REVIEW_REQUIRED
 
@@ -46,7 +48,19 @@ BM2-P2A: COMPLETE / FOUNDATION_AUTHORIZED
 
 BM2-P1: APPROVED / COMPLETE
 
-TASK-007: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE_VERIFICATION
+TASK-007: COMPLETE / CLOSED / PHYSICALLY_VERIFIED
+
+## Best Mates 2.0 — Phase 3B.1 result (2026-09-10)
+
+- Started from clean Phase 3B commit `fec1e2d5d661839eaf5bd0ee456bfc0e87a527b6` after the user physically verified core Workspace operations and existing-project preservation.
+- Reconstructed the Workspace composition around an identity header, one fixed-height normal/selection mode region, compact project collection and persistent Jelly Create action.
+- Normal mode shows one collection heading/count outside the list. Selection mode uses the same 64dp region for five fixed 48dp Orbit icon actions, with disabled single-item/Paste states and no horizontal scrolling.
+- Tightened card/list rhythm while retaining renderer-backed thumbnail, project title, counts, edit/save state, full-card touch target and one Confirm selection indicator.
+- Removed the visible version label from the Workspace primary area; Settings/About remains its proper future location.
+- Recorded the Phase 3 global rule: preserve engines/behavior/contracts while reconstructing obsolete production UX after a seven-point layout planning pass. Recorded semantic expressive versus functional typography roles for future Type Wardrobe integration.
+- `assembleDebug --warning-mode all` passes with only the two existing MainActivity system-bar deprecation warnings. No device was connected for the Phase 3B.1 install/launch step; focused physical visual QA for the reconstructed layout remains pending.
+- TASK-007 is now **COMPLETE / CLOSED / PHYSICALLY_VERIFIED**. The user confirmed production rotation-after-drag works; Phase 3B.1 did not change its implementation.
+- Phase 3C is not started. Celestial, assets, Editor, persistence, Widget rendering/providers, color behavior and reference directories `1/` and `2/` remain outside this task.
 
 ## Best Mates 2.0 — Phase 3B result (2026-09-10)
 
@@ -57,9 +71,9 @@ TASK-007: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE
 - Preserved saved UUIDs and all existing ProjectStore commands. Copy/cut/paste retain the full WidgetConfig; multi-select/back deselection remain. Delete gains a count-aware confirmation because Workspace has no undo.
 - Reused the existing background-only renderer thumbnail; no continuous rendering, new cache, storage migration or canonical preview rewrite.
 - Workspace alone adopts BestMatesDesignTheme: Cloud/Dream/Mono map to Light and Midnight to Dark until Settings owns independent brightness. Settings/Editor remain legacy in this phase.
-- Build PASS with `assembleDebug --warning-mode all`; existing unit-test task is NO-SOURCE. No device was connected, so install/launch and subjective visual approval are not claimed.
+- Build PASS with `assembleDebug --warning-mode all`; existing unit-test task is NO-SOURCE. No device was connected during implementation, but the user subsequently physically verified the core Workspace operations and confirmed existing projects remained intact.
 - Phase 3C is not started. Its exact starting prompt is in the Phase 3B handoff; GPT-6 reviews preference inheritance before Sol changes storage behavior.
-- TASK-007 status remains **IMPLEMENTED — MANUAL QA PENDING**. Phase 3B does not change its code or require it for Workspace acceptance.
+- TASK-007 was still pending at Phase 3B implementation time; the user subsequently physically accepted it at the Phase 3B.1 gate and it is now closed.
 
 ## Best Mates 2.0 — Phase 3A result (2026-09-10)
 
@@ -70,7 +84,7 @@ TASK-007: BOUNDED_FIX_IMPLEMENTED / HOST_NUMERICAL_PASS / AWAITING_MANUAL_DEVICE
 - Existing IANA/DST clock logic and native widget TextClock are retained. Offline coordinate-based solar day/night already exists; full events/twilight and weather are deferred. Widget snapshot/live-link behavior, recovery and Settings inheritance each require separate contract work.
 - Validation: `assembleDebug --warning-mode all` PASS; unit-test task NO-SOURCE; release manifest excludes the debug Activity. Compiled-helper host checks PASS (110 affine-oracle cases, 3 densities, moving origins and former defect). Debug Android Matrix checks compile but have not run on-device.
 - Device: not connected during this session. APK: `app/build/outputs/apk/debug/app-debug.apk`. No install/launch/screenshots/physical acceptance claimed. Install and launch commands plus the production-editor review path are in §15 of the Phase 3A document.
-- TASK-007 is not DONE. One bounded attempt is consumed; await component/city/text drag tests at normal/multi-turn angles with snap off/on, then resize/Undo/Redo/save/reopen. Do not begin another speculative repair.
+- TASK-007 was awaiting device review at Phase 3A close. The user later verified rotation-after-drag in production and closed the task during Phase 3B.1; do not begin another coordinate repair without an evidenced regression.
 - At the Phase 3A close, the next separately authorized task was Phase 3B Workspace route extraction, project list/empty state/Create/selection/rename and first production Crystal components. That historical handoff has now been completed by the Phase 3B result above.
 - Celestial Atelier Final Pass stays separate. Reference directories `1/` and `2/` were not inspected or modified.
 
@@ -244,15 +258,14 @@ Device testing of commit 31c3ebb revealed the following issues:
 - The correction renders the rotation control as an unrotated canvas sibling. The canvas origin and the control origin are measured with `onGloballyPositioned` / `positionInRoot`; both the object centre and the pointer are converted to root pixels before `atan2` runs.
 - Components, cities, and text now use the same `RotationHandleUnified` implementation: a quiet 17dp visual control inside a 42dp touch target, at a rotated top-right anchor, clamped so the target is not clipped by the canvas.
 - Angle unwrapping, raw unlimited rotation persistence, 15-degree snapping, guide feedback, and haptics remain in place. The sensitivity adjustment is deliberately small: 1.04x after geometric correction.
-- `assembleDebug` passed after the implementation. Rotation sensitivity is acceptable on the physical device, but TASK-007 is not DONE because the post-rotation drag issue below remains unresolved.
+- At that historical checkpoint, `assembleDebug` passed and rotation sensitivity was acceptable, while post-rotation drag still kept TASK-007 open. The later Phase 3A repair and Phase 3B.1 physical acceptance supersede that status.
 
 ## Deferred TASK-007 issue (physical device)
 
 - Rotation sensitivity is acceptable in the current implementation.
-- Post-rotation drag movement does not consistently follow the user's finger direction on physical device.
-- This movement issue remains unresolved and must not be treated as fixed.
-- Do not continue investigating it until TASK-007 is explicitly resumed.
-- TASK-007 must not be marked DONE.
+- Post-rotation drag movement did not consistently follow the user's finger direction at that checkpoint.
+- Phase 3A later corrected the local-to-canvas delta conversion; the user physically accepted the production result during Phase 3B.1.
+- This historical finding is closed with TASK-007 and must not trigger another coordinate change without new evidence.
 
 ## Repository cleanup completed (2026-09-07)
 

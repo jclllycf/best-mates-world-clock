@@ -76,7 +76,7 @@ Best Mates is intended to be an open, creator-friendly Android world-clock widge
 
 Current source behavior, not future intent:
 
-- Drag/move: pointer-based canvas drag updates normalized positions. Phase 3A corrects graphics-layer-local deltas into canvas direction for component/city/text; host numerical checks pass, physical gesture acceptance remains pending.
+- Drag/move: pointer-based canvas drag updates normalized positions. Phase 3A corrects graphics-layer-local deltas into canvas direction for component/city/text; host numerical checks pass and the user physically accepted production rotation-after-drag behavior on 2026-09-10.
 - Resize: corner handle exists. Background layer snapping uses quarter-cell (`0.25`) increments; city/text helpers use finer subdivision in parts of the editor. Free, continuous non-proportional resizing is not consistently enforced for every shape.
 - Rotation: `RotationHandleUnified` uses an unrotated sibling and root-coordinate tracking; angle unwrapping supports continuous multi-turn raw rotation. The former ±180° limitation is no longer the current source behavior. TASK-007 still needs final physical acceptance.
 - Snapping/guides: center/edge/grid guide logic exists; PPT-style linked guides, symmetry matching, equal-size snapping and haptic feedback are not confirmed.
@@ -93,6 +93,7 @@ Current source behavior, not future intent:
 - Avoid default placeholder branding/text in new blank projects.
 - Keep editor, workspace, dialogs and widget rendering on one coherent design system.
 - Color controls should be visual pickers/previews rather than requiring hex entry as the primary path.
+- Typography uses semantic roles. Expressive faces may later serve brand/display/collection/editorial moments; functional actions, Inspector controls, Settings, data, forms, menus and accessibility-critical text stay highly readable. Type Wardrobe must resolve these roles centrally rather than assign arbitrary fonts per screen.
 
 ## 7. WIDGET / TIME LOGIC
 
@@ -131,7 +132,7 @@ Current source behavior, not future intent:
 - Localization is incomplete: non-Chinese locales fall back to many English strings. Affected: `MainActivity.kt` translation map.
 - Golden Set 3 Wallpapers are review-only; they are not current production-editor wallpaper controls. Preview sources/bridges are in the main source set even though their Activity entry is debug-only.
 - Editor toolbar contains duplicate/verbose actions and rough custom icons. Affected: `MainActivity.kt`.
-- Rotated dragging received one bounded Phase 3A coordinate fix. Live component/city/text tracking is awaiting user verification; TASK-007 is not DONE.
+- TASK-007 rotated dragging is closed: the user physically verified that production rotation-after-drag follows the finger correctly after the bounded Phase 3A coordinate fix.
 - Background canvas/design bounds remain square and can mismatch selected 1x1–4x6 launcher proportions. Affected: `MainActivity.kt`, `BackgroundRenderer.kt`, widget XML/provider sizing.
 - Some shape paths (notably capsule/cloud/petal/wave/ticket) are placeholders or visually rough and do not always fill the selected bounds naturally. Affected: `Models.kt`, `BackgroundRenderer.kt`.
 - Background snapping is quarter-cell rather than the requested finer/linked grid behavior. Affected: `MainActivity.kt`.
@@ -154,7 +155,7 @@ Current source behavior, not future intent:
 - `MainActivity.kt` is a very large monolithic Compose file; state, rendering helpers, dialogs and localization should eventually be separated carefully.
 - Workspace is now extracted, but `MainActivity.kt` remains large because Settings, Editor, localization and the legacy app shell are still colocated. Continue by bounded route slices.
 - Editor and widget renderer duplicate layout concepts and can drift.
-- No automated regression suite covers persistence migrations, shape bounds, live gestures, city search or widget rendering. Phase 3A adds an opt-in debug numerical coordinate check; host compiled-helper checks pass, and these do not replace live gesture tests.
+- No automated regression suite covers persistence migrations, shape bounds, live gestures, city search or widget rendering. Phase 3A adds an opt-in debug numerical coordinate check; host compiled-helper checks pass, and TASK-007 also received the required physical gesture acceptance.
 - Network city search has no explicit error/result-state abstraction in the inspected repository.
 - Typeface identifiers are stringly typed and do not guarantee availability on every device.
 
@@ -163,10 +164,10 @@ Current source behavior, not future intent:
 - Required JDK: bundled Java 17 at `.tooling/jdk/jdk-17.0.20.1+1`.
 - Local SDK used for verification: `.android-sdk`.
 - Build command from project root (PowerShell): set `JAVA_HOME` to the bundled JDK, set `ANDROID_HOME`/`ANDROID_SDK_ROOT` to `.android-sdk`, then run `./gradlew.bat assembleDebug`.
-- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-10 for Phase 3B. Output: `app/build/outputs/apk/debug/app-debug.apk`. Phase 3B did not change debug infrastructure or manifests.
+- Last verification: `assembleDebug --warning-mode all` completed successfully on 2026-09-10 for the Phase 3B.1 Workspace layout reconstruction. Output: `app/build/outputs/apk/debug/app-debug.apk`. Phase 3B.1 did not change debug infrastructure or manifests.
 - Install/run: install the debug APK on an Android device, launch Best Mates, create/edit a project, then add a widget through the launcher. Verify both generic and resized widget receivers.
-- Existing `testDebugUnitTest` task reports NO-SOURCE. Host validation of compiled coordinate-helper bytecode passed 110 affine-oracle cases. Optional Android Matrix checks are available via the debug Activity's `runEngineChecks=true` extra but have not run on-device in Phase 3A.
-- No device was connected during Phase 3B validation. See the Phase 3B document for exact install/launch commands and the Workspace checklist; Phase 3A retains the separate Editor/TASK-007 checklist.
+- Existing `testDebugUnitTest` task reports NO-SOURCE. Host validation of compiled coordinate-helper bytecode passed 110 affine-oracle cases; the user later physically accepted the production rotation-after-drag behavior and TASK-007 is closed.
+- The user physically verified Phase 3B Workspace operations and existing-project preservation. No device was connected for the Phase 3B.1 install/launch step; see the Phase 3B document for its focused visual checklist and exact commands.
 
 ## 14. MANUAL DEVICE REVIEW POLICY
 
@@ -191,21 +192,34 @@ Capture only the minimum necessary screenshots when one of the exceptions above 
 
 Do not continue subjective refinement after preparing the review surface until the user provides feedback.
 
-## 15. NEXT DEVELOPMENT STAGE
+## 15. PHASE 3 PRODUCTION UX RECONSTRUCTION RULE
 
-Best Mates 2.0 Phase 3B Workspace migration is implemented and build-verified. See [the Phase 3B handoff](docs/PHASE_3B_WORKSPACE_MIGRATION.md) for architecture, exact preserved behavior, compatibility boundaries, manual QA and the Phase 3C starting task. Workspace visual/functional acceptance is pending because no device was connected.
+Before implementing each remaining production-screen migration, write a short layout plan that identifies:
+
+1. Behaviors that must survive.
+2. Data and controls that must remain accessible.
+3. Legacy layout decisions that can be discarded.
+4. The new Best Mates 2.0 information hierarchy.
+5. Primary and secondary actions.
+6. Fixed and scrolling regions.
+7. Safe-area and compact-width behavior.
+
+Preserve proven behavior, engines, persistence, IDs, saved data and navigation semantics. Treat legacy UI only as a functional reference. Reconstruct obsolete hierarchy, spacing, grouping, toolbar placement, density and rhythm instead of applying the new visual language to the old composition. This gate is mandatory for Settings 2.0, Editor 2.0, asset pickers, appearance controls and Font/Color/Celestial/Shape selection surfaces.
+
+## 16. NEXT DEVELOPMENT STAGE
+
+Best Mates 2.0 Phase 3B Workspace operations and existing-project compatibility are physically verified. Phase 3B.1 reconstructs the Workspace hierarchy, compact cards and icon-only selection toolbar while preserving those operations. See [the Phase 3B handoff](docs/PHASE_3B_WORKSPACE_MIGRATION.md) for architecture, compatibility boundaries, the focused visual gate and the Phase 3C starting task.
 
 Phase 3C Settings 2.0 is the next separately authorized slice. Extract Settings presentation and reuse production Crystal components while preserving existing preference keys/values. GPT-6 must review theme/time inheritance and fallback contracts before any schema or saved-project behavior changes; do not silently rewrite existing concrete widget settings.
 
-TASK-007 remains implemented with numerical checks passed and manual Editor QA pending. Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Do not begin Phase 3C, another TASK-007 repair, or Celestial work without explicit scope.
+TASK-007 is **COMPLETE / CLOSED / PHYSICALLY_VERIFIED**. Phase 2D visual direction remains established; Golden Set 3 candidates are not automatically production assets. `Celestial Atelier Final Pass` remains separate and deferred. Do not begin Phase 3C, reopen TASK-007, or begin Celestial work without explicit scope.
 
 ### P0 — Must prioritize
 
-The legacy backlog below is context, not authorization to extend the consumed TASK-007 repair attempt or reopen Celestial. Future phases require their own scope and the gates in the Phase 3A handoff.
+The legacy backlog below is context, not authorization to reopen TASK-007 or Celestial. Future phases require their own scope and the gates in the Phase 3A handoff.
 
-1. Obtain manual acceptance of the bounded TASK-007 fix without changing persistence contracts; any broader engine follow-up needs separate authorization and review.
-2. Make the preview/render coordinate system and all shape bounds deterministic; verify every declared launcher size and free/non-proportional resize.
-3. Complete localization coverage and add a testable locale string audit.
+1. Make the preview/render coordinate system and all shape bounds deterministic; verify every declared launcher size and free/non-proportional resize.
+2. Complete localization coverage and add a testable locale string audit.
 
 ### P1 — Important
 
@@ -219,7 +233,7 @@ The legacy backlog below is context, not authorization to extend the consumed TA
 2. Add weather integration and update policy.
 3. Add automated persistence, renderer and Compose interaction tests.
 
-## 16. FIRST FILES TO READ
+## 17. FIRST FILES TO READ
 
 1. `app/src/main/java/com/bestmates/worldclock/MainActivity.kt` — current UI/state/editor behavior.
 2. `app/src/main/java/com/bestmates/worldclock/model/Models.kt` — persisted data contracts and shape/icon enums.
@@ -228,7 +242,7 @@ The legacy backlog below is context, not authorization to extend the consumed TA
 5. `app/src/main/java/com/bestmates/worldclock/data/ConfigStore.kt` — persistence schema and migrations.
 6. `app/src/main/java/com/bestmates/worldclock/data/CityCatalog.kt` and `solar/SolarCalculator.kt` — city data and day/night logic.
 
-## 17. HANDOFF CHECKLIST
+## 18. HANDOFF CHECKLIST
 
 - [ ] Read this handoff.
 - [ ] Verify the listed key files exist and inspect their current implementation.

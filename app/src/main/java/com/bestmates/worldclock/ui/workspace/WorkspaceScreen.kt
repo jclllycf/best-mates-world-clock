@@ -1,18 +1,13 @@
 package com.bestmates.worldclock.ui.workspace
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +28,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -61,7 +55,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -105,7 +98,6 @@ data class WorkspaceStrings(
     val close: String,
     val deleteTitle: String,
     val deleteMessageTemplate: String,
-    val version: String,
 )
 
 private data class WorkspaceProject(val id: String, val config: WidgetConfig)
@@ -240,10 +232,11 @@ private fun WorkspaceScreen(
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         Column(Modifier.fillMaxSize()) {
+            val selectionMode = selectedIds.isNotEmpty()
             WorkspaceTopBar(
                 brand = strings.brand,
-                subtitle = if (selectedIds.isEmpty()) strings.collectionTitle else format(strings.selectedCountTemplate, selectedIds.size),
-                selected = selectedIds.isNotEmpty(),
+                selectedCount = selectedIds.size.takeIf { selectionMode },
+                selectedCountTemplate = strings.selectedCountTemplate,
                 hasClipboard = hasClipboard,
                 settingsLabel = strings.settings,
                 pasteLabel = strings.paste,
@@ -252,22 +245,35 @@ private fun WorkspaceScreen(
                 onPaste = onPaste,
                 onClearSelection = onClearSelection,
             )
-            AnimatedVisibility(
-                visible = selectedIds.isNotEmpty(),
-                enter = fadeIn(tween(motion.durations.motionState)) + expandVertically(tween(motion.durations.motionState)),
-                exit = fadeOut(tween(motion.durations.motionRelease)) + shrinkVertically(tween(motion.durations.motionRelease)),
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(dimensions.spacing.space11),
             ) {
-                WorkspaceSelectionBar(
-                    selectedCount = selectedIds.size,
-                    canUseSingleActions = selectedIds.size == 1,
-                    hasClipboard = hasClipboard,
-                    strings = strings,
-                    onPaste = onPaste,
-                    onRename = onRename,
-                    onCopy = onCopy,
-                    onCut = onCut,
-                    onDelete = onDelete,
-                )
+                Crossfade(
+                    targetState = selectionMode,
+                    modifier = Modifier.fillMaxSize(),
+                    animationSpec = tween(motion.durations.motionState, easing = motion.easings.easeStandard),
+                    label = "workspace mode",
+                ) { selecting ->
+                    if (selecting) {
+                        WorkspaceSelectionBar(
+                            canUseSingleActions = selectedIds.size == 1,
+                            hasClipboard = hasClipboard,
+                            strings = strings,
+                            onPaste = onPaste,
+                            onRename = onRename,
+                            onCopy = onCopy,
+                            onCut = onCut,
+                            onDelete = onDelete,
+                        )
+                    } else {
+                        WorkspaceCollectionHeading(
+                            title = strings.collectionTitle,
+                            supportingText = format(strings.collectionCountTemplate, projects.size),
+                        )
+                    }
+                }
             }
 
             if (projects.isEmpty()) {
@@ -285,22 +291,12 @@ private fun WorkspaceScreen(
                         .fillMaxWidth(),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
                         start = dimensions.shared.compactScreenGutter,
-                        top = dimensions.spacing.space4,
+                        top = dimensions.spacing.space2,
                         end = dimensions.shared.compactScreenGutter,
-                        bottom = dimensions.spacing.space6,
+                        bottom = dimensions.spacing.space4,
                     ),
-                    verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space4),
+                    verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space3),
                 ) {
-                    item(key = "collection-heading") {
-                        Column(Modifier.padding(horizontal = dimensions.spacing.space2)) {
-                            Text(strings.collectionTitle, style = MaterialTheme.typography.headlineSmall, color = colors.textPrimary)
-                            Text(
-                                format(strings.collectionCountTemplate, projects.size),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = colors.textSecondary,
-                            )
-                        }
-                    }
                     items(projects, key = { it.id }) { project ->
                         WorkspaceProjectCard(
                             project = project,
@@ -315,7 +311,6 @@ private fun WorkspaceScreen(
             }
 
             WorkspaceCreateBar(
-                version = strings.version,
                 createLabel = strings.createWidget,
                 onCreate = onCreate,
             )
@@ -326,8 +321,8 @@ private fun WorkspaceScreen(
 @Composable
 private fun WorkspaceTopBar(
     brand: String,
-    subtitle: String,
-    selected: Boolean,
+    selectedCount: Int?,
+    selectedCountTemplate: String,
     hasClipboard: Boolean,
     settingsLabel: String,
     pasteLabel: String,
@@ -338,6 +333,7 @@ private fun WorkspaceTopBar(
 ) {
     val colors = BestMatesDesign.colors
     val dimensions = BestMatesDesign.dimensions
+    val selected = selectedCount != null
     Row(
         Modifier
             .fillMaxWidth()
@@ -345,7 +341,7 @@ private fun WorkspaceTopBar(
                 start = dimensions.shared.standardScreenGutter,
                 top = dimensions.spacing.space5,
                 end = dimensions.shared.standardScreenGutter,
-                bottom = dimensions.spacing.space3,
+                bottom = dimensions.spacing.space2,
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -369,8 +365,15 @@ private fun WorkspaceTopBar(
                 .weight(1f)
                 .padding(horizontal = dimensions.spacing.space4),
         ) {
-            Text(brand, style = MaterialTheme.typography.titleLarge, color = colors.textPrimary)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = colors.textSecondary, maxLines = 1)
+            Text(
+                if (selectedCount == null) brand else format(selectedCountTemplate, selectedCount),
+                style = MaterialTheme.typography.titleLarge,
+                color = colors.textPrimary,
+                maxLines = 1,
+            )
+            if (selected) {
+                Text(brand, style = MaterialTheme.typography.labelSmall, color = colors.textSecondary, maxLines = 1)
+            }
         }
         if (!selected && hasClipboard) {
             OrbitIconButton(
@@ -390,8 +393,22 @@ private fun WorkspaceTopBar(
 }
 
 @Composable
+private fun WorkspaceCollectionHeading(title: String, supportingText: String) {
+    val colors = BestMatesDesign.colors
+    val dimensions = BestMatesDesign.dimensions
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensions.shared.standardScreenGutter),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(title, style = MaterialTheme.typography.headlineSmall, color = colors.textPrimary)
+        Text(supportingText, style = MaterialTheme.typography.bodySmall, color = colors.textSecondary)
+    }
+}
+
+@Composable
 private fun WorkspaceSelectionBar(
-    selectedCount: Int,
     canUseSingleActions: Boolean,
     hasClipboard: Boolean,
     strings: WorkspaceStrings,
@@ -403,40 +420,51 @@ private fun WorkspaceSelectionBar(
 ) {
     val colors = BestMatesDesign.colors
     val dimensions = BestMatesDesign.dimensions
-    Column(
+    Row(
         Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(horizontal = dimensions.shared.compactScreenGutter, vertical = dimensions.spacing.space2)
             .crystalSurface(
                 baseColor = colors.surfaceRaised,
                 shape = RoundedCornerShape(dimensions.radii.radiusXl),
                 level = CrystalLevel.MilkCrystal,
                 borderColor = colors.borderSubtle,
-                intensity = 0.76f,
+                intensity = 0.68f,
             )
-            .padding(vertical = dimensions.spacing.space3),
+            .padding(horizontal = dimensions.spacing.space2),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            format(strings.selectedCountTemplate, selectedCount),
-            modifier = Modifier.padding(horizontal = dimensions.spacing.space4, vertical = dimensions.spacing.space1),
-            style = MaterialTheme.typography.labelMedium,
-            color = colors.textSecondary,
+        OrbitIconButton(
+            icon = OrbitIcons.Rename,
+            contentDescription = strings.rename,
+            onClick = onRename,
+            enabled = canUseSingleActions,
         )
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = dimensions.spacing.space3),
-            horizontalArrangement = Arrangement.spacedBy(dimensions.shared.distinctTouchTargetGap),
-        ) {
-            OrbitButton(strings.paste, onPaste, icon = OrbitIcons.Paste, style = OrbitButtonStyle.Quiet, enabled = hasClipboard, compact = true)
-            if (canUseSingleActions) {
-                OrbitButton(strings.rename, onRename, icon = OrbitIcons.Rename, style = OrbitButtonStyle.Quiet, compact = true)
-                OrbitButton(strings.copy, onCopy, icon = OrbitIcons.Copy, style = OrbitButtonStyle.Quiet, compact = true)
-                OrbitButton(strings.cut, onCut, icon = OrbitIcons.Cut, style = OrbitButtonStyle.Quiet, compact = true)
-            }
-            OrbitButton(strings.delete, onDelete, icon = OrbitIcons.Delete, style = OrbitButtonStyle.Destructive, compact = true)
-        }
+        OrbitIconButton(
+            icon = OrbitIcons.Copy,
+            contentDescription = strings.copy,
+            onClick = onCopy,
+            enabled = canUseSingleActions,
+        )
+        OrbitIconButton(
+            icon = OrbitIcons.Cut,
+            contentDescription = strings.cut,
+            onClick = onCut,
+            enabled = canUseSingleActions,
+        )
+        OrbitIconButton(
+            icon = OrbitIcons.Paste,
+            contentDescription = strings.paste,
+            onClick = onPaste,
+            enabled = hasClipboard,
+        )
+        OrbitIconButton(
+            icon = OrbitIcons.Delete,
+            contentDescription = strings.delete,
+            onClick = onDelete,
+            destructive = true,
+        )
     }
 }
 
@@ -475,21 +503,21 @@ private fun WorkspaceProjectCard(
                 borderWidth = if (isSelected) BestMatesDesign.states.selectedOutlineWidth else 1.dp,
                 intensity = if (isSelected) 0.94f else 0.76f,
             )
-            .padding(dimensions.spacing.space4),
+            .padding(horizontal = dimensions.spacing.space4, vertical = dimensions.spacing.space3),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         WorkspaceThumbnail(project.config)
         Column(
             Modifier
                 .weight(1f)
-                .padding(horizontal = dimensions.spacing.space4),
-            verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space2),
+                .padding(start = dimensions.spacing.space4, end = dimensions.spacing.space3),
+            verticalArrangement = Arrangement.spacedBy(dimensions.spacing.space1),
         ) {
             Text(
                 project.config.title.ifBlank { strings.unnamed },
                 style = MaterialTheme.typography.titleMedium,
                 color = if (isSelected) colors.selectionContent else colors.textPrimary,
-                maxLines = 2,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
@@ -506,7 +534,7 @@ private fun WorkspaceProjectCard(
         if (isSelected) {
             Box(
                 Modifier
-                    .size(34.dp)
+                    .size(dimensions.spacing.space8)
                     .clip(CircleShape)
                     .background(colors.surfaceRaised.copy(alpha = 0.54f)),
                 contentAlignment = Alignment.Center,
@@ -533,8 +561,8 @@ private fun WorkspaceThumbnail(config: WidgetConfig) {
     }
     Box(
         Modifier
-            .size(width = 88.dp, height = 78.dp)
-            .clip(RoundedCornerShape(dimensions.radii.radiusLg))
+            .size(width = 72.dp, height = dimensions.spacing.space11)
+            .clip(RoundedCornerShape(dimensions.radii.radiusMd))
             .background(colors.canvasMat)
             .drawBehind {
                 drawLine(colors.guide.copy(alpha = 0.11f), Offset(size.width / 2f, 0f), Offset(size.width / 2f, size.height), 1.dp.toPx())
@@ -577,21 +605,15 @@ private fun WorkspaceEmptyState(strings: WorkspaceStrings, modifier: Modifier = 
 }
 
 @Composable
-private fun WorkspaceCreateBar(version: String, createLabel: String, onCreate: () -> Unit) {
-    val colors = BestMatesDesign.colors
+private fun WorkspaceCreateBar(createLabel: String, onCreate: () -> Unit) {
     val dimensions = BestMatesDesign.dimensions
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensions.shared.compactScreenGutter)
+            .padding(top = dimensions.spacing.space2)
             .padding(bottom = dimensions.spacing.space4),
     ) {
-        Text(
-            version,
-            modifier = Modifier.padding(start = dimensions.spacing.space3, bottom = dimensions.spacing.space2),
-            style = MaterialTheme.typography.labelSmall,
-            color = colors.textMuted,
-        )
         OrbitButton(
             label = createLabel,
             onClick = onCreate,
