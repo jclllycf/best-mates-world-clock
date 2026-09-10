@@ -22,7 +22,7 @@ Best Mates is an open-source Android world-clock widget editor. It is being buil
 
 ## Download Best Mates
 
-The public release asset is **`BestMates-v0.2.0.apk`**, published from this repository’s [Releases](../../releases) page after release signing is configured. Debug builds are for development and are not public release assets.
+Download **`BestMates-v0.2.0-debug.apk`** from this repository’s [Releases](../../releases) page. It is a debug-signed early public build, not a Play Store or production-signed APK.
 
 1. Download the APK on an Android device.
 2. Allow installation from the browser or file manager when Android asks.

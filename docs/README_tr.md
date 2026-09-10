@@ -19,7 +19,7 @@ Best Mates, formül tabanlı bir düzenleyici öğrenmeden kişisel dünya saati
 
 ## Best Mates’i indirin
 
-Genel sürüm dosyası **`BestMates-v0.2.0.apk`** olacaktır. Release imzalama yapılandırıldıktan sonra [Releases](../releases) sayfasında yer alır; debug derlemeleri yalnızca geliştirme içindir.
+[Releases](../releases) sayfasından **`BestMates-v0.2.0-debug.apk`** dosyasını indirin. Bu, debug imzalı erken bir herkese açık derlemedir; Play Store veya üretim imzalı APK değildir.
 
 ## Geri bildirim
 

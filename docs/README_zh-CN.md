@@ -20,7 +20,7 @@ Best Mates 是一个开源 Android 世界时钟小组件编辑器。它面向想
 
 ## 下载 Best Mates
 
-公开发行文件为 **`BestMates-v0.2.0.apk`**。完成 release 签名配置后，可从仓库的 [Releases](../releases) 下载；Debug 构建仅用于开发，不作为公开发行文件。
+从仓库的 [Releases](../releases) 下载 **`BestMates-v0.2.0-debug.apk`**。这是 Debug 签名的早期公开构建，并非 Play Store 或生产签名 APK。
 
 1. 在 Android 手机上下载 APK。
 2. 按 Android 提示允许浏览器或文件管理器安装未知应用。

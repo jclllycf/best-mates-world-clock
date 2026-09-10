@@ -19,7 +19,7 @@ Best Mates ist ein quelloffener Android-Editor für Weltzeit-Widgets. Er ermögl
 
 ## Best Mates herunterladen
 
-Die öffentliche Release-Datei heißt **`BestMates-v0.2.0.apk`**. Nach der Einrichtung der Release-Signierung ist sie auf der [Releases](../releases)-Seite verfügbar; Debug-Builds sind nur für die Entwicklung bestimmt.
+Laden Sie **`BestMates-v0.2.0-debug.apk`** über die [Releases](../releases)-Seite herunter. Dies ist ein frühzeitiger, debug-signierter öffentlicher Build und kein Play-Store- oder produktionssigniertes APK.
 
 ## Feedback
 
