@@ -105,10 +105,10 @@ open class WorldClockWidgetProvider : AppWidgetProvider() {
             }
             val lines = item.content.lines().ifEmpty { listOf("") }
             val padding = 5f * density
-            // Decorative fonts often use ascenders/descenders beyond their nominal
-            // size. Give every custom text line a stable breathing room both in the
-            // editor and in the actual desktop widget.
-            val lineHeight = (paint.fontMetrics.descent - paint.fontMetrics.ascent) * 1.36f
+            // Line height includes the font's natural ascent-to-descent range plus a
+            // small breathing multiplier for comfortable reading. The previous 1.36
+            // value caused excessive gaps in multiline text.
+            val lineHeight = (paint.fontMetrics.descent - paint.fontMetrics.ascent) * 1.18f
             val widthPx = (lines.maxOfOrNull { paint.measureText(it) } ?: 1f) + padding * 2f
             val heightPx = lineHeight * lines.size + padding * 2f
             val bitmap = android.graphics.Bitmap.createBitmap(widthPx.toInt().coerceAtLeast(1), heightPx.toInt().coerceAtLeast(1), android.graphics.Bitmap.Config.ARGB_8888)
