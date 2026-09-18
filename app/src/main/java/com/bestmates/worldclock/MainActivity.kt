@@ -295,7 +295,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable private fun BestMatesApp(widgetId: Int) {
-    val activity = androidx.compose.ui.platform.LocalContext.current as Activity
+    val activity = androidx.activity.compose.LocalActivity.current!!
     val preferences = remember { activity.getSharedPreferences("app_settings", android.content.Context.MODE_PRIVATE) }
     var appTheme by remember { mutableStateOf(runCatching { AppThemeStyle.valueOf(preferences.getString("app_theme", "CLOUD") ?: "CLOUD") }.getOrDefault(AppThemeStyle.CLOUD)) }
     var appAppearance by remember { mutableStateOf(AppAppearanceMode.from(preferences.getString("appearance_mode", null))) }
@@ -402,16 +402,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Suppress("DEPRECATION")
 private fun updateSystemBars(activity: Activity, backgroundColor: Int, isDark: Boolean) {
     activity.window.statusBarColor = backgroundColor
     activity.window.navigationBarColor = backgroundColor
-    activity.window.decorView.systemUiVisibility = if (isDark) {
-        0
-    } else {
-        android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-            android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-    }
+    val controller = androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+    controller.isAppearanceLightStatusBars = !isDark
+    controller.isAppearanceLightNavigationBars = !isDark
 }
 
 @Composable
