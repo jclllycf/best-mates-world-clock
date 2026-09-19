@@ -737,8 +737,8 @@ private fun EditorActionButton(
     }
 }
 
-private val SUN_ICON_LIBRARY = SunIconStyle.entries
-private val MOON_ICON_LIBRARY = MoonIconStyle.entries
+private val SUN_ICON_LIBRARY = listOf(SunIconStyle.BM_SUN_SIMPLE_FILL, SunIconStyle.BM_SUN_SIMPLE_ROUND, SunIconStyle.BM_SUN_CLOUD_FILL, SunIconStyle.BM_SUN_HORIZON_FILL, SunIconStyle.BM_SUN_WAVE_FILL, SunIconStyle.BM_SUN_MIST)
+private val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIconStyle.BM_MOON_STARS_FILL, MoonIconStyle.BM_MOON_CLOUD_FILL, MoonIconStyle.BM_MOON_HORIZON_STARS, MoonIconStyle.BM_MOON_SLEEP_FILL, MoonIconStyle.BM_ISLAMIC_CRESCENT_STAR)
 
 
 @Composable private fun FontField(label: String, value: String, sample: String, onChange: (String) -> Unit) {
@@ -885,19 +885,34 @@ private fun ShapePicker(selected: WidgetShape, onSelect: (WidgetShape) -> Unit) 
 
 @Composable
 private fun ShapePickerDialog(selected: WidgetShape?, title: String, onDismiss: () -> Unit, onSelect: (WidgetShape) -> Unit) {
+    val groups = listOf(
+        uiText("classic") to listOf(WidgetShape.ROUNDED, WidgetShape.SQUIRCLE, WidgetShape.CIRCLE, WidgetShape.CAPSULE),
+        uiText("natural") to listOf(WidgetShape.CLOUD, WidgetShape.DROP, WidgetShape.PETAL, WidgetShape.HEART),
+        uiText("playful") to listOf(WidgetShape.PILL, WidgetShape.DIAMOND, WidgetShape.TICKET, WidgetShape.WAVE)
+    )
+
     CrystalDialog(onDismissRequest = onDismiss, title = { Text(title) }, confirmButton = { TextButton(onClick = onDismiss) { Text(uiText("cancel")) } }, text = {
-        LazyColumn(Modifier.heightIn(max = 560.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            items(WidgetShape.entries.chunked(3)) { row ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                    row.forEach { shape ->
-                        CrystalChoiceTile(selected = shape == selected, selectedDescription = uiText("selected"), onClick = { onSelect(shape) }, modifier = Modifier.weight(1f).height(78.dp)) {
-                            Column(Modifier.fillMaxSize().padding(7.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                                ShapePreviewIcon(shape, Modifier.size(42.dp, 30.dp), shape == selected)
-                                Spacer(Modifier.height(4.dp)); Text(shapeLabel(shape), fontSize = 10.sp, maxLines = 1)
+        LazyColumn(Modifier.heightIn(max = 600.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            groups.forEach { (groupName, shapes) ->
+                item {
+                    Text(groupName, style = MaterialTheme.typography.labelMedium, color = BestMatesDesign.colors.textSecondary)
+                    Spacer(Modifier.height(8.dp))
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        shapes.chunked(2).forEach { row ->
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                row.forEach { shape ->
+                                    CrystalChoiceTile(selected = shape == selected, selectedDescription = uiText("selected"), onClick = { onSelect(shape) }, modifier = Modifier.weight(1f).height(96.dp)) {
+                                        Column(Modifier.fillMaxSize().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                                            ShapePreviewIcon(shape, Modifier.height(42.dp).fillMaxWidth(), shape == selected)
+                                            Spacer(Modifier.height(8.dp))
+                                            Text(shapeLabel(shape), fontSize = 12.sp, fontWeight = FontWeight.Medium, maxLines = 1)
+                                        }
+                                    }
+                                }
+                                repeat(2 - row.size) { Spacer(Modifier.weight(1f)) }
                             }
                         }
                     }
-                    repeat(3-row.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
         }
