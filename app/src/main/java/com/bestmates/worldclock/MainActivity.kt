@@ -1,6 +1,8 @@
 package com.bestmates.worldclock
 import com.bestmates.worldclock.ui.editor.CanvasSelection
 import com.bestmates.worldclock.ui.editor.EditorClipboard
+import com.bestmates.worldclock.ui.editor.*
+import com.bestmates.worldclock.ui.editor.*
 import com.bestmates.worldclock.ui.editor.LayoutCanvas
 import com.bestmates.worldclock.ui.editor.SolarIconSample
 
@@ -865,31 +867,6 @@ private fun EditorActionButton(
 private val SUN_ICON_LIBRARY = SunIconStyle.entries
 private val MOON_ICON_LIBRARY = MoonIconStyle.entries
 
-private data class FontChoice(val id: String, val label: String, val family: String, val style: Int = android.graphics.Typeface.NORMAL)
-private val FONT_CHOICES: List<FontChoice> = buildList {
-    addAll(listOf(
-        FontChoice("SANS_ROUNDED", "Rounded Sans", "sans-serif-rounded"), FontChoice("SANS", "Clean Sans", "sans-serif"),
-        FontChoice("SANS_LIGHT", "Airy Light", "sans-serif-light"), FontChoice("SANS_THIN", "Silk Thin", "sans-serif-thin"),
-        FontChoice("SANS_MEDIUM", "Modern Medium", "sans-serif-medium"), FontChoice("SANS_BLACK", "Bold Display", "sans-serif-black"),
-        FontChoice("SANS_CONDENSED", "Narrow Sans", "sans-serif-condensed"), FontChoice("CONDENSED_LIGHT", "Narrow Light", "sans-serif-condensed-light"),
-        FontChoice("CONDENSED_MEDIUM", "Narrow Medium", "sans-serif-condensed-medium"), FontChoice("SERIF", "Classic Serif", "serif"),
-        FontChoice("SERIF_MONO", "Editorial Mono", "serif-monospace"), FontChoice("MONO", "Modern Mono", "monospace"),
-        FontChoice("CURSIVE", "Cursive Script", "cursive"), FontChoice("CASUAL", "Cute Casual", "casual"),
-        FontChoice("SMALL_CAPS", "Elegant Small Caps", "sans-serif-smallcaps")
-    ))
-    // Keep only visually distinct system families. The old matrix repeated the
-    // same Android aliases with five styles and made the picker look padded but
-    // not meaningfully diverse.
-    listOf(
-        "sans-serif" to "Neutral Sans", "sans-serif-rounded" to "Rounded", "sans-serif-light" to "Thin Air",
-        "sans-serif-condensed" to "Condensed", "sans-serif-black" to "Poster", "sans-serif-smallcaps" to "Small Caps",
-        "serif" to "Book Serif", "serif-monospace" to "Typewriter Serif", "monospace" to "Terminal",
-        "cursive" to "Handwritten", "casual" to "Casual", "sans" to "Legacy Sans"
-    ).forEachIndexed { index, (family, label) ->
-        add(FontChoice("BM|$family|${android.graphics.Typeface.NORMAL}|$index", label, family))
-        add(FontChoice("BM|$family|${android.graphics.Typeface.BOLD}|${index}b", "$label Bold", family, android.graphics.Typeface.BOLD))
-    }
-}
 
 @Composable private fun FontField(label: String, value: String, sample: String, onChange: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
@@ -953,8 +930,6 @@ private val FONT_CHOICES: List<FontChoice> = buildList {
     })
 }
 
-private fun fontFamilyName(value: String): String = FONT_CHOICES.firstOrNull { it.id == value }?.family ?: value.split('|').getOrNull(1) ?: "sans-serif"
-private fun fontStyle(value: String): Int = FONT_CHOICES.firstOrNull { it.id == value }?.style ?: value.split('|').getOrNull(2)?.toIntOrNull() ?: android.graphics.Typeface.NORMAL
 // Shared artwork only. Production Pin proportions and 20dp stroke are unchanged.
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawProductionPin(tint: Color) {
     val stroke = size.width * .08f
@@ -1010,7 +985,6 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawProductionPin(t
     }
 }
 
-private fun textFont(value: String): FontFamily = FontFamily(android.graphics.Typeface.create(fontFamilyName(value), fontStyle(value)))
 
 @Composable private fun shapeLabel(shape: WidgetShape): String {
     val english = when (shape) {
