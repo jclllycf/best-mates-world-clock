@@ -89,13 +89,13 @@ internal fun LayoutCanvas(
     var canvasOriginInRoot by remember { mutableStateOf(Offset.Zero) }
     var guideX by remember { mutableStateOf<Float?>(null) }
     var guideY by remember { mutableStateOf<Float?>(null) }
-    var guideAngle by remember { mutableStateOf<Float?>(null) }
+    var guideAngle by remember { mutableStateOf<Pair<Float, Offset>?>(null) }
     var sizeGuide by remember { mutableStateOf<String?>(null) }
     var sizeGuideTarget by remember { mutableStateOf<CanvasSelection?>(null) }
     val hostView = LocalView.current
     var lastSnapFeedback by remember { mutableStateOf("") }
     LaunchedEffect(guideX, guideY, guideAngle, sizeGuide) {
-        val key = "${guideX?.roundToInt()}:${guideY?.roundToInt()}:${guideAngle?.roundToInt()}:${sizeGuide.orEmpty()}"
+        val key = "${guideX?.roundToInt()}:${guideY?.roundToInt()}:${guideAngle?.first?.roundToInt()}:${sizeGuide.orEmpty()}"
         if (key != "null:null:null:" && key != lastSnapFeedback) {
             hostView.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
             lastSnapFeedback = key
@@ -130,12 +130,12 @@ internal fun LayoutCanvas(
                     val guideColor = designColors.guide.copy(alpha = .58f)
                     guideX?.let { drawLine(guideColor, Offset(it, boardBounds.top), Offset(it, boardBounds.bottom), 1.3f) }
                     guideY?.let { drawLine(guideColor, Offset(boardBounds.left, it), Offset(boardBounds.right, it), 1.3f) }
-                    guideAngle?.let { angle ->
+                    guideAngle?.let { (angle, origin) ->
                         val radians = Math.toRadians(angle.toDouble())
                         val radius = boardBounds.width() * .72f
                         val dx = (cos(radians) * radius).toFloat()
                         val dy = (sin(radians) * radius).toFloat()
-                        drawLine(guideColor, Offset(boardBounds.centerX()-dx, boardBounds.centerY()-dy), Offset(boardBounds.centerX()+dx, boardBounds.centerY()+dy), 1.3f)
+                        drawLine(guideColor, Offset(origin.x-dx, origin.y-dy), Offset(origin.x+dx, origin.y+dy), 1.3f)
                     }
                 }
             }
@@ -227,8 +227,10 @@ internal fun LayoutCanvas(
                             val bottom = snapCanvasFraction((top + start.height + dy).coerceIn(top + .08f, 1f), 1f / 16f, snapEnabled)
                             val width = (right.value-left).coerceAtLeast(if (snapEnabled) 1f / 16f else .08f)
                             val height = (bottom.value-top).coerceAtLeast(if (snapEnabled) 1f / 16f else .08f)
-                            guideX = right.guide?.let { boardBounds.left + it * boardBounds.width() }
-                            guideY = bottom.guide?.let { boardBounds.top + it * boardBounds.height() }
+                            if (start.rotation % 360f == 0f) {
+                                guideX = right.guide?.let { boardBounds.left + it * boardBounds.width() }
+                                guideY = bottom.guide?.let { boardBounds.top + it * boardBounds.height() }
+                            } else { guideX = null; guideY = null }
                             onLayerChange(index, start.copy(width = width, height = height, x = (left+width*.5f)*2f-1f, y = (top+height*.5f)*2f-1f))
                         }
                     })
@@ -242,7 +244,7 @@ internal fun LayoutCanvas(
                         canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
                         snapEnabled = snapEnabled,
                         onRotationChange = { snapped ->
-                            guideAngle = snapped.guide
+                            guideAngle = snapped.guide?.let { it to Offset(rect.centerX(), rect.centerY()) }
                             onLayerChange(index, liveLayer.copy(rotation = snapped.value))
                         },
                         onGestureStart = onGestureStart,
@@ -360,7 +362,7 @@ internal fun LayoutCanvas(
                         canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
                         snapEnabled = snapEnabled,
                         onRotationChange = { snapped ->
-                            guideAngle = snapped.guide
+                            guideAngle = snapped.guide?.let { it to Offset(centre.x, centre.y) }
                             onCityChange(index, liveCity.copy(rotation = snapped.value))
                         },
                         onGestureStart = onGestureStart,
@@ -442,7 +444,7 @@ internal fun LayoutCanvas(
                             canvasSizeOnCanvas = Offset(canvasWidth, canvasHeight),
                             snapEnabled = snapEnabled,
                             onRotationChange = { snapped ->
-                                guideAngle = snapped.guide
+                                guideAngle = snapped.guide?.let { it to Offset(centre.x, centre.y) }
                                 onTextChange(index, liveText.copy(rotation = snapped.value))
                             },
                             onGestureStart = onGestureStart,
@@ -473,55 +475,6 @@ private fun freeCanvasCenter(x: Float, y: Float, halfWidth: Float, halfHeight: F
         y.coerceIn(board.top + halfHeight, board.bottom - halfHeight)
     )
 
-internal data class SnapResult(val value: Float, val guide: Float?)
-
-/**
- * Returns the signed angle in degrees from [from] to [to], measured counter-clockwise
- * from the positive X axis (same convention as atan2).
- */
-private fun angleBetween(from: Offset, to: Offset): Float =
-    Math.toDegrees(atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())).toFloat()
-
-/**
- * Continuously unwrap a raw angle delta so that a smooth gesture can exceed ±180°.
- * [rawDelta] is the current raw angle difference (degrees). [prevDelta] is the
- * previous unwrapped delta. Returns the new unwrapped delta.
- */
-private fun unwrapAngleDelta(rawDelta: Float, prevDelta: Float): Float {
-    var d = rawDelta - prevDelta
-    // Fold into (-180, 180] to find the shortest arc this frame.
-    while (d > 180f) d -= 360f
-    while (d <= -180f) d += 360f
-    return prevDelta + d
-}
-
-private fun snapCoordinate(value: Float, enabled: Boolean, divisions: Int = 16, extras: List<Float> = emptyList()): SnapResult {
-    if (!enabled) return SnapResult(value, null)
-    val linked = extras.minByOrNull { kotlin.math.abs(it - value) }
-    if (linked != null && kotlin.math.abs(linked - value) <= .035f) return SnapResult(linked.coerceIn(-1f, 1f), linked.coerceIn(-1f, 1f))
-    // Normalized coordinates span -1..1. A 16-division grid is therefore 1/8 apart.
-    val step = 2f / divisions.coerceAtLeast(1)
-    val nearest = ((value + 1f) / step).roundToInt() * step - 1f
-    return SnapResult(nearest.coerceIn(-1f, 1f), nearest.coerceIn(-1f, 1f))
-}
-
-private fun snapCanvasFraction(value: Float, step: Float, enabled: Boolean, extras: List<Float> = emptyList()): SnapResult {
-    if (!enabled) return SnapResult(value, null)
-    val linked = extras.minByOrNull { kotlin.math.abs(it - value) }
-    if (linked != null && kotlin.math.abs(linked - value) <= .025f) return SnapResult(linked.coerceIn(0f, 1f), linked.coerceIn(0f, 1f))
-    val snapped = (value / step).roundToInt() * step
-    return SnapResult(snapped.coerceIn(0f, 1f), snapped.coerceIn(0f, 1f))
-}
-
-private fun snapRotation(value: Float, enabled: Boolean): SnapResult {
-    // Keep the raw continuous angle. Clamping here makes a continuous gesture
-    // jump from +180 to -180 and breaks multi-turn rotation.
-    val raw = value
-    if (!enabled) return SnapResult(raw, null)
-    val snapped = (raw / 15f).roundToInt() * 15f
-    // Rotation remains fluid; only common design angles acquire a magnetic zone.
-    return if (kotlin.math.abs(snapped - raw) <= 3.5f) SnapResult(snapped, snapped) else SnapResult(raw, null)
-}
 
 @Composable private fun ResizeHandle(modifier: Modifier = Modifier) {
     Canvas(modifier.size(28.dp)) {
