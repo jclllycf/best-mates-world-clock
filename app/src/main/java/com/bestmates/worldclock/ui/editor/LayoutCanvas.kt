@@ -41,8 +41,8 @@ import com.bestmates.worldclock.ui.theme.BestMatesDesign
 import com.bestmates.worldclock.widget.SolarIconRenderer
 import com.bestmates.worldclock.widget.BackgroundRenderer
 import com.bestmates.worldclock.solar.SolarCalculator
-import com.bestmates.worldclock.LocalBestMatesLanguage
-import com.bestmates.worldclock.dateLocale
+import com.bestmates.worldclock.ui.i18n.LocalBestMatesLanguage
+import com.bestmates.worldclock.ui.i18n.dateLocale
 import com.bestmates.worldclock.ui.settings.AppLanguage
 import com.bestmates.worldclock.ui.*
 import kotlinx.coroutines.delay
