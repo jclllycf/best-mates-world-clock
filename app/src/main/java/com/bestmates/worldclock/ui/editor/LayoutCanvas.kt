@@ -571,10 +571,9 @@ private fun RotationHandleUnified(
                 }
             },
         contentAlignment = Alignment.Center
-    ) {
-        // User-approved Future canvas language artwork; the outer 42dp target and geometry stay intact.
-        Box(Modifier.size(26.dp).background(Color(0xEEF9F5FA),RoundedCornerShape(13.dp)).border(.7.dp,Color(0x66836A93),RoundedCornerShape(13.dp)),contentAlignment=Alignment.Center) {
-            Icon(OrbitIcons.Rotate,null,tint=Color(0xFF7655AF),modifier=Modifier.size(18.dp))
-        }
-    }
+          ) {
+          Box(Modifier.size(24.dp).background(androidx.compose.ui.graphics.Color(0xEAF8F4FA), androidx.compose.foundation.shape.CircleShape).border(.6.dp, androidx.compose.ui.graphics.Color(0x667E658F), androidx.compose.foundation.shape.CircleShape), contentAlignment = Alignment.Center) {
+              Icon(OrbitIcons.Rotate, null, tint = androidx.compose.ui.graphics.Color(0xFF796288).copy(alpha = .9f), modifier = Modifier.size(15.dp))
+          }
+      }
 }

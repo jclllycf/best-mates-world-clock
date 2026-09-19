@@ -189,23 +189,22 @@ object OrbitIcons {
         }
     }
 
-    val Rotate: ImageVector by lazy {
+        val Rotate: ImageVector by lazy {
         orbitIcon("OrbitRotate") {
-            moveTo(18.6f, 8.2f)
-            curveTo(16.8f, 4.9f, 12.7f, 3.6f, 9.2f, 5f)
-            curveTo(5.5f, 6.4f, 3.6f, 10.5f, 4.8f, 14.3f)
-            curveTo(6f, 18.2f, 10.2f, 20.5f, 14.2f, 19.4f)
-            curveTo(16.5f, 18.8f, 18.4f, 17.1f, 19.3f, 15f)
-            moveTo(14.8f, 7.8f); lineTo(19f, 8.5f); lineTo(18.5f, 4.3f)
+            moveTo(21f, 12f)
+            curveTo(21f, 16.97f, 16.97f, 21f, 12f, 21f)
+            curveTo(7.03f, 21f, 3f, 16.97f, 3f, 12f)
+            curveTo(3f, 7.03f, 7.03f, 3f, 12f, 3f)
+            curveTo(15f, 3f, 17.65f, 4.47f, 19.3f, 6.7f)
+            moveTo(20.5f, 2.5f); lineTo(20.5f, 7.5f); lineTo(15.5f, 7.5f)
         }
     }
 
-    val Resize: ImageVector by lazy {
+        val Resize: ImageVector by lazy {
         orbitIcon("OrbitResize") {
-            moveTo(6f, 10f); lineTo(6f, 6f); lineTo(10f, 6f)
-            moveTo(14f, 18f); lineTo(18f, 18f); lineTo(18f, 14f)
-            moveTo(7f, 7f); lineTo(17f, 17f)
-            moveTo(13.5f, 5f); lineTo(19f, 5f); lineTo(19f, 10.5f)
+            moveTo(14f, 4f); lineTo(20f, 4f); lineTo(20f, 10f)
+            moveTo(10f, 20f); lineTo(4f, 20f); lineTo(4f, 14f)
+            moveTo(4f, 20f); lineTo(20f, 4f)
         }
     }
 
