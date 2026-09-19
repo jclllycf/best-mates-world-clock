@@ -161,34 +161,33 @@ object BackgroundRenderer {
             }
             WidgetShape.PETAL -> {
                 moveTo(r.centerX(), r.top)
-                cubicTo(r.right-r.width()*.08f,r.top+r.height()*.02f,r.right,r.top+r.height()*.30f,r.centerX(),r.bottom)
-                cubicTo(r.left,r.top+r.height()*.30f,r.left+r.width()*.08f,r.top+r.height()*.02f,r.centerX(),r.top); close()
+                cubicTo(r.right + r.width() * 0.166f, r.top, r.right + r.width() * 0.166f, r.bottom, r.centerX(), r.bottom)
+                cubicTo(r.left - r.width() * 0.166f, r.bottom, r.left - r.width() * 0.166f, r.top, r.centerX(), r.top)
+                close()
             }
             WidgetShape.CLOUD -> {
-                moveTo(r.left, r.centerY()+r.height()*.04f)
-                cubicTo(r.left,r.top+r.height()*.25f,r.left+r.width()*.18f,r.top+r.height()*.12f,r.left+r.width()*.36f,r.top+r.height()*.18f)
-                cubicTo(r.left+r.width()*.48f,r.top-r.height()*.02f,r.left+r.width()*.72f,r.top+r.height()*.02f,r.left+r.width()*.77f,r.top+r.height()*.24f)
-                cubicTo(r.right-r.width()*.06f,r.top+r.height()*.27f,r.right,r.top+r.height()*.43f,r.right,r.centerY()+r.height()*.02f)
-                cubicTo(r.right,r.bottom-r.height()*.18f,r.right-r.width()*.18f,r.bottom-r.height()*.06f,r.right-r.width()*.38f,r.bottom-r.height()*.12f)
-                cubicTo(r.centerX(),r.bottom+r.height()*.02f,r.left+r.width()*.18f,r.bottom-r.height()*.02f,r.left+r.width()*.14f,r.bottom-r.height()*.18f)
-                cubicTo(r.left+r.width()*.05f,r.bottom-r.height()*.24f,r.left,r.bottom-r.height()*.38f,r.left,r.centerY()+r.height()*.04f);close()
+                moveTo(r.left + r.width() * .04f, r.top + r.height() * .68f)
+                cubicTo(r.left + r.width() * .01f, r.top + r.height() * .43f, r.left + r.width() * .18f, r.top + r.height() * .27f, r.left + r.width() * .34f, r.top + r.height() * .34f)
+                cubicTo(r.left + r.width() * .43f, r.top + r.height() * .04f, r.left + r.width() * .70f, r.top + r.height() * .08f, r.left + r.width() * .75f, r.top + r.height() * .37f)
+                cubicTo(r.left + r.width() * .96f, r.top + r.height() * .32f, r.left + r.width() * .99f, r.top + r.height() * .62f, r.left + r.width() * .86f, r.top + r.height() * .76f)
+                cubicTo(r.left + r.width() * .70f, r.top + r.height() * .89f, r.left + r.width() * .20f, r.top + r.height() * .87f, r.left + r.width() * .08f, r.top + r.height() * .76f)
+                close()
             }
             WidgetShape.HEART -> {
-                // Full-bleed, balanced heart. Every extreme touches its bounding box.
                 moveTo(r.centerX(), r.bottom)
                 cubicTo(r.centerX()-r.width()*.11f,r.bottom-r.height()*.10f,r.left,r.top+r.height()*.58f,r.left,r.top+r.height()*.30f)
-                cubicTo(r.left,r.top+r.height()*.04f,r.left+r.width()*.34f,r.top-r.height()*.01f,r.centerX(),r.top+r.height()*.20f)
-                cubicTo(r.left+r.width()*.66f,r.top-r.height()*.01f,r.right,r.top+r.height()*.04f,r.right,r.top+r.height()*.30f)
+                cubicTo(r.left,r.top+r.height()*.05f,r.left+r.width()*.34f,r.top,r.centerX(),r.top+r.height()*.20f)
+                cubicTo(r.left+r.width()*.66f,r.top,r.right,r.top+r.height()*.05f,r.right,r.top+r.height()*.30f)
                 cubicTo(r.right,r.top+r.height()*.58f,r.centerX()+r.width()*.11f,r.bottom-r.height()*.10f,r.centerX(),r.bottom)
                 close()
             }
             WidgetShape.DROP -> {
                 // A full, calm raindrop: round crown, tapered but never needle-like tip.
-                moveTo(r.centerX(), r.top)
-                cubicTo(r.right - r.width() * .13f, r.top + r.height() * .25f, r.right, r.top + r.height() * .51f, r.right, r.bottom - r.height() * .27f)
+                moveTo(r.centerX(), r.top + r.height() * .02f)
+                cubicTo(r.right - r.width() * .12f, r.top + r.height() * .26f, r.right, r.top + r.height() * .52f, r.right, r.bottom - r.height() * .26f)
                 cubicTo(r.right, r.bottom - r.height() * .08f, r.right - r.width() * .23f, r.bottom, r.centerX(), r.bottom)
-                cubicTo(r.left + r.width() * .23f, r.bottom, r.left, r.bottom - r.height() * .08f, r.left, r.bottom - r.height() * .27f)
-                cubicTo(r.left, r.top + r.height() * .51f, r.left + r.width() * .13f, r.top + r.height() * .25f, r.centerX(), r.top)
+                cubicTo(r.left + r.width() * .23f, r.bottom, r.left, r.bottom - r.height() * .08f, r.left, r.bottom - r.height() * .26f)
+                cubicTo(r.left, r.top + r.height() * .52f, r.left + r.width() * .12f, r.top + r.height() * .26f, r.centerX(), r.top + r.height() * .02f)
                 close()
             }
             WidgetShape.TICKET -> {
