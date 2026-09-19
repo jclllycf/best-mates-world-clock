@@ -369,7 +369,7 @@ Acceptance tests:
 
 
 ### TASK-010 — Multiline text spacing
-Status: TODO
+Status: IMPLEMENTED (commit 0e547ac — line spacing reduced from 1.36 to 1.18)
 Priority: P0
 
 Requirements:
