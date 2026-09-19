@@ -47,6 +47,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -56,7 +57,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -503,14 +504,19 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable private fun SelectedElementEditor(config: WidgetConfig, selection: CanvasSelection?, onConfigChange: (WidgetConfig) -> Unit, onClearSelection: () -> Unit, onCopy: (EditorClipboard) -> Unit, onPaste: () -> Unit) {
-    when (selection) {
-        is CanvasSelection.ComponentItem -> config.layers.getOrNull(selection.index)?.let { layer ->
-            fun update(changed: WidgetLayer) = onConfigChange(config.copy(layers = config.layers.toMutableList().also { it[selection.index] = changed }))
+    androidx.compose.animation.AnimatedContent(
+        targetState = selection,
+        label = "selection_editor",
+        transitionSpec = { androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(200)).togetherWith(androidx.compose.animation.fadeOut(animationSpec = androidx.compose.animation.core.tween(200))) }
+    ) { targetSelection ->
+        when (targetSelection) {
+        is CanvasSelection.ComponentItem -> config.layers.getOrNull(targetSelection.index)?.let { layer ->
+            fun update(changed: WidgetLayer) = onConfigChange(config.copy(layers = config.layers.toMutableList().also { it[targetSelection.index] = changed }))
             fun removeLayer(copyFirst: Boolean) {
                 if (copyFirst) onCopy(EditorClipboard.Layer(layer))
                 val replacementId = config.layers.firstOrNull { it.id != layer.id }?.id ?: 0L
                 onConfigChange(config.copy(
-                    layers = config.layers.toMutableList().also { it.removeAt(selection.index) },
+                    layers = config.layers.toMutableList().also { it.removeAt(targetSelection.index) },
                     cities = config.cities.map { if (it.componentId == layer.id) it.copy(componentId = replacementId) else it },
                     texts = config.texts.map { if (it.componentId == layer.id) it.copy(componentId = replacementId) else it }
                 ))
@@ -560,10 +566,10 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 }
             }
         }
-        is CanvasSelection.CityItem -> config.cities.getOrNull(selection.index)?.let { city ->
-            var part by remember(selection.index) { mutableStateOf<CityPart?>(null) }
-            var replaceCity by remember(selection.index) { mutableStateOf(false) }
-            fun update(changed: City) = onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = changed }))
+        is CanvasSelection.CityItem -> config.cities.getOrNull(targetSelection.index)?.let { city ->
+            var part by remember(targetSelection.index) { mutableStateOf<CityPart?>(null) }
+            var replaceCity by remember(targetSelection.index) { mutableStateOf(false) }
+            fun update(changed: City) = onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[targetSelection.index] = changed }))
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -573,8 +579,8 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                             onPaste = onPaste,
                             locked = city.locked,
                             onLock = { update(city.copy(locked = !city.locked)) },
-                            onCut = { onCopy(EditorClipboard.CityValue(city)); onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
-                            onDelete = { onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
+                            onCut = { onCopy(EditorClipboard.CityValue(city)); onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(targetSelection.index) })); onClearSelection() },
+                            onDelete = { onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(targetSelection.index) })); onClearSelection() }
                         )
                         OrbitButton(
                             label = uiText("change_city"),
@@ -582,7 +588,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                             modifier = Modifier.fillMaxWidth(),
                             style = OrbitButtonStyle.Secondary,
                         )
-                        CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
+                        CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[targetSelection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
                         Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
                     }
                 }
@@ -610,7 +616,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 replaceCity = false
             }
         }
-        is CanvasSelection.TextItem -> config.texts.getOrNull(selection.index)?.let { item ->
+        is CanvasSelection.TextItem -> config.texts.getOrNull(targetSelection.index)?.let { item ->
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -619,25 +625,26 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                             onCopy = { onCopy(EditorClipboard.TextValue(item)) },
                             onPaste = onPaste,
                             locked = item.locked,
-                            onLock = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(locked = !item.locked) })) },
-                            onCut = { onCopy(EditorClipboard.TextValue(item)); onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
-                            onDelete = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
+                            onLock = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[targetSelection.index] = item.copy(locked = !item.locked) })) },
+                            onCut = { onCopy(EditorClipboard.TextValue(item)); onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(targetSelection.index) })); onClearSelection() },
+                            onDelete = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(targetSelection.index) })); onClearSelection() }
                         )
-                        CrystalTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
+                        CrystalTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[targetSelection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
                         Text(uiText("drag_text_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
                     }
                 }
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         SectionTitle(uiText("typography"))
-                        FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(font = value) })) }
-                        ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(color = value) })) }
-                        SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[selection.index] = item.copy(alpha = value) })) }
+                        FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[targetSelection.index] = item.copy(font = value) })) }
+                        ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[targetSelection.index] = item.copy(color = value) })) }
+                        SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[targetSelection.index] = item.copy(alpha = value) })) }
                     }
                 }
             }
         }
         null -> Text(uiText("select_hint"), style = MaterialTheme.typography.bodySmall)
+    }
     }
 }
 
