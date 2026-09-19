@@ -516,32 +516,47 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 ))
                 onClearSelection()
             }
-            CrystalPanel {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    EditorActionRow(
-                        onClear = onClearSelection,
-                        onCopy = { onCopy(EditorClipboard.Layer(layer)) },
-                        onPaste = onPaste,
-                        locked = layer.locked,
-                        onLock = { update(layer.copy(locked = !layer.locked)) },
-                        onCut = { removeLayer(true) },
-                        onDelete = { removeLayer(false) }
-                    )
-                    Text(uiText("drag_shape_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
-                    ShapePicker(layer.shape) { shape ->
-                        val natural = newWidgetLayer(shape)
-                        update(layer.copy(shape = shape, width = natural.width, height = natural.height, x = 0f, y = 0f))
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        EditorActionRow(
+                            onClear = onClearSelection,
+                            onCopy = { onCopy(EditorClipboard.Layer(layer)) },
+                            onPaste = onPaste,
+                            locked = layer.locked,
+                            onLock = { update(layer.copy(locked = !layer.locked)) },
+                            onCut = { removeLayer(true) },
+                            onDelete = { removeLayer(false) }
+                        )
+                        Text(uiText("drag_shape_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
                     }
-                    DayNightPaletteField(layer.dayColor, layer.nightColor) { day, night -> update(layer.copy(dayColor = day, nightColor = night)) }
-                    Text(uiText("outline_light"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                    SliderRow(uiText("outline_width"), layer.borderWidth, 0f..6f) { update(layer.copy(borderWidth = it)) }
-                    SliderRow(uiText("outline_opacity"), layer.borderOpacity, 0f..1f) { update(layer.copy(borderOpacity = it)) }
-                    SliderRow(uiText("ambient_glow"), layer.softness, 0f..48f) { update(layer.copy(softness = it)) }
-                    SliderRow(uiText("glow_strength"), layer.glowOpacity, 0f..0.45f) { update(layer.copy(glowOpacity = it)) }
-                    Text(uiText("depth"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                    SliderRow(uiText("shadow_spread"), layer.shadow, 0f..32f) { update(layer.copy(shadow = it)) }
-                    SliderRow(uiText("shadow_opacity"), layer.shadowOpacity, 0f..0.4f) { update(layer.copy(shadowOpacity = it)) }
-                    SliderRow(uiText("shadow_offset"), layer.shadowYOffset, -8f..16f) { update(layer.copy(shadowYOffset = it)) }
+                }
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SectionTitle(uiText("shape_and_color"))
+                        ShapePicker(layer.shape) { shape ->
+                            val natural = newWidgetLayer(shape)
+                            update(layer.copy(shape = shape, width = natural.width, height = natural.height, x = 0f, y = 0f))
+                        }
+                        DayNightPaletteField(layer.dayColor, layer.nightColor) { day, night -> update(layer.copy(dayColor = day, nightColor = night)) }
+                    }
+                }
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SectionTitle(uiText("outline_light"))
+                        SliderRow(uiText("outline_width"), layer.borderWidth, 0f..6f) { update(layer.copy(borderWidth = it)) }
+                        SliderRow(uiText("outline_opacity"), layer.borderOpacity, 0f..1f) { update(layer.copy(borderOpacity = it)) }
+                        SliderRow(uiText("ambient_glow"), layer.softness, 0f..48f) { update(layer.copy(softness = it)) }
+                        SliderRow(uiText("glow_strength"), layer.glowOpacity, 0f..0.45f) { update(layer.copy(glowOpacity = it)) }
+                    }
+                }
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SectionTitle(uiText("depth"))
+                        SliderRow(uiText("shadow_spread"), layer.shadow, 0f..32f) { update(layer.copy(shadow = it)) }
+                        SliderRow(uiText("shadow_opacity"), layer.shadowOpacity, 0f..0.4f) { update(layer.copy(shadowOpacity = it)) }
+                        SliderRow(uiText("shadow_offset"), layer.shadowYOffset, -8f..16f) { update(layer.copy(shadowYOffset = it)) }
+                    }
                 }
             }
         }
@@ -549,30 +564,39 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             var part by remember(selection.index) { mutableStateOf<CityPart?>(null) }
             var replaceCity by remember(selection.index) { mutableStateOf(false) }
             fun update(changed: City) = onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = changed }))
-            CrystalPanel { Column {
-                EditorActionRow(
-                    onClear = onClearSelection,
-                    onCopy = { onCopy(EditorClipboard.CityValue(city)) },
-                    onPaste = onPaste,
-                    locked = city.locked,
-                    onLock = { update(city.copy(locked = !city.locked)) },
-                    onCut = { onCopy(EditorClipboard.CityValue(city)); onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
-                    onDelete = { onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
-                )
-                OrbitButton(
-                    label = uiText("change_city"),
-                    onClick = { replaceCity = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    style = OrbitButtonStyle.Secondary,
-                )
-                CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
-                Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
-                EditableDisplayRow(uiText("city_name"), true, null, onEdit = { part = CityPart.NAME })
-                EditableDisplayRow(uiText("show_time"), city.showTime, { value -> update(city.copy(showTime = value)) }, { part = CityPart.TIME })
-                EditableDisplayRow(uiText("show_date"), city.showDate, { value -> update(city.copy(showDate = value)) }, { part = CityPart.DATE })
-                EditableDisplayRow(uiText("show_country"), city.showCountry, { value -> update(city.copy(showCountry = value)) }, { part = CityPart.NAME })
-                EditableDisplayRow(uiText("show_solar"), city.showSolar, { value -> update(city.copy(showSolar = value)) }, { part = CityPart.SOLAR })
-            } }
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        EditorActionRow(
+                            onClear = onClearSelection,
+                            onCopy = { onCopy(EditorClipboard.CityValue(city)) },
+                            onPaste = onPaste,
+                            locked = city.locked,
+                            onLock = { update(city.copy(locked = !city.locked)) },
+                            onCut = { onCopy(EditorClipboard.CityValue(city)); onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
+                            onDelete = { onConfigChange(config.copy(cities = config.cities.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
+                        )
+                        OrbitButton(
+                            label = uiText("change_city"),
+                            onClick = { replaceCity = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            style = OrbitButtonStyle.Secondary,
+                        )
+                        CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
+                        Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
+                    }
+                }
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SectionTitle(uiText("city_display"))
+                        EditableDisplayRow(uiText("city_name"), true, null, onEdit = { part = CityPart.NAME })
+                        EditableDisplayRow(uiText("show_time"), city.showTime, { value -> update(city.copy(showTime = value)) }, { part = CityPart.TIME })
+                        EditableDisplayRow(uiText("show_date"), city.showDate, { value -> update(city.copy(showDate = value)) }, { part = CityPart.DATE })
+                        EditableDisplayRow(uiText("show_country"), city.showCountry, { value -> update(city.copy(showCountry = value)) }, { part = CityPart.NAME })
+                        EditableDisplayRow(uiText("show_solar"), city.showSolar, { value -> update(city.copy(showSolar = value)) }, { part = CityPart.SOLAR })
+                    }
+                }
+            }
             if (part != null) CityPartDialog(part!!, city, config.use24Hour, onDismiss = { part = null }, onChange = { update(it) })
             if (replaceCity) CityPicker(onDismiss = { replaceCity = false }) { picked ->
                 update(picked.copy(
@@ -587,22 +611,31 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             }
         }
         is CanvasSelection.TextItem -> config.texts.getOrNull(selection.index)?.let { item ->
-            CrystalPanel { Column {
-                EditorActionRow(
-                    onClear = onClearSelection,
-                    onCopy = { onCopy(EditorClipboard.TextValue(item)) },
-                    onPaste = onPaste,
-                    locked = item.locked,
-                    onLock = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(locked = !item.locked) })) },
-                    onCut = { onCopy(EditorClipboard.TextValue(item)); onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
-                    onDelete = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
-                )
-                CrystalTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
-                FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(font = value) })) }
-                ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(color = value) })) }
-                SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[selection.index] = item.copy(alpha = value) })) }
-                Text(uiText("drag_text_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
-            } }
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        EditorActionRow(
+                            onClear = onClearSelection,
+                            onCopy = { onCopy(EditorClipboard.TextValue(item)) },
+                            onPaste = onPaste,
+                            locked = item.locked,
+                            onLock = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(locked = !item.locked) })) },
+                            onCut = { onCopy(EditorClipboard.TextValue(item)); onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() },
+                            onDelete = { onConfigChange(config.copy(texts = config.texts.toMutableList().also { it.removeAt(selection.index) })); onClearSelection() }
+                        )
+                        CrystalTextField(item.content, { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(content = value.take(80)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("text_content")) })
+                        Text(uiText("drag_text_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
+                    }
+                }
+                CrystalPanel {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SectionTitle(uiText("typography"))
+                        FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(font = value) })) }
+                        ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(color = value) })) }
+                        SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[selection.index] = item.copy(alpha = value) })) }
+                    }
+                }
+            }
         }
         null -> Text(uiText("select_hint"), style = MaterialTheme.typography.bodySmall)
     }
