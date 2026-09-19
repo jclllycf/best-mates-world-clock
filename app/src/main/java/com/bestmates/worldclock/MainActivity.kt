@@ -527,7 +527,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                         onCut = { removeLayer(true) },
                         onDelete = { removeLayer(false) }
                     )
-                    Text(uiText("drag_shape_hint"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(uiText("drag_shape_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
                     ShapePicker(layer.shape) { shape ->
                         val natural = newWidgetLayer(shape)
                         update(layer.copy(shape = shape, width = natural.width, height = natural.height, x = 0f, y = 0f))
@@ -566,7 +566,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                     style = OrbitButtonStyle.Secondary,
                 )
                 CrystalTextField(city.nickname, { nickname -> onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[selection.index] = city.copy(nickname = nickname.take(30)) })) }, Modifier.fillMaxWidth(), label = { Text(uiText("display_name_hint")) }, singleLine = true)
-                Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(uiText("drag_city_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
                 EditableDisplayRow(uiText("city_name"), true, null, onEdit = { part = CityPart.NAME })
                 EditableDisplayRow(uiText("show_time"), city.showTime, { value -> update(city.copy(showTime = value)) }, { part = CityPart.TIME })
                 EditableDisplayRow(uiText("show_date"), city.showDate, { value -> update(city.copy(showDate = value)) }, { part = CityPart.DATE })
@@ -601,7 +601,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 FontField(uiText("font"), item.font, item.content.ifBlank { "Aa 12:34" }) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(font = value) })) }
                 ColorField(uiText("text_color"), item.color) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { it[selection.index] = item.copy(color = value) })) }
                 SliderRow(uiText("opacity"), item.alpha, 0f..1f) { value -> onConfigChange(config.copy(texts = config.texts.toMutableList().also { list -> list[selection.index] = item.copy(alpha = value) })) }
-                Text(uiText("drag_text_hint"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(uiText("drag_text_hint"), style = MaterialTheme.typography.bodySmall, color = BestMatesDesign.colors.textSecondary)
             } }
         }
         null -> Text(uiText("select_hint"), style = MaterialTheme.typography.bodySmall)
@@ -774,13 +774,13 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawProductionPin(t
 }
 
 @Composable internal fun ProductionPinStudy(artworkSize: Dp) {
-    val tint=MaterialTheme.colorScheme.onSurface
+    val tint=BestMatesDesign.colors.textPrimary
     Canvas(Modifier.size(artworkSize)) { drawProductionPin(tint) }
 }
 
 /** The exact Orbit Rotate the user identified in Future canvas language. */
 @Composable internal fun ProductionRotateStudy(artworkSize: Dp) {
-    Icon(OrbitIcons.Rotate,"Rotate",tint=MaterialTheme.colorScheme.onSurface,modifier=Modifier.size(artworkSize))
+    Icon(OrbitIcons.Rotate,"Rotate",tint=BestMatesDesign.colors.textPrimary,modifier=Modifier.size(artworkSize))
 }
 
 /** Debug review bridge to actual production buttons; never saves a project. */
@@ -987,11 +987,11 @@ private val DAY_NIGHT_PALETTES = listOf(
 @Composable private fun PalettePair(day: Long, night: Long) {
     Row(horizontalArrangement = Arrangement.spacedBy(7.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.size(32.dp).clip(RoundedCornerShape(16.dp)).background(Color(day)).border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)))
+            Box(Modifier.size(32.dp).clip(RoundedCornerShape(16.dp)).background(Color(day)).border(1.dp, BestMatesDesign.colors.borderSubtle, RoundedCornerShape(16.dp)))
             Text("D ${((day ushr 24) and 0xFF) * 100 / 255}%", fontSize = 9.sp)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.size(32.dp).clip(RoundedCornerShape(16.dp)).background(Color(night)).border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)))
+            Box(Modifier.size(32.dp).clip(RoundedCornerShape(16.dp)).background(Color(night)).border(1.dp, BestMatesDesign.colors.borderSubtle, RoundedCornerShape(16.dp)))
             Text("N ${((night ushr 24) and 0xFF) * 100 / 255}%", fontSize = 9.sp)
         }
     }
@@ -999,7 +999,7 @@ private val DAY_NIGHT_PALETTES = listOf(
 @Composable private fun ColorField(label:String,value:Long,change:(Long)->Unit){
     var open by remember { mutableStateOf(false) }
     CrystalPickerRow(onClick = { open = true }) {
-            Box(Modifier.size(34.dp).clip(RoundedCornerShape(17.dp)).background(Color(value)).border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(17.dp)))
+            Box(Modifier.size(34.dp).clip(RoundedCornerShape(17.dp)).background(Color(value)).border(1.dp, BestMatesDesign.colors.borderControl, RoundedCornerShape(17.dp)))
             Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(label, fontWeight = FontWeight.Medium); Text(uiText("open_color"), style = MaterialTheme.typography.bodySmall) }
             Text(uiText("choose"))
     }
