@@ -146,7 +146,7 @@ object BackgroundRenderer {
                 lineTo(r.right, r.bottom - corner); quadTo(r.right, r.bottom, r.right - corner, r.bottom)
                 lineTo(r.left + corner, r.bottom); quadTo(r.left, r.bottom, r.left, r.bottom - corner); close()
             }
-            WidgetShape.CAPSULE -> addRoundRect(r, minOf(r.width(), r.height()) * .48f, minOf(r.width(), r.height()) * .48f, Path.Direction.CW)
+            WidgetShape.CAPSULE -> addRoundRect(r, minOf(r.width(), r.height()) * .50f, minOf(r.width(), r.height()) * .50f, Path.Direction.CW)
             WidgetShape.CIRCLE -> addOval(r, Path.Direction.CW)
             WidgetShape.DIAMOND -> {
                 moveTo(r.centerX(), r.top)
@@ -192,8 +192,8 @@ object BackgroundRenderer {
                 close()
             }
             WidgetShape.TICKET -> {
-                val corner = minOf(r.width(), r.height()) * .13f
-                val notch = minOf(r.width(), r.height()) * .095f
+                val corner = minOf(r.width(), r.height()) * .14f
+                val notch = minOf(r.width(), r.height()) * .12f
                 moveTo(r.left + corner, r.top); lineTo(r.right - corner, r.top); quadTo(r.right, r.top, r.right, r.top + corner)
                 lineTo(r.right, r.centerY() - notch); cubicTo(r.right - notch, r.centerY() - notch, r.right - notch, r.centerY() + notch, r.right, r.centerY() + notch)
                 lineTo(r.right, r.bottom - corner); quadTo(r.right, r.bottom, r.right - corner, r.bottom); lineTo(r.left + corner, r.bottom); quadTo(r.left, r.bottom, r.left, r.bottom - corner)
@@ -201,19 +201,19 @@ object BackgroundRenderer {
                 lineTo(r.left, r.top + corner); quadTo(r.left, r.top, r.left + corner, r.top); close()
             }
             WidgetShape.WAVE -> {
-                // Soft flag silhouette with shallow waves, kept full-bleed in its bounds.
+                // Soft flag silhouette with visible undulation, full-bleed in its bounds.
                 val radius = minOf(r.width(), r.height()) * .10f
-                val pole = r.left + r.width() * .13f
+                val pole = r.left + r.width() * .10f
                 moveTo(pole, r.top + radius)
                 quadTo(pole, r.top, pole + radius, r.top)
-                cubicTo(r.left + r.width() * .36f, r.top + r.height() * .03f, r.left + r.width() * .58f, r.top + r.height() * .18f, r.right - radius, r.top + r.height() * .10f)
-                quadTo(r.right, r.top + r.height() * .10f, r.right, r.top + r.height() * .18f)
-                cubicTo(r.left + r.width() * .66f, r.top + r.height() * .30f, r.left + r.width() * .40f, r.top + r.height() * .15f, pole, r.top + r.height() * .28f)
+                cubicTo(r.left + r.width() * .34f, r.top + r.height() * .04f, r.left + r.width() * .60f, r.top + r.height() * .20f, r.right - radius, r.top + r.height() * .12f)
+                quadTo(r.right, r.top + r.height() * .12f, r.right, r.top + r.height() * .20f)
+                cubicTo(r.left + r.width() * .64f, r.top + r.height() * .32f, r.left + r.width() * .38f, r.top + r.height() * .14f, pole, r.top + r.height() * .30f)
                 lineTo(pole, r.bottom - radius)
                 quadTo(pole, r.bottom, pole + radius, r.bottom)
-                cubicTo(r.left + r.width() * .36f, r.bottom - r.height() * .03f, r.left + r.width() * .58f, r.bottom - r.height() * .18f, r.right - radius, r.bottom - r.height() * .10f)
-                quadTo(r.right, r.bottom - r.height() * .10f, r.right, r.bottom - r.height() * .18f)
-                cubicTo(r.left + r.width() * .66f, r.bottom - r.height() * .30f, r.left + r.width() * .40f, r.bottom - r.height() * .15f, pole, r.bottom - r.height() * .28f)
+                cubicTo(r.left + r.width() * .34f, r.bottom - r.height() * .04f, r.left + r.width() * .60f, r.bottom - r.height() * .20f, r.right - radius, r.bottom - r.height() * .12f)
+                quadTo(r.right, r.bottom - r.height() * .12f, r.right, r.bottom - r.height() * .20f)
+                cubicTo(r.left + r.width() * .64f, r.bottom - r.height() * .32f, r.left + r.width() * .38f, r.bottom - r.height() * .14f, pole, r.bottom - r.height() * .30f)
                 close()
             }
         }
