@@ -171,7 +171,7 @@ fun EditorControlShelf(
 ) {
     val colors = BestMatesDesign.colors
     val dimensions = BestMatesDesign.dimensions
-    val shape = MaterialTheme.shapes.large
+    val shape = androidx.compose.foundation.shape.RoundedCornerShape(dimensions.radii.radiusLg)
     FlowRow(
         modifier = modifier
             .fillMaxWidth()

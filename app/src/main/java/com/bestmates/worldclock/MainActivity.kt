@@ -47,6 +47,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SizeTransform
@@ -456,7 +457,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             }, onGestureStart = ::beginGesture, onGestureFinished = ::finishGesture,
                 selection = selection, onSelect = { selection = it }, snapEnabled = snapEnabled, guidesVisible = guidesVisible, emptyCanvasText = uiText("empty_canvas"))
 
-            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).animateContentSize(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             SelectedElementEditor(config, selection, onConfigChange = ::applyChange, onClearSelection = { selection = null }, onCopy = { clipboard = it }, onPaste = ::pasteClipboard)
 
             SectionTitle(uiText("selected_cities"))
