@@ -523,7 +523,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
                 ))
                 onClearSelection()
             }
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         EditorActionRow(
@@ -571,7 +571,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             var part by remember(targetSelection.index) { mutableStateOf<CityPart?>(null) }
             var replaceCity by remember(targetSelection.index) { mutableStateOf(false) }
             fun update(changed: City) = onConfigChange(config.copy(cities = config.cities.toMutableList().also { it[targetSelection.index] = changed }))
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         EditorActionRow(
@@ -618,7 +618,7 @@ private enum class CityPart { NAME, TIME, DATE, SOLAR }
             }
         }
         is CanvasSelection.TextItem -> config.texts.getOrNull(targetSelection.index)?.let { item ->
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CrystalPanel {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         EditorActionRow(
