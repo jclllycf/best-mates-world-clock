@@ -749,9 +749,11 @@ private val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIco
             Column(Modifier.weight(1f)) { Text(label, style = MaterialTheme.typography.bodySmall); Text(sample, fontFamily = textFont(choice.id), fontSize = 20.sp, maxLines = 2, lineHeight = 25.sp, overflow = TextOverflow.Ellipsis) }
             Text(uiText("choose"))
     }
-    if (open) CrystalDialog(onDismissRequest = { open = false }, title = { Text(uiText("choose_font")) }, confirmButton = { TextButton(onClick = { open = false }) { Text(uiText("done")) } }, text = {
+    if (open) {
+        val displayFonts = remember(value) { if (VISIBLE_FONTS.any { it.id == value }) VISIBLE_FONTS else listOfNotNull(FONT_CHOICES.firstOrNull { it.id == value }) + VISIBLE_FONTS }
+        CrystalDialog(onDismissRequest = { open = false }, title = { Text(uiText("choose_font")) }, confirmButton = { TextButton(onClick = { open = false }) { Text(uiText("done")) } }, text = {
         LazyColumn(Modifier.heightIn(max = 540.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            items(VISIBLE_FONTS.chunked(2)) { row -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            items(displayFonts.chunked(2)) { row -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                 row.forEach { item -> CrystalChoiceTile(selected = item.id == value, selectedDescription = uiText("selected"), onClick = { onChange(item.id); open = false }, modifier = Modifier.weight(1f).height(82.dp)) {
                     Box(Modifier.fillMaxSize().padding(9.dp), contentAlignment = Alignment.Center) { Text(sample, fontFamily = textFont(item.id), fontSize = 18.sp, lineHeight = 23.sp, maxLines = 2, overflow = TextOverflow.Ellipsis) }
                 } }; if(row.size==1) Spacer(Modifier.weight(1f))
@@ -759,6 +761,7 @@ private val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIco
         }
     })
 }
+    }
 
 @Composable private fun CityPartDialog(part: CityPart, city: City, use24Hour: Boolean, onDismiss: () -> Unit, onChange: (City) -> Unit) {
     val now = remember(city.zoneId, use24Hour) { runCatching { ZonedDateTime.now(java.time.ZoneId.of(city.zoneId)) }.getOrNull() }
