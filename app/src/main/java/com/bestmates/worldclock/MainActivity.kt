@@ -787,11 +787,14 @@ private val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIco
     CrystalPickerRow(onClick={open=true}) {
         SolarIconSample(true, selected, moon, color, 34f); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)){Text(uiText("sun_library"),style=MaterialTheme.typography.bodySmall);Text(uiText("browse_icons"),fontWeight=FontWeight.Bold)}; Text(uiText("choose"))
     }
-    if(open) CrystalDialog(onDismissRequest={open=false},title={Text(uiText("sun_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
-        LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(SUN_ICON_LIBRARY.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
+    if(open) {
+        val displaySuns = remember(selected) { if (SUN_ICON_LIBRARY.contains(selected)) SUN_ICON_LIBRARY else listOf(selected) + SUN_ICON_LIBRARY }
+        CrystalDialog(onDismissRequest={open=false},title={Text(uiText("sun_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
+        LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(displaySuns.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
             CrystalChoiceTile(selected=style==selected,selectedDescription=uiText("selected"),onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(true,style,moon,color,43f)}}
         };repeat(4-row.size){Spacer(Modifier.weight(1f))}}}}
     })
+    }
 }
 
 @Composable private fun MoonIconLibraryField(sun: SunIconStyle, selected: MoonIconStyle, color: Long, onChange: (MoonIconStyle) -> Unit) {
@@ -799,11 +802,14 @@ private val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIco
     CrystalPickerRow(onClick={open=true}) {
         SolarIconSample(false, sun, selected, color, 34f); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)){Text(uiText("moon_library"),style=MaterialTheme.typography.bodySmall);Text(uiText("browse_icons"),fontWeight=FontWeight.Bold)}; Text(uiText("choose"))
     }
-    if(open) CrystalDialog(onDismissRequest={open=false},title={Text(uiText("moon_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
-        LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(MOON_ICON_LIBRARY.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
+    if(open) {
+        val displayMoons = remember(selected) { if (MOON_ICON_LIBRARY.contains(selected)) MOON_ICON_LIBRARY else listOf(selected) + MOON_ICON_LIBRARY }
+        CrystalDialog(onDismissRequest={open=false},title={Text(uiText("moon_library"))},confirmButton={TextButton(onClick={open=false}){Text(uiText("done"))}},text={
+        LazyColumn(Modifier.heightIn(max=540.dp), verticalArrangement=Arrangement.spacedBy(7.dp)){items(displayMoons.chunked(4)){row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(7.dp)){row.forEach{style->
             CrystalChoiceTile(selected=style==selected,selectedDescription=uiText("selected"),onClick={onChange(style);open=false},modifier=Modifier.weight(1f).aspectRatio(1f)){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){SolarIconSample(false,sun,style,color,43f)}}
         };repeat(4-row.size){Spacer(Modifier.weight(1f))}}}}
     })
+    }
 }
 
 // Shared artwork only. Production Pin proportions and 20dp stroke are unchanged.
