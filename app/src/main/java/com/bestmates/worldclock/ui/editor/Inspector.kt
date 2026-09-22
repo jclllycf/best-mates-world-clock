@@ -211,11 +211,11 @@ internal val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIc
 
 // Shared artwork only. Production Pin proportions and 20dp stroke are unchanged.
 internal fun androidx.compose.ui.graphics.drawscope.DrawScope.drawProductionPin(tint: Color) {
-    val stroke = this@pointerInput.size.width * .08f
+    val stroke = size.width * .08f
     val cap = androidx.compose.ui.graphics.StrokeCap.Round
-    fun p(x:Float,y:Float) = Offset(this@pointerInput.size.width*x,this@pointerInput.size.height*y)
+    fun p(x:Float,y:Float) = Offset(size.width*x,size.height*y)
     fun line(a:Offset,b:Offset) = drawLine(tint,a,b,stroke,cap=cap)
-    drawRoundRect(tint,p(.33f,.12f),androidx.compose.ui.geometry.Size(this@pointerInput.size.width*.34f,this@pointerInput.size.height*.20f),androidx.compose.ui.geometry.CornerRadius(this@pointerInput.size.width*.08f),style=Stroke(stroke,cap=cap,join=androidx.compose.ui.graphics.StrokeJoin.Round))
+    drawRoundRect(tint,p(.33f,.12f),androidx.compose.ui.geometry.Size(size.width*.34f,size.height*.20f),androidx.compose.ui.geometry.CornerRadius(size.width*.08f),style=Stroke(stroke,cap=cap,join=androidx.compose.ui.graphics.StrokeJoin.Round))
     line(p(.37f,.33f),p(.28f,.60f)); line(p(.63f,.33f),p(.72f,.60f))
     line(p(.28f,.60f),p(.72f,.60f)); line(p(.50f,.60f),p(.50f,.88f))
 }
@@ -307,7 +307,7 @@ internal fun shapeRecommendedSizes(shape: WidgetShape, count: Int): List<Pair<In
        away from the actual widget geometry. */
     /* Canvas(modifier) {
         val stroke = Stroke(width = 3.0f, cap = androidx.compose.ui.graphics.StrokeCap.Round, join = androidx.compose.ui.graphics.StrokeJoin.Round)
-        val w = this@pointerInput.size.width; val h = this@pointerInput.size.height
+        val w = size.width; val h = size.height
         val p = androidx.compose.ui.graphics.Path()
         when (shape) {
             WidgetShape.ROUNDED -> drawRoundRect(color, topLeft=Offset(w*.04f,h*.08f), size=androidx.compose.ui.geometry.Size(w*.92f,h*.84f), cornerRadius=androidx.compose.ui.geometry.CornerRadius(h*.18f), style=stroke)
@@ -438,16 +438,16 @@ internal val DAY_NIGHT_PALETTES = listOf(
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(Modifier.size(252.dp).pointerInput(Unit) {
                 fun update(position: Offset) {
-                    val center = Offset(this@pointerInput.size.width / 2f, this@pointerInput.size.height / 2f)
+                    val center = Offset(this.size.width / 2f, this.size.height / 2f)
                     val dx = position.x - center.x; val dy = position.y - center.y
                     hue = ((Math.toDegrees(atan2(dy.toDouble(), dx.toDouble())).toFloat() + 360f) % 360f)
-                    saturation = (sqrt(dx * dx + dy * dy) / (min(this@pointerInput.size.width, this@pointerInput.size.height) / 2f)).coerceIn(0f, 1f)
+                    saturation = (sqrt(dx * dx + dy * dy) / (min(this.size.width.toFloat(), this.size.height.toFloat()) / 2f)).coerceIn(0f, 1f)
                 }
                 detectDragGestures(onDragStart = { update(it) }) { change, _ -> update(change.position); change.consume() }
             }) {
                 Image(wheel, null, Modifier.fillMaxSize())
                 Canvas(Modifier.fillMaxSize()) {
-                    val radius = min(this@pointerInput.size.width, this@pointerInput.size.height) / 2f - 7f
+                    val radius = min(this.size.width.toFloat(), this.size.height.toFloat()) / 2f - 7f
                     val center = this.center
                 val angle = Math.toRadians(hue.toDouble())
                 val marker = Offset(center.x + cos(angle).toFloat() * radius * saturation, center.y + sin(angle).toFloat() * radius * saturation)
