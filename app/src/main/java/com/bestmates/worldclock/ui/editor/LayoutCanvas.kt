@@ -477,11 +477,12 @@ private fun freeCanvasCenter(x: Float, y: Float, halfWidth: Float, halfHeight: F
 
 
 @Composable private fun ResizeHandle(modifier: Modifier = Modifier) {
+    val designColors = com.bestmates.worldclock.ui.theme.BestMatesDesign.colors
     Canvas(modifier.size(28.dp)) {
         val center=Offset(size.width*.73f,size.height*.73f)
-        drawCircle(Color(0xEAF8F4FA),size.width*.26f,center)
-        drawCircle(Color(0x667E658F),size.width*.26f,center,style=Stroke(.6.dp.toPx()))
-        val c = Color(0xFF796288).copy(alpha = .75f)
+        drawCircle(designColors.surfaceRaised, size.width*.26f, center)
+        drawCircle(designColors.borderControl, size.width*.26f, center, style = Stroke(.6.dp.toPx()))
+        val c = designColors.textSecondary.copy(alpha = .75f)
         val stroke = 1.25.dp.toPx()
         drawLine(c, Offset(size.width*.55f,size.height*.88f), Offset(size.width*.88f,size.height*.55f), stroke)
         drawLine(c, Offset(size.width*.70f,size.height*.90f), Offset(size.width*.90f,size.height*.70f), stroke)
@@ -572,8 +573,8 @@ private fun RotationHandleUnified(
             },
         contentAlignment = Alignment.Center
           ) {
-          Box(Modifier.size(24.dp).background(androidx.compose.ui.graphics.Color(0xEAF8F4FA), androidx.compose.foundation.shape.CircleShape).border(.6.dp, androidx.compose.ui.graphics.Color(0x667E658F), androidx.compose.foundation.shape.CircleShape), contentAlignment = Alignment.Center) {
-              Icon(OrbitIcons.Rotate, null, tint = androidx.compose.ui.graphics.Color(0xFF796288).copy(alpha = .9f), modifier = Modifier.size(15.dp))
+          Box(Modifier.size(24.dp).background(BestMatesDesign.colors.surfaceRaised, androidx.compose.foundation.shape.CircleShape).border(.6.dp, BestMatesDesign.colors.borderControl, androidx.compose.foundation.shape.CircleShape), contentAlignment = Alignment.Center) {
+              Icon(OrbitIcons.Rotate, null, tint = BestMatesDesign.colors.textSecondary.copy(alpha = .9f), modifier = Modifier.size(15.dp))
           }
       }
 }
