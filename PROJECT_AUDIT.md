@@ -34,8 +34,8 @@ The Best Mates repository is a compact, single-module Android project (12 Kotlin
 | **Dead code in MainActivity.kt** | 🟢 Easy cleanup | 3 dead private functions, 30 lines of commented-out code, 6 unused imports. |
 | **Magic values** | 🟡 Technical debt | 57+ `Color(...)` literals, 131+ raw `.dp` values, duplicated constants across files. |
 | **Stale documentation** | 🟢 Easy fix | `PROJECT_HANDOFF.md` has outdated rotation info superseded by code changes. |
-| **Missing .gitignore entries** | 🟢 Easy fix | `/2/` directory and `.agents/` not ignored (leading to tracked reference images). |
-| **No tests** | 🟡 Gap | No test directories, no test dependencies, no CI/CD. |
+| **Missing .gitignore entries** | 🟢 Easy fix | `/2/` directory not ignored (leading to tracked reference images). `/.agents/` is now tracked for ECC. |
+| **No tests** | 🟠 Gap | No test directories, no test dependencies, no CI/CD. |
 
 **Estimated totals:**
 - Cleanup candidates: **30+**
@@ -289,7 +289,7 @@ No unit tests, no instrumented tests, no CI pipeline. The only verification is m
 | # | Item | Description | Risk |
 |---|---|---|---|
 | SC-1 | Add `/2/` to `.gitignore` | Matches existing `/1/` and `/KWGT/` patterns | None |
-| SC-2 | Add `/.agents/` to `.gitignore` | Empty directory, no purpose | None |
+| SC-2 | Track `/.agents/` in `.gitignore` | Initially empty, but now contains ECC 2.0 capabilities | None |
 | SC-3 | Delete untracked `release-assets/BestMates-v0.8.0-debug.apk` | 30 MB local disk file, not tracked in git, duplicate of v0.1.0 content | None (disk only) |
 | SC-4 | Update stale rotation info in `PROJECT_HANDOFF.md` | Sections 5 & 10 claim `[-180,180]` clamp; commits `31c3ebb`/`60a9bb5` implemented unlimited rotation | Documentation accuracy |
 | SC-5 | Delete 21 root-level uiautomator XML dumps + solar_scroll.png | ~800 KB of adb test captures; gitignored, never referenced | None (disk only) |
@@ -350,7 +350,7 @@ Execute in this order to minimize risk:
 
 ### Phase B — Safe git changes (code cleanup, no behavioral impact)
 
-3. Add `/2/` and `/.agents/` to `.gitignore` (SC-1, SC-2)
+3. Add `/2/` to `.gitignore` and ensure `/.agents/` is tracked for ECC capabilities (SC-1, SC-2)
 4. Remove 7 unused imports from `MainActivity.kt` and `WorldClockWidgetProvider.kt` (SD-7, SD-6)
 5. Remove dead `RotationHandle` function (SD-1)
 6. Remove dead `shapeRecommendedSizes` function (SD-2)
