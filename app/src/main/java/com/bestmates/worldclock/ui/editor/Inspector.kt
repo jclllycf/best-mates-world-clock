@@ -133,6 +133,7 @@ internal fun EditorActionButton(
     }
 }
 
+// Curated display list. Legacy styles like LUCIDE_SUN are intentionally excluded but remain compatible if saved.
 internal val SUN_ICON_LIBRARY = listOf(SunIconStyle.BM_SUN_SIMPLE_FILL, SunIconStyle.BM_SUN_SIMPLE_ROUND, SunIconStyle.BM_SUN_CLOUD_FILL, SunIconStyle.BM_SUN_HORIZON_FILL, SunIconStyle.BM_SUN_WAVE_FILL, SunIconStyle.BM_SUN_MIST)
 internal val MOON_ICON_LIBRARY = listOf(MoonIconStyle.BM_MOON_PLAIN_FILL, MoonIconStyle.BM_MOON_STARS_FILL, MoonIconStyle.BM_MOON_CLOUD_FILL, MoonIconStyle.BM_MOON_HORIZON_STARS, MoonIconStyle.BM_MOON_SLEEP_FILL, MoonIconStyle.BM_ISLAMIC_CRESCENT_STAR)
 
