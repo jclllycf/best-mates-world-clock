@@ -31,10 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bestmates.worldclock.ui.preview.*
-import com.bestmates.worldclock.BestMatesCanvasReview
-import com.bestmates.worldclock.BestMatesProductionToolbarReview
-import com.bestmates.worldclock.ProductionPinStudy
-import com.bestmates.worldclock.ProductionRotateStudy
 import com.bestmates.worldclock.ui.icons.OrbitIcons
 import com.bestmates.worldclock.ui.theme.BestMatesDesign
 
