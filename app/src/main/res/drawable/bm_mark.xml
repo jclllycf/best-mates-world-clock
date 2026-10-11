@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Best Mates mark cropped to its own bounds (x 32-76, y 32-76 of the icon grid). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <group
+        android:translateX="-32"
+        android:translateY="-32">
+        <path
+            android:fillColor="#FFF4EAD8"
+            android:pathData="M32.88,47.83 A22,22 0 1,1 52.98,75.97 A18,18 0 1,0 32.88,47.83 Z" />
+        <path
+            android:fillColor="#FFF2A93B"
+            android:pathData="M32,61 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0 Z" />
+    </group>
+</vector>

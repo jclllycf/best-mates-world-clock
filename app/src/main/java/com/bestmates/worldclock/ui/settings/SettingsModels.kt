@@ -1,17 +1,21 @@
 package com.bestmates.worldclock.ui.settings
 
-import com.bestmates.worldclock.ui.theme.BestMatesBrightnessMode
-import com.bestmates.worldclock.ui.theme.BestMatesVisualIdentity
+import com.bestmates.worldclock.ui.design.BmAccent
 
-/** Values intentionally keep the names used by the existing app_settings store. */
-enum class AppThemeStyle(
-    val label: String,
-    val identity: BestMatesVisualIdentity,
-) {
-    CLOUD("Cloud", BestMatesVisualIdentity.CLOUD),
-    DREAM("Dream", BestMatesVisualIdentity.DREAM),
-    MIDNIGHT("Midnight", BestMatesVisualIdentity.MIDNIGHT),
-    MONO("Mono", BestMatesVisualIdentity.MONO),
+/**
+ * Stored names are the historical `app_settings/app_theme` values. Since 0.4 they select
+ * the accent of the single Best Mates palette instead of four separate identities, so
+ * every existing preference still resolves.
+ */
+enum class AppThemeStyle(val accent: BmAccent) {
+    CLOUD(BmAccent.MARIGOLD),
+    DREAM(BmAccent.ROSE),
+    MIDNIGHT(BmAccent.IRIS),
+    MONO(BmAccent.GRAPHITE);
+
+    companion object {
+        fun from(value: String?) = entries.firstOrNull { it.name == value } ?: CLOUD
+    }
 }
 
 /** Native language names remain stable because they are used inside the language picker. */
@@ -29,17 +33,16 @@ enum class AppLanguage(val stored: String, val menuLabel: String) {
     }
 }
 
-enum class AppAppearanceMode(val stored: String, val brightness: BestMatesBrightnessMode) {
-    FOLLOW_SYSTEM("SYSTEM", BestMatesBrightnessMode.SYSTEM),
-    LIGHT("LIGHT", BestMatesBrightnessMode.LIGHT),
-    DARK("DARK", BestMatesBrightnessMode.DARK);
+enum class AppAppearanceMode(val stored: String) {
+    FOLLOW_SYSTEM("SYSTEM"),
+    LIGHT("LIGHT"),
+    DARK("DARK");
 
     companion object {
         fun from(value: String?): AppAppearanceMode? = entries.firstOrNull { it.stored == value }
     }
 }
 
-/** Missing appearance data keeps the exact pre-v0.3 identity-dependent behavior. */
+/** Missing appearance data keeps the exact pre-v0.3 identity-dependent behaviour. */
 fun legacyAppearanceFor(theme: AppThemeStyle): AppAppearanceMode =
     if (theme == AppThemeStyle.MIDNIGHT) AppAppearanceMode.DARK else AppAppearanceMode.LIGHT
-

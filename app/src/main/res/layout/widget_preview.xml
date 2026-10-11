@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget-picker preview: the brand mark with a live clock in Fraunces. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp">
+    android:padding="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -9,30 +11,34 @@
         android:background="@drawable/widget_preview_background"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="14dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="WORLD TIME"
-            android:textColor="#CCFFFFFF"
-            android:textSize="11sp" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/bm_mark" />
 
         <TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:format12Hour="h:mm a"
+            android:layout_marginTop="6dp"
+            android:fontFamily="sans-serif"
+            android:textFontWeight="300"
+            android:format12Hour="h:mm"
             android:format24Hour="HH:mm"
-            android:textColor="#FFFFFFFF"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:includeFontPadding="false"
+            android:textColor="#FFFFF6E8"
+            android:textSize="34sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Your cities"
-            android:textColor="#BFEDE9F2"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.14"
+            android:text="BEST MATES"
+            android:textColor="#B3FFF6E8"
             android:textSize="10sp" />
     </LinearLayout>
 </FrameLayout>

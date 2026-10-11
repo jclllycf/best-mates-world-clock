@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Best Mates widget: one scene bitmap plus live TextClock slots positioned by the shared scene layout. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_scene"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY" />
+
+    <FrameLayout android:id="@+id/clock_slot_1" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_2" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_3" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_4" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_5" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_6" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_7" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_8" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_9" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_10" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_11" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_12" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_13" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_14" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_15" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_16" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_17" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_18" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_19" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+    <FrameLayout android:id="@+id/clock_slot_20" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+</FrameLayout>

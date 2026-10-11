@@ -123,7 +123,7 @@ data class CustomText(
     val alpha: Float = 1f,
     val x: Float = 0f,
     val y: Float = 0f,
-    val font: String = "SANS",
+    val font: String = "bm.fraunces",
     val componentId: Long = 0L,
     val rotation: Float = 0f,
     val locked: Boolean = false
@@ -149,13 +149,13 @@ data class City(
     val dateColor: Long = 0xCCFFFFFF,
     val solarColor: Long = 0xFFEFE8F7,
     val iconStyle: SolarIconStyle = SolarIconStyle.LINE,
-    val nameFont: String = "SANS_ROUNDED",
-    val timeFont: String = "SANS_ROUNDED",
-    val dateFont: String = "SANS_LIGHT",
-    val sunStyle: SunIconStyle = SunIconStyle.LUCIDE_SUN,
-    val moonStyle: MoonIconStyle = MoonIconStyle.LUCIDE_MOON,
-    val sunColor: Long = 0xFFE8DFD2,
-    val moonColor: Long = 0xFFD9D5EA,
+    val nameFont: String = "bm.figtree",
+    val timeFont: String = "bm.fraunces",
+    val dateFont: String = "bm.figtree_light",
+    val sunStyle: SunIconStyle = SunIconStyle.BM_SUN_SIMPLE_FILL,
+    val moonStyle: MoonIconStyle = MoonIconStyle.BM_MOON_PLAIN_FILL,
+    val sunColor: Long = 0xFFFFD58A,
+    val moonColor: Long = 0xFFE4E2FF,
     val componentId: Long = 0L,
     val rotation: Float = 0f,
     val locked: Boolean = false
@@ -198,8 +198,18 @@ fun newWidgetLayer(shape: WidgetShape = WidgetShape.ROUNDED, index: Int = 0): Wi
     return WidgetLayer(shape = shape, width = width, height = height)
 }
 
+/** Current persisted schema. See ConfigStore for the migration ladder. */
+const val CURRENT_LAYOUT_VERSION = 9
+
+/**
+ * Design-board size of every project created before schema 9. Those projects were drawn on
+ * a square editor board roughly (screen width − 46dp) wide; 338dp is that board on the
+ * reference 384dp-wide phone, so legacy layouts keep their proportions and text scale.
+ */
+const val LEGACY_BOARD_DP = 338f
+
 data class WidgetConfig(
-    val layoutVersion: Int = 8,
+    val layoutVersion: Int = CURRENT_LAYOUT_VERSION,
     val shape: WidgetShape = WidgetShape.ROUNDED,
     val columns: Int = 4,
     val rows: Int = 4,
@@ -226,5 +236,12 @@ data class WidgetConfig(
     val autoSave: Boolean = false,
     val layers: List<WidgetLayer> = emptyList(),
     val texts: List<CustomText> = emptyList(),
-    val cities: List<City> = emptyList()
+    val cities: List<City> = emptyList(),
+    /** Design-board size in dp. Every launcher size scales this board uniformly. */
+    val boardWidthDp: Float = LEGACY_BOARD_DP,
+    val boardHeightDp: Float = LEGACY_BOARD_DP,
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L,
+    /** Editor-only preview backdrop identifier; never drawn on the real widget. */
+    val backdrop: String = "wallpaper",
 )

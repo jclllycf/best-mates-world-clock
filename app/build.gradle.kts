@@ -12,8 +12,8 @@ android {
         applicationId = "com.bestmates.worldclock"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.2.0"
+        versionCode = 10
+        versionName = "0.4.0"
     }
 
     buildFeatures { compose = true; buildConfig = true }
@@ -35,4 +35,6 @@ dependencies {
     implementation("com.caverock:androidsvg-aar:1.4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     testImplementation("junit:junit:4.13.2")
+    // Real org.json on the JVM test classpath so ConfigCodec migrations run against actual payloads.
+    testImplementation("org.json:json:20240303")
 }

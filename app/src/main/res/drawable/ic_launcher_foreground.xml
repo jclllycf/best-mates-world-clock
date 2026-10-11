@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Best Mates mark: a marigold sun cradled by a moonlit crescent. Day and night, together.
+    Crescent = circle O (54,54 r22) minus circle I (47,59 r18); arcs meet at their exact
+    intersections. The sun (45,61 r13) sits in the crescent's cup with an even ~2 unit gap.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFF4EAD8"
+        android:pathData="M32.88,47.83 A22,22 0 1,1 52.98,75.97 A18,18 0 1,0 32.88,47.83 Z" />
+    <path
+        android:fillColor="#FFF2A93B"
+        android:pathData="M32,61 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0 Z" />
+</vector>

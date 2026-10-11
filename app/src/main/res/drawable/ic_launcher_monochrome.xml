@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed-icon (Android 13+) silhouette of the Best Mates mark. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M32.88,47.83 A22,22 0 1,1 52.98,75.97 A18,18 0 1,0 32.88,47.83 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M32,61 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0 Z" />
+</vector>

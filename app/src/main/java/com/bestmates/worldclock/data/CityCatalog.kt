@@ -41,16 +41,23 @@ class CityCatalog(private val context: Context) {
         return database.rawQuery(sql, args).use(::readCities).distinctBy { it.geoId }
     }
 
-    fun searchEnglish(query: String): List<City> {
-        val clean = query.trim()
-        if (clean.length < 2 || clean.any { it.code > 127 }) return emptyList()
+    /**
+     * Searches English names and every GeoNames alternate name, so native scripts work
+     * (東京, 东京, Москва, القاهرة…). Latin queries need two characters; a single CJK
+     * character is already meaningful.
+     */
+    fun search(query: String): List<City> {
+        val clean = query.trim().replace("%", "").replace("_", "")
+        val nonLatin = clean.any { it.code > 127 }
+        if (clean.isEmpty() || (!nonLatin && clean.length < 2)) return emptyList()
         return database.rawQuery(
             "SELECT c.id,c.name,c.ascii_name,co.name,c.latitude,c.longitude,c.timezone " +
                 "FROM cities c JOIN countries co ON co.code=c.country_code " +
-                "WHERE c.ascii_name LIKE ? COLLATE NOCASE OR c.alternates LIKE ? COLLATE NOCASE " +
-                "ORDER BY CASE WHEN c.ascii_name=? COLLATE NOCASE THEN 0 ELSE 1 END,c.population DESC LIMIT 30",
-            arrayOf("$clean%", "%$clean%", clean)
-        ).use(::readCities).distinctBy { Triple(it.name.lowercase(), it.country, it.zoneId) }.take(20)
+                "WHERE c.ascii_name LIKE ? COLLATE NOCASE OR c.name LIKE ? COLLATE NOCASE OR c.alternates LIKE ? " +
+                "ORDER BY CASE WHEN c.ascii_name=? COLLATE NOCASE OR c.name=? THEN 0 WHEN c.ascii_name LIKE ? COLLATE NOCASE THEN 1 ELSE 2 END," +
+                "c.population DESC LIMIT 40",
+            arrayOf("$clean%", "$clean%", "%$clean%", clean, clean, "$clean%")
+        ).use(::readCities).distinctBy { Triple(it.name.lowercase(), it.country, it.zoneId) }.take(24)
     }
 
     private fun readCities(cursor: android.database.Cursor): List<City> = buildList {

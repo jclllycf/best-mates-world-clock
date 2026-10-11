@@ -33,3 +33,7 @@ app/build/
 !/design_refs/phase2d/
 !/design_refs/phase2d/**/
 !/design_refs/phase2d/**/.gitkeep
+
+# JVM crash dumps from local builds
+hs_err_pid*.log
+replay_pid*.log
