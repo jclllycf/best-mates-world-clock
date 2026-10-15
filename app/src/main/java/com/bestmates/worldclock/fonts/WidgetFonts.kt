@@ -7,7 +7,8 @@ import androidx.core.content.res.ResourcesCompat
 import com.bestmates.worldclock.R
 import java.util.concurrent.ConcurrentHashMap
 
-enum class FontCategory { LIVE, SANS, DISPLAY, SERIF, ROUNDED, MONO, HAND }
+/** Declaration order is the picker's section order; live system styles come last. */
+enum class FontCategory { SANS, SERIF, DISPLAY, ROUNDED, MONO, HAND, LIVE }
 
 /**
  * A typeface style usable on the widget.

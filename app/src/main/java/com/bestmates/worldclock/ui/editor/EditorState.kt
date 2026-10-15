@@ -30,7 +30,11 @@ const val MAX_TEXTS = 5
 class EditorState(initial: WidgetConfig) {
     var config by mutableStateOf(initial)
         private set
-    var selection by mutableStateOf<EditorSelection?>(null)
+    private var selectionState by mutableStateOf<EditorSelection?>(null)
+    /** Changing the selection commits any pending live edit (typing, a slider) first. */
+    var selection: EditorSelection?
+        get() = selectionState
+        set(value) { if (value != selectionState) endGesture(); selectionState = value }
     /** Increments on every committed (undoable) change. */
     var revision by mutableIntStateOf(0)
         private set
@@ -44,6 +48,8 @@ class EditorState(initial: WidgetConfig) {
     val inGesture get() = gestureBase != null
 
     fun commit(next: WidgetConfig) {
+        // [next] already contains any pending live edit, so it closes that edit too.
+        gestureBase = null
         if (next == config) return
         history = (history.take(historyIndex + 1) + next).takeLast(HISTORY)
         historyIndex = history.lastIndex
@@ -53,6 +59,9 @@ class EditorState(initial: WidgetConfig) {
 
     /** Applies a value continuously during a drag; the gesture becomes one undo step. */
     fun beginGesture() { if (gestureBase == null) gestureBase = config }
+
+    /** A canvas gesture always starts its own undo step, closing any pending edit. */
+    fun startGesture() { endGesture(); gestureBase = config }
     fun live(next: WidgetConfig) { config = next }
     fun endGesture() {
         val base = gestureBase ?: return

@@ -83,6 +83,14 @@ private fun BestMatesApp(configureWidgetId: Int, openProject: String?, onOpenHan
         AppAppearanceMode.LIGHT -> false
         AppAppearanceMode.DARK -> true
     }
+    // System-bar icon contrast follows the app's own appearance, not only the system theme.
+    val view = androidx.compose.ui.platform.LocalView.current
+    androidx.compose.runtime.SideEffect {
+        androidx.core.view.WindowCompat.getInsetsController(activity.window, view).apply {
+            isAppearanceLightStatusBars = !dark
+            isAppearanceLightNavigationBars = !dark
+        }
+    }
     val store = remember { ProjectStore(activity) }
     val scope = rememberCoroutineScope()
     val configuring = configureWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID

@@ -181,8 +181,11 @@ private fun CityInspector(state: EditorState, index: Int, onSheet: (EditorSheet)
                 FontRow(uiText("font_time"), timeFont, nowSample) {
                     onSheet(EditorSheet.Font(translated(lang, "font_time"), timeFont, nowSample, liveOnly = true) { id -> state.updateCity(index) { it.copy(timeFont = id) } })
                 }
-                FontRow(uiText("font_date"), dateFont, "Sun, Oct 11") {
-                    onSheet(EditorSheet.Font(translated(lang, "font_date"), dateFont, "Sun, Oct 11", liveOnly = true) { id -> state.updateCity(index) { it.copy(dateFont = id) } })
+                val dateSample = remember(city.zoneId) {
+                    runCatching { java.time.ZonedDateTime.now(java.time.ZoneId.of(city.zoneId)).format(java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d")) }.getOrDefault("Mon, Jan 1")
+                }
+                FontRow(uiText("font_date"), dateFont, dateSample) {
+                    onSheet(EditorSheet.Font(translated(lang, "font_date"), dateFont, dateSample, liveOnly = true) { id -> state.updateCity(index) { it.copy(dateFont = id) } })
                 }
                 BmButton(uiText("same_type_all"), {
                     state.updateConfig { cfg -> cfg.copy(cities = cfg.cities.map { it.copy(nameFont = city.nameFont, timeFont = city.timeFont, dateFont = city.dateFont) }) }
@@ -267,7 +270,13 @@ private fun TextInspector(state: EditorState, index: Int, onSheet: (EditorSheet)
                 RotationRow(item.rotation, { v -> state.liveText(index) { it.copy(rotation = v) } }, state::endGesture) { state.updateText(index) { it.copy(rotation = 0f) } }
             }
             1 -> {
-                Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                val fontScroll = rememberScrollState()
+                val density = androidx.compose.ui.platform.LocalDensity.current
+                val current = WidgetFonts.all.indexOfFirst { it.id == WidgetFonts.canonicalId(item.font) }
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    if (current > 1) fontScroll.scrollTo(with(density) { (100.dp * (current - 1)).roundToPx() })
+                }
+                Row(Modifier.fillMaxWidth().horizontalScroll(fontScroll), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     WidgetFonts.all.forEach { font ->
                         val selected = WidgetFonts.canonicalId(item.font) == font.id
                         Column(

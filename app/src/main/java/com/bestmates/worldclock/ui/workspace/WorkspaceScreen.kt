@@ -303,9 +303,14 @@ private fun WorkspaceHeader(
 @Composable
 private fun LocalNow(modifier: Modifier = Modifier) {
     val minute = rememberMinuteTick()
-    val locale = LocalBestMatesLanguage.current.dateLocale()
-    val text = remember(minute, locale) {
-        ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM · HH:mm", locale))
+    val language = LocalBestMatesLanguage.current
+    val text = remember(minute, language) {
+        val pattern = when (language) {
+            com.bestmates.worldclock.ui.settings.AppLanguage.CHINESE -> "M月d日 EEEE · HH:mm"
+            com.bestmates.worldclock.ui.settings.AppLanguage.GERMAN -> "EEEE, d. MMMM · HH:mm"
+            else -> "EEEE, d MMMM · HH:mm"
+        }
+        ZonedDateTime.now().format(DateTimeFormatter.ofPattern(pattern, language.dateLocale()))
     }
     Text(text, style = Bm.type.bodySmall, color = Bm.colors.inkSoft, modifier = modifier)
 }

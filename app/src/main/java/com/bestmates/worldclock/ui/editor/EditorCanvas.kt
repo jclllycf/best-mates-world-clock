@@ -173,7 +173,7 @@ fun EditorCanvas(
                                 continue
                             }
                             if (pressed.size >= 2) {
-                                if (!pinching) { pinching = true; if (!dragging) { dragging = true; state.beginGesture(); interacting = true } }
+                                if (!pinching) { pinching = true; if (!dragging) { dragging = true; state.startGesture(); interacting = true } }
                                 zoomTotal *= event.calculateZoom()
                                 rotTotal += event.calculateRotation()
                                 panTotal += event.calculatePan()
@@ -186,7 +186,7 @@ fun EditorCanvas(
                             val change = pressed.first()
                             val pan = change.position - down.position
                             if (!dragging && pan.getDistance() > viewConfiguration.touchSlop) {
-                                dragging = true; state.beginGesture(); interacting = true
+                                dragging = true; state.startGesture(); interacting = true
                             }
                             if (!dragging) continue
                             change.consume()

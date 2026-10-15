@@ -256,7 +256,7 @@ fun BmSlider(
         ) {
             Box(
                 Modifier.align(Alignment.CenterStart).padding(horizontal = knob / 2).fillMaxWidth().height(4.dp)
-                    .clip(Bm.shapes.pill).background(c.hairline),
+                    .clip(Bm.shapes.pill).background(c.hairlineStrong),
             )
             Box(
                 Modifier.align(Alignment.CenterStart).padding(start = knob / 2)
