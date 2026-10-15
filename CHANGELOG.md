@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.4.0 (in development)
+
+Full reconstruction of the design language, editor, widget renderer and persistence.
+See `PROJECT_STATUS.md` for details, verification and before/after screenshots.
+
+### Added / Changed
+
+- "Daybook" design language: warm paper and ink, Fraunces and Figtree, new components,
+  icon family, launcher icon and splash.
+- Workspace gallery of live widget previews with stable ordering and real widget sizes.
+- Canvas-first editor: pinch/rotate, edge handles, magnetic guides, contextual inspector,
+  font/colour/shape/sun-moon libraries, layers, autosave, one undo step per gesture.
+- Shared scene engine so the editor, previews and home-screen widget draw identically.
+- 21 bundled open-licensed widget typefaces plus 14 live system styles for time and date.
+- City search in any language.
+
+### Fixed
+
+- Project name leaked onto the home-screen widget as a header.
+- Pinned widgets never received later edits.
+- Rotation of cities and text was ignored on the home screen.
+- The pin dialog always offered a generic 4×4 placeholder instead of the design.
+- Workspace order reshuffled between launches.
+
+### Data
+
+- Schema 9 with an explicit migration ladder and a one-time raw backup of each older
+  project; covered by JVM tests on real v1–v8 payloads.
 ## v0.2.0
 
 Best Mates 2.0 production migration release.

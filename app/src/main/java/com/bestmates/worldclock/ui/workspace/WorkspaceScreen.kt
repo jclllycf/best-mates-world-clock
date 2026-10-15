@@ -172,7 +172,7 @@ fun WorkspaceRoute(
     if (confirmingDelete) {
         BmDialog(
             title = uiText("delete_projects_title"),
-            message = uiFormat("delete_projects_message", selectedIds.size),
+            message = uiFormat(if (selectedIds.size == 1) "delete_projects_message_one" else "delete_projects_message", selectedIds.size),
             onDismiss = { confirmingDelete = false },
             confirmText = uiText("delete"),
             onConfirm = {

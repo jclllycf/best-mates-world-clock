@@ -1,5 +1,8 @@
 # BEST MATES TASKS
 
+> **2026-10-14:** Superseded as the working plan by `PROJECT_STATUS.md` (0.4.0 reconstruction on branch `claude/best-mates-reconstruction-2026-10-10`). The phase gates below are historical; the user's October 10 directive revoked them.
+
+
 ## Current development priority (2026-09-10)
 
 1. Best Mates 2.0 — Phase 3 production migration is **IMPLEMENTATION COMPLETE / INTERNAL BASELINE / v0.2.0 RELEASE PREPARATION**.

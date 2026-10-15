@@ -4,7 +4,7 @@
 
 Best Mates is an open-source Android world-clock widget editor. It is being built for people who want a personal, visual home-screen widget without having to learn a formula-driven editor.
 
-> **Status: v0.2.0.** Best Mates is usable as an early public Android release. The core widget editor works, the main interface has moved onto the Best Mates 2.0 visual system, and further layout, visual and asset refinements are still planned.
+> **Status: v0.4.0 in development.** A full reconstruction of the design language, editor and widget renderer is underway on a development branch; see [PROJECT_STATUS.md](PROJECT_STATUS.md). The latest public release is v0.2.0.
 
 ## What works today
 

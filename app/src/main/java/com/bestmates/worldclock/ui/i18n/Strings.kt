@@ -17,7 +17,7 @@ internal object Strings04 {
         "size_note_calibrated" to "Proportions match your launcher's real cells.",
         "size_note_default" to "Proportions are estimated until your first widget is placed; then Best Mates learns your launcher's cell size.",
         "choose_design" to "Choose a design", "unnamed" to "Untitled", "selected_count" to "%d selected",
-        "delete_projects_title" to "Delete these designs?", "delete_projects_message" to "%d design(s) will be removed from this device. Widgets already on your home screen keep their last look.",
+        "delete_projects_title" to "Delete these designs?", "delete_projects_message" to "%d designs will be removed from this device. Widgets already on your home screen keep their last look.", "delete_projects_message_one" to "This design will be removed from this device. A widget already on your home screen keeps its last look.",
         // Editor chrome
         "saved" to "Saved", "saving" to "Saving…", "editing" to "Editing",
         "canvas_empty_hint" to "Start with a shape, a city or some text below.",
@@ -76,7 +76,7 @@ internal object Strings04 {
         "size_note_calibrated" to "比例与你的桌面格子一致。",
         "size_note_default" to "放置第一个组件前比例为估算值；之后 Best Mates 会学习你桌面的真实格子尺寸。",
         "choose_design" to "选择一个设计", "unnamed" to "未命名", "selected_count" to "已选 %d 项",
-        "delete_projects_title" to "删除这些设计？", "delete_projects_message" to "将从本机删除 %d 个设计。已经放在桌面的组件会保留最后的样子。",
+        "delete_projects_title" to "删除这些设计？", "delete_projects_message" to "将从本机删除 %d 个设计。已经放在桌面的组件会保留最后的样子。", "delete_projects_message_one" to "将从本机删除这个设计。已经放在桌面的组件会保留最后的样子。",
         "saved" to "已保存", "saving" to "保存中…", "editing" to "编辑中",
         "canvas_empty_hint" to "从下方添加形状、城市或文字开始。",
         "preview_dark" to "正在预览深色模式", "preview_light" to "正在预览浅色模式", "snap" to "吸附", "grid" to "网格",
