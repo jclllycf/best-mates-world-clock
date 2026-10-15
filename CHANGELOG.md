@@ -1,6 +1,34 @@
 # Changelog
 
-## v0.4.0 (in development)
+## v0.5.0 (versionCode 11) — fixes from the first Samsung review
+
+See `PROJECT_STATUS.md` (section 0.5.0) for verification, data notes and Samsung check steps.
+
+### Fixed
+
+- Tapping a city or text on top of a selected shape now selects it (the selected shape used
+  to swallow the tap).
+- Widgets whose design proportions differ from the real launcher cell no longer leave bands
+  at two sides; full-bleed shapes reach the widget's edges and nothing draws outside the
+  board (a dark drop shadow used to spill into the side margins).
+- Sun and moon picker: malformed and inconsistent artwork removed; nothing is clipped at
+  the panel edges.
+- Snapping is on by default and holds deliberately (edges, centre, thirds, quarters,
+  other elements, board fractions, matching sizes, 1:1 and widget proportions).
+- The editor board no longer jumps when the selection changes; tools no longer cover it.
+
+### Added / Changed
+
+- Daybook celestial set: 29 original suns and moons drawn from geometry.
+- Mist, a frosted finish, is the default for new shapes; 13 new shapes in four groups.
+- Four complete app styles — Daybook, Rosewater, Nocturne, Studio — with live previews.
+- Complete German, French, Russian, Turkish and Arabic (right-to-left) interfaces with
+  correct plurals, plus a build-time translation coverage test.
+- Canvas sized to the widget's proportions, a draggable split, four edge handles,
+  pinch on empty canvas for the selection, one-tap shape strip.
+- Symmetric star constellation on the empty Workspace.
+
+## v0.4.0
 
 Full reconstruction of the design language, editor, widget renderer and persistence.
 See `PROJECT_STATUS.md` for details, verification and before/after screenshots.

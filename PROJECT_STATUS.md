@@ -1,8 +1,115 @@
-# Best Mates — Project status (0.4.0 reconstruction)
+# Best Mates — Project status
 
 Branch `claude/best-mates-reconstruction-2026-10-10`, started from `b2a2e2c`.
-Last updated 2026-10-14. This file supersedes the phase gates in `CURRENT_SESSION.md`,
+Last updated 2026-10-15. This file supersedes the phase gates in `CURRENT_SESSION.md`,
 `PROJECT_HANDOFF.md` and `TASKS.md`; those remain the historical record.
+
+# 0.5.0 (versionCode 11) — answers to the first Samsung review
+
+Source of the work: `../REAL_DEVICE_FEEDBACK_2026-10-15.md` (BM-REAL-01…11). The Daybook
+direction is kept. Everything marked **verified** was checked on the 1080 × 2340 / 450 dpi
+Android 15 emulator with the Pixel launcher and by JVM tests. **Nothing was installed on the
+Samsung, and One UI behaviour is not yet confirmed** — see the check steps below. Aesthetic
+approval stays with the user.
+
+APK: `app/build/outputs/apk/debug/app-debug.apk` (0.5.0, versionCode 11, ~33 MB, signed with
+this PC's debug key `c7cef145…`). Evidence: `docs/review/2026-10-15/`.
+
+## What changed, by feedback item
+
+| Item | Root cause found | Change | Status |
+|---|---|---|---|
+| **01** Sun/Moon art | The picker offered all 28 older BM SVGs; several are malformed when rendered by AndroidSVG (stray arcs on the crescent ring, blobbed moon-and-cloud, a ghost stroke on the double moon), and the renderer crops each icon to its visible pixels, so sizes varied. | 29 original Daybook glyphs on one 48-unit grid (`tools/celestial/generate_celestial.py`), shown at their designed size. The picker offers only these, as a wrapping grid (nothing clipped). Older BM styles that have a redraw render through it; their saved IDs are unchanged. Other packs stay renderable for saved designs and show as a "classic" tile. | Verified (contact sheets) |
+| **02** Black side bands | The launcher bitmap is the widget's full size, with the board fitted inside. When the cell's proportions differ from the board (Samsung 2×1 cells are wider than the default cell), two side margins stay empty, and the default dark drop shadow (14 dp) spilled into them. | The board adapts to the real cell (up to 35 % stretch). Shapes that span the board keep spanning it; everything else keeps its size and its place relative to the centre. Drawing is clipped to the board; shadows are cut out under translucent fills. Exact span sizes and each placed widget's size are recorded; the editor opens a placed design at those proportions. | Verified on Pixel launcher; **Samsung pending** |
+| **03** Tap-switch | The hit test preferred the selected element whenever the finger was anywhere inside it, so a selected full-board shape won over the city above it. | Front-most element wins (`EditorHitTest`). A locked element in front lets the selection drag; tiny items get a 44 dp target; pinch on empty canvas acts on the selection. 12 regression tests. | Verified |
+| **04** Snapping | Snap was already on, but a 7 dp threshold with no hysteresis felt weak; resizing had only edge snapping. | 9 dp catch, held until 1.6× away. Board edges, centre, thirds, quarters, and other elements' edges and centres; resize snaps to board fractions, other shapes' sizes and proportions (1:1, widget, natural, kept). Four edge handles, a haptic per magnet, the magnet toggle stays in the tools. | Verified on emulator |
+| **05** Canvas size | The canvas took whatever the panel left, and the panel grew when selecting, so the board jumped and wide boards floated in empty space. | Canvas height follows the board's proportions at full width; a draggable split (double tap resets); tools moved into the panel header; the rotate knob adapts to the space. Wallpaper backdrop stays the default. | Verified |
+| **06** Mist | New shapes used a 90 % dusk fill. | New shapes are Mist: a smoky veil with a top sheen and a light hairline edge, drawn by the shared renderer (editor = launcher). A Finish control switches Mist/Solid. | Verified |
+| **07** Shapes | 12 shapes, some generic. | 13 new shapes (pebble, puff, soft heart, stamp, frame, note, bubble, ribbon, bloom, rosette, sparkle, crescent, sunburst) in four groups; the approved heart is unchanged. | Verified (contact sheet at 2:1, 1:1, 2:3) |
+| **08** Empty stars | Random dots. | Mirror-symmetric four-point sparkles around the mark. | Verified |
+| **09** Typography | — | Each style has its own display face; the empty-state headline is set in the display size. Time and date stay on live system faces (launcher limitation). | Partial |
+| **10** Languages | de/fr/ru/tr/ar covered ~40 keys; the rest fell back to English; no RTL. | Complete tables for all seven languages, CLDR plurals (Russian one/few/many, Arabic six forms), localized dates, continents and country names, right-to-left layout for Arabic. `StringCoverageTest` fails the build on any missing key, plural form, placeholder mismatch or hard-coded UI text. | Verified (ar, ru on emulator) |
+| **11** Themes | The four identities only changed an accent colour. | Four complete styles (Daybook, Rosewater, Nocturne, Studio): palette, surfaces, display typeface, corner geometry; live previews in Settings; same stored keys, so existing choices resolve; widgets are untouched. | Verified |
+
+## Before and after (emulator, same data)
+
+| | Before (0.4.0) | After (0.5.0) |
+|---|---|---|
+| Sky picker | ![](docs/review/2026-10-15/before-sky-picker.jpg) | ![](docs/review/2026-10-15/after-sky-picker.jpg) |
+| Tap a city on a selected shape | ![](docs/review/2026-10-15/before-tap-city-over-shape.jpg) | ![](docs/review/2026-10-15/after-tap-city-over-shape.jpg) |
+| 4×1 editor | ![](docs/review/2026-10-15/before-editor-4x1.jpg) | ![](docs/review/2026-10-15/after-editor-4x1.jpg) |
+| Shape library | ![](docs/review/2026-10-15/before-shape-gallery.jpg) | ![](docs/review/2026-10-15/after-shape-gallery.jpg) |
+
+Also in `docs/review/2026-10-15/`: `celestial-daybook-contact-sheet.jpg` (new set at the
+widget glyph, tile and large sizes, plus a bright-wallpaper swatch), `celestial-audit-1…4.jpg`
+(all 121 styles with KEEP / REDRAW / REMOVED status, drawn by the production renderer),
+`shapes-contact-sheet.jpg` (every shape at 2:1, 1:1, 2:3 in Mist and Solid on bright and
+dark wallpaper), `styles-workspace.jpg`, `arabic-rtl.jpg`, `russian.jpg`,
+`after-home-widgets.jpg`, `after-snap-guides.jpg`, `after-empty-workspace.jpg`,
+`after-settings-styles.jpg`. Debug builds regenerate the sheets:
+`adb shell am start -n com.bestmates.worldclock/.debug.CelestialContactSheetActivity`
+(and `.debug.ShapeContactSheetActivity`); PNGs land in `Android/data/<package>/files/review/`.
+
+## Data compatibility
+- No schema migration was needed (layout version stays 9). New fields are optional:
+  layers gain `material` (missing → `solid`, so saved shapes look the same), and new enum
+  values are added, never renamed. A 0.4 build reading 0.5 data falls back to defaults
+  for unknown shape or icon names.
+- Saved sun/moon IDs are unchanged. Older BM styles with a Daybook redraw now draw with the
+  redraw; reverting the build restores the old artwork.
+- Placed widgets re-render with the adaptive board. Opening a project whose widget is on
+  the home screen adopts the widget's proportions; that is saved on the next edit.
+- The app theme preference keeps its stored values (`CLOUD`, `DREAM`, `MIDNIGHT`, `MONO`).
+- Verified on the emulator: 0.4.0 → 0.5.0 in-place upgrade with six projects (three of them
+  seeded v8 data) and a widget placed under 0.4.0; nothing lost; the widget re-rendered.
+
+## Verification
+- 99 JVM tests pass (54 before this iteration), including hit testing, resize magnets,
+  hysteresis, widget reflow, the sun/moon catalogue and the translation gate.
+- Emulator, verified: tap-switch from a selected shape to a city; magnet guides during a
+  drag; new 4×1 Mist card pinned to the home screen fills its cell edge to edge; a legacy
+  4×4 widget keeps its caption on its card; all four styles; Arabic RTL; Russian plurals;
+  empty Workspace; Sky picker; shape library.
+
+## Known limitations
+- **Samsung One UI not tested.** The side-band fix follows the observed mechanism, but the
+  user's phone must confirm it, at 2×1, 2×2 and 4×4.
+- Mist darkens bright wallpapers slightly so white type stays legible; on very light
+  wallpaper it reads as smoked glass. A lighter "Frost" palette remains available.
+- Live time and date still use system typefaces (launcher restriction).
+- Translations are careful but not reviewed by native speakers.
+- Undo/redo glyphs are not mirrored in Arabic.
+
+## Samsung check steps (needs your go-ahead to install)
+1. Read-only signature check (changes nothing):
+   ```powershell
+   $apk = (C:\ADB\adb.exe shell pm path com.bestmates.worldclock).Replace("package:", "").Trim()
+   C:\ADB\adb.exe pull $apk "$env:TEMP\bm-installed.apk"
+   & "C:\Users\JCLXJ\AppData\Local\Android\Sdk\build-tools\35.0.0\apksigner.bat" verify --print-certs "$env:TEMP\bm-installed.apk"
+   ```
+   Only if it prints `c7cef145…`: `C:\ADB\adb.exe install -r app\build\outputs\apk\debug\app-debug.apk`.
+   Never uninstall: that erases the projects.
+2. Open an existing project with a placed widget; confirm it still looks right on the home screen.
+3. 2×1: new widget → Card from the one-tap strip (full-bleed Mist) → Add to home screen.
+   Check that the left and right edges show no black bands. Repeat at 2×2 and 4×4, with
+   Solid and Mist, and resize a placed widget.
+4. Select the card, then tap a city or text on it: the selection should switch in one tap.
+5. Drag a shape near the centre or an edge, and resize from a corner towards a square:
+   guides appear, a tick is felt, and it holds until you move clearly away.
+6. Sky tab: every icon visible, none cut off; check day and night on the widget.
+7. Settings → Style: switch styles; restart the app; the choice persists; widgets unchanged.
+8. Settings → Language: Deutsch, Русский, Türkçe, العربية, Français — no English left.
+
+## Next steps
+1. Samsung confirmation of BM-REAL-02 (bands) and the snapping feel; tune thresholds if needed.
+2. Mist on very light wallpapers: a lighter variant chosen from the wallpaper's tone.
+3. Native-speaker review of de/fr/ru/tr/ar; mirrored undo/redo in Arabic.
+4. Optional precise typography for live time (bitmap time, exact minute alarms).
+5. Analog clock element; creation templates; project export/import.
+
+---
+
+# 0.4.0 reconstruction (2026-10-14)
 
 Aesthetic approval belongs to the user. Everything below marked **verified** was checked
 on a 1080 × 2340 / 450 dpi Android 15 emulator (the same screen as the Samsung SM-A5760)
