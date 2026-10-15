@@ -43,6 +43,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -459,7 +461,7 @@ private fun CreateWidgetSheet(onDismiss: () -> Unit, onCreate: (String, Int, Int
     var name by remember { mutableStateOf("") }
     var size by remember { mutableStateOf(4 to 2) }
     BmSheet(onDismiss = onDismiss, title = uiText("new_widget")) {
-        Column(Modifier.padding(horizontal = 24.dp).padding(bottom = 24.dp)) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 24.dp)) {
             Spacer(Modifier.height(8.dp))
             BmOverline(uiText("name"))
             Spacer(Modifier.height(8.dp))
@@ -474,7 +476,7 @@ private fun CreateWidgetSheet(onDismiss: () -> Unit, onCreate: (String, Int, Int
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.fillMaxWidth().height(300.dp),
+                modifier = Modifier.fillMaxWidth().height(272.dp),
                 userScrollEnabled = false,
             ) {
                 items(SIZE_PRESETS) { preset ->
@@ -502,7 +504,7 @@ private fun SizeTile(cols: Int, rows: Int, cellAspect: Float, selected: Boolean,
     Column(
         Modifier
             .fillMaxWidth()
-            .height(92.dp)
+            .height(84.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(if (selected) c.accentSoft else c.surfaceSunken)
             .border(if (selected) 1.5.dp else 0.dp, if (selected) c.accentInk else Color.Transparent, RoundedCornerShape(16.dp))
@@ -522,12 +524,11 @@ private fun SizeTile(cols: Int, rows: Int, cellAspect: Float, selected: Boolean,
             val gap = 2.dp.toPx()
             for (gx in 0 until 4) for (gy in 0 until shownRows) {
                 val on = gx < cols && gy < rows
-                drawRoundRect(
-                    if (on) (if (selected) c.accentInk else c.ink) else c.hairlineStrong.copy(alpha = .55f),
-                    topLeft = Offset(ox + gx * cw + gap / 2, oy + gy * ch + gap / 2),
-                    size = androidx.compose.ui.geometry.Size(cw - gap, ch - gap),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()),
-                )
+                val tl = Offset(ox + gx * cw + gap / 2, oy + gy * ch + gap / 2)
+                val sz = androidx.compose.ui.geometry.Size(cw - gap, ch - gap)
+                val radius = androidx.compose.ui.geometry.CornerRadius(2.5.dp.toPx())
+                if (on) drawRoundRect(if (selected) c.accentInk else c.ink.copy(alpha = .82f), tl, sz, radius)
+                else drawRoundRect(c.hairlineStrong, tl, sz, radius, style = androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx()))
             }
         }
         Spacer(Modifier.height(6.dp))

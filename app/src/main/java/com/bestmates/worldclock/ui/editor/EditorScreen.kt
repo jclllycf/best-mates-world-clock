@@ -61,6 +61,7 @@ import com.bestmates.worldclock.model.ThemeMode
 import com.bestmates.worldclock.model.WidgetConfig
 import com.bestmates.worldclock.model.WidgetLayer
 import com.bestmates.worldclock.model.WidgetShape
+import com.bestmates.worldclock.scene.CityPlacement
 import com.bestmates.worldclock.ui.common.Backdrop
 import com.bestmates.worldclock.ui.common.backdropBrush
 import com.bestmates.worldclock.ui.common.rememberWallpaperTones
@@ -191,7 +192,7 @@ fun EditorScreen(
         EditorSheet.AddCity -> CityPickerSheet(onDismiss = { sheet = null }) { picked ->
             val c0 = state.config
             if (c0.cities.size < MAX_CITIES) {
-                state.commit(c0.copy(cities = c0.cities + freshCity(picked, c0)))
+                state.commit(c0.copy(cities = CityPlacement.add(c0.cities, freshCity(picked, c0), c0.boardWidthDp, c0.boardHeightDp)))
                 state.selection = EditorSelection.CityItem(c0.cities.size)
             }
             sheet = null
@@ -249,14 +250,9 @@ private fun freshLayer(shape: WidgetShape, id: Long, config: WidgetConfig): Widg
     )
 }
 
-private val PLACEMENTS = listOf(0f to 0f, -.5f to 0f, .5f to 0f, -.5f to -.5f, .5f to -.5f, -.5f to .5f, .5f to .5f, 0f to -.62f, 0f to .62f, 0f to 0f)
-
+/** House style for a new city; position and size come from [CityPlacement]. */
 private fun freshCity(picked: City, config: WidgetConfig): City {
-    val (x, y) = PLACEMENTS[config.cities.size % PLACEMENTS.size]
-    // A city reads best at about a fifth of the board's shorter side.
-    val scale = (minOf(config.boardWidthDp, config.boardHeightDp) / 170f).coerceIn(.7f, 1.6f)
     return picked.copy(
-        x = x, y = y, scale = scale,
         componentId = config.layers.firstOrNull()?.id ?: 0L,
         nameFont = WidgetFonts.DEFAULT_NAME, timeFont = WidgetFonts.DEFAULT_TIME, dateFont = WidgetFonts.DEFAULT_DATE,
         nameColor = 0xFFFFFFFF, timeColor = 0xFFFFFFFF, dateColor = 0xCCFFFFFF,

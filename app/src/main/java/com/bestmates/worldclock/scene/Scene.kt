@@ -85,6 +85,8 @@ class SceneBuilder(context: Context) {
         return paint.measureText(text.map { if (it.isDigit()) widest else it }.joinToString("")) / 8f
     }
 
+    /** Thread-safe: the measuring paint is shared, so builds are serialised (they take well under a millisecond). */
+    @Synchronized
     fun build(config: WidgetConfig, now: Instant = Instant.now(), locale: Locale = Locale.getDefault()): Scene {
         val bw = config.boardWidthDp
         val bh = config.boardHeightDp

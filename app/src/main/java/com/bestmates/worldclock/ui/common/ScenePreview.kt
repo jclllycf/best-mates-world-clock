@@ -33,6 +33,11 @@ object SceneServices {
     fun renderer(context: Context): SceneRenderer = renderer ?: synchronized(this) {
         renderer ?: SceneRenderer(context.applicationContext).also { renderer = it }
     }
+    @Volatile private var widgetRenderer: SceneRenderer? = null
+    /** Separate instance for background widget rendering so it never contends with UI drawing. */
+    fun widgetRenderer(context: Context): SceneRenderer = widgetRenderer ?: synchronized(this) {
+        widgetRenderer ?: SceneRenderer(context.applicationContext).also { widgetRenderer = it }
+    }
     fun builder(context: Context): SceneBuilder = builder ?: synchronized(this) {
         builder ?: SceneBuilder(context.applicationContext).also { builder = it }
     }

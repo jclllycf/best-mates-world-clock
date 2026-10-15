@@ -59,16 +59,16 @@ fun Inspector(state: EditorState, sel: EditorSelection, previewNight: Boolean, o
     }
     val locked = state.isLocked(sel)
     Column(Modifier.fillMaxWidth().padding(top = 10.dp)) {
-        Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Icon(icon, null, tint = Bm.colors.accentInk, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(10.dp))
             Text(title, style = Bm.type.title, color = Bm.colors.ink, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-            BmIconButton(BmIcons.Duplicate, uiText("duplicate"), state::duplicateSelected, size = 40.dp, iconSize = 20.dp)
-            BmIconButton(if (locked) BmIcons.Lock else BmIcons.Unlock, uiText(if (locked) "unlock" else "lock"), state::toggleLock, selected = locked, size = 40.dp, iconSize = 20.dp)
-            BmIconButton(BmIcons.BringForward, uiText("bring_forward"), { state.reorder(+1) }, size = 40.dp, iconSize = 20.dp)
-            BmIconButton(BmIcons.SendBackward, uiText("send_backward"), { state.reorder(-1) }, size = 40.dp, iconSize = 20.dp)
-            BmIconButton(BmIcons.Trash, uiText("delete"), state::deleteSelected, tint = Bm.colors.danger, size = 40.dp, iconSize = 20.dp)
-            BmIconButton(BmIcons.Check, uiText("done"), { state.selection = null }, tonal = true, size = 40.dp, iconSize = 20.dp)
+            BmIconButton(BmIcons.Duplicate, uiText("duplicate"), state::duplicateSelected, size = 38.dp, iconSize = 19.dp)
+            BmIconButton(if (locked) BmIcons.Lock else BmIcons.Unlock, uiText(if (locked) "unlock" else "lock"), state::toggleLock, selected = locked, size = 38.dp, iconSize = 19.dp)
+            BmIconButton(BmIcons.BringForward, uiText("bring_forward"), { state.reorder(+1) }, size = 38.dp, iconSize = 19.dp)
+            BmIconButton(BmIcons.SendBackward, uiText("send_backward"), { state.reorder(-1) }, size = 38.dp, iconSize = 19.dp)
+            BmIconButton(BmIcons.Trash, uiText("delete"), state::deleteSelected, tint = Bm.colors.danger, size = 38.dp, iconSize = 19.dp)
+            BmIconButton(BmIcons.Check, uiText("done"), { state.selection = null }, tonal = true, size = 38.dp, iconSize = 19.dp)
         }
         when (sel) {
             is EditorSelection.Layer -> LayerInspector(state, sel.index, previewNight, onSheet)

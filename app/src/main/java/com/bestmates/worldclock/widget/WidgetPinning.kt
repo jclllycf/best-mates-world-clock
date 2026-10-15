@@ -18,9 +18,7 @@ object WidgetPinning {
         val manager = AppWidgetManager.getInstance(context)
         if (!manager.isRequestPinAppWidgetSupported) return false
         val provider = WorldClockWidgetProvider.providerFor(context, config.columns, config.rows)
-        val preview = runCatching {
-            WidgetViews.build(context, config, config.boardWidthDp, config.boardHeightDp, projectId, 0, pixelBudget = 900_000)
-        }.getOrNull()
+        val preview = runCatching { WidgetViews.buildPinPreview(context, config) }.getOrNull()
         val extras = Bundle().apply { if (preview != null) putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, preview) }
         val callback = PendingIntent.getBroadcast(
             context,

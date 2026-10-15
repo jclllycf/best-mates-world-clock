@@ -1,6 +1,7 @@
 package com.bestmates.worldclock.ui.design
 
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
@@ -475,8 +476,10 @@ fun BmDivider(modifier: Modifier = Modifier) {
 /* ------------------------------------------------------------------ Sheet */
 
 /**
- * A paper bottom sheet. Implemented on a Dialog window so it layers above the editor's
- * canvas while keeping full control over motion, scrim and insets.
+ * A paper bottom sheet drawn as an overlay in the activity's own edge-to-edge window
+ * (not a Dialog window), so the scrim covers the whole screen and system-bar and keyboard
+ * insets apply exactly as on the screen beneath. Call it last inside a screen so it
+ * stacks on top; it consumes Back and every touch behind it.
  */
 @Composable
 fun BmSheet(
@@ -494,11 +497,8 @@ fun BmSheet(
     LaunchedEffect(closing, state.currentState, state.isIdle) {
         if (closing && state.isIdle && !state.currentState) latestDismiss()
     }
-    Dialog(
-        onDismissRequest = { close() },
-        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
-    ) {
-        (LocalView.current.parent as? DialogWindowProvider)?.window?.setDimAmount(0f)
+    BackHandler { close() }
+    run {
         val c = Bm.colors
         Box(Modifier.fillMaxSize()) {
             AnimatedVisibility(state, enter = fadeIn(tween(220)), exit = fadeOut(tween(180))) {

@@ -41,6 +41,8 @@ class SceneRenderer(context: Context) {
         override fun sizeOf(key: String, value: Bitmap) = value.byteCount
     }
 
+    /** One renderer per thread of use: the paints are reused between calls. */
+    @Synchronized
     fun draw(canvas: Canvas, scene: Scene, fit: BoardFit, options: DrawOptions) {
         scene.layers.forEach { if (it.index !in options.hiddenLayers) drawLayer(canvas, it, fit, options.night) }
         scene.cities.forEach { drawCity(canvas, it, fit, options.liveText) }
