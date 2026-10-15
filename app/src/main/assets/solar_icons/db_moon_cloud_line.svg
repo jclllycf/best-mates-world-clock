@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <clipPath id="k"><path clip-rule="evenodd" d="M-8 -8 H56 V56 H-8 Z M12.74 43 A9.74 9.74 0 0 1 9.3 24.15 A13.18 13.18 0 0 1 32.58 24.89 A9.1 9.1 0 0 1 31.41 43 Z"/></clipPath>
+  <g clip-path="url(#k)">
+  <path d="M22.9 24.54 A11.2 11.2 0 1 0 29.93 5.22 A10.53 10.53 0 0 1 22.9 24.54 Z" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <path d="M12.74 39.25 A5.99 5.99 0 0 1 11.93 27.32 A9.43 9.43 0 0 1 29.98 28.75 A5.35 5.35 0 1 1 31.41 39.25 Z" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
