@@ -324,7 +324,11 @@ fun ShapeGrid(selected: WidgetShape?, onPick: (WidgetShape) -> Unit, columns: In
                         ) {
                             ShapeGlyph(shape, if (isSelected) c.accentInk else c.ink.copy(alpha = .78f), Modifier.size(width = 52.dp, height = 36.dp))
                             Spacer(Modifier.height(6.dp))
-                            Text(shapeName(shape), style = Bm.type.caption, color = if (isSelected) c.accentInk else c.inkSoft, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            // Two centred lines, so longer names (German, Russian, French) read in full.
+                            Text(
+                                shapeName(shape), style = Bm.type.caption.copy(lineHeight = 14.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center),
+                                color = if (isSelected) c.accentInk else c.inkSoft, maxLines = 2, minLines = 2, overflow = TextOverflow.Ellipsis,
+                            )
                         }
                     }
                     repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }

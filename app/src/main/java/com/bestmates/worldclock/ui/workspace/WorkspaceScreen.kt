@@ -256,7 +256,7 @@ private fun WorkspaceScreen(
                 onClick = onCreate,
                 icon = BmIcons.Plus,
                 size = BmButtonSize.Large,
-                modifier = Modifier.shadow(18.dp, Bm.shapes.pill, ambientColor = c.shadow, spotColor = c.shadow),
+                modifier = Modifier.shadow(18.dp, Bm.shapes.button, ambientColor = c.shadow, spotColor = c.shadow),
             )
         }
     }
@@ -416,7 +416,8 @@ private fun EmptyWorkspace(onCreate: () -> Unit) {
             BrandMark(Modifier.size(104.dp))
         }
         Spacer(Modifier.height(28.dp))
-        Text(uiText("empty_title"), style = Bm.type.headline, color = c.ink)
+        // The first thing a new user reads: set large in the display face of the current style.
+        Text(uiText("empty_title"), style = Bm.type.display, color = c.ink, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.padding(horizontal = 16.dp))
         Spacer(Modifier.height(8.dp))
         Text(uiText("empty_body"), style = Bm.type.body, color = c.inkSoft, modifier = Modifier.padding(horizontal = 24.dp),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
