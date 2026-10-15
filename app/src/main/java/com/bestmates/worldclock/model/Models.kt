@@ -12,13 +12,46 @@ enum class WidgetShape(val label: String, val designAspect: Float) {
     HEART("爱心", 1f),
     DROP("水滴", .82f),
     TICKET("票券", 1.45f),
-    WAVE("旗帜", 1.5f)
+    WAVE("旗帜", 1.5f),
+    // 0.5 library additions (names are persisted; never rename).
+    PEBBLE("卵石", 1.25f),
+    PUFF("棉花云", 1.3f),
+    HEART_SOFT("软爱心", 1.08f),
+    STAMP("邮票", 1.3f),
+    FRAME("画框", 1.3f),
+    NOTE("便签", .92f),
+    BUBBLE("对话框", 1.3f),
+    RIBBON("缎带", 3.2f),
+    BLOOM("花朵", 1f),
+    ROSETTE("花边徽章", 1f),
+    SPARKLE("星芒", 1f),
+    CRESCENT("新月", .92f),
+    SUNBURST("太阳纹", 1f),
 }
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 enum class SolarIconStyle { LINE, CLASSIC, SPARKLE, MINIMAL }
-/** Every entry points to a real, bundled open-source SVG. */
+/**
+ * Every entry points to a real, bundled SVG. Names are persisted, so entries are never
+ * renamed or removed. `DB_*` is the Daybook set (original geometry, tools/celestial), the
+ * only one offered for new choices; the rest stay so saved designs keep their look.
+ */
 enum class SunIconStyle(val asset: String) {
+    DB_SUN_DISC("db_sun_disc.svg"),
+    DB_SUN_RING("db_sun_ring.svg"),
+    DB_SUN_DOTS("db_sun_dots.svg"),
+    DB_SUN_RING_DOTS("db_sun_ring_dots.svg"),
+    DB_SUN_BLOOM("db_sun_bloom.svg"),
+    DB_SUN_HALO("db_sun_halo.svg"),
+    DB_SUN_DUO("db_sun_duo.svg"),
+    DB_SUN_GLINT("db_sun_glint.svg"),
+    DB_SUN_WAVES("db_sun_waves.svg"),
+    DB_SUN_HORIZON("db_sun_horizon.svg"),
+    DB_SUN_HAZE("db_sun_haze.svg"),
+    DB_SUN_RISE("db_sun_rise.svg"),
+    DB_SUN_SET("db_sun_set.svg"),
+    DB_SUN_CLOUD("db_sun_cloud.svg"),
+    DB_SUN_CLOUD_LINE("db_sun_cloud_line.svg"),
     BM_SUN_WAVE_FILL("bm_sun_wave_fill.svg"),
     BM_SUN_WAVE_OUTLINE("bm_sun_wave_outline.svg"),
     BM_SUN_CLOUD_FILL("bm_sun_cloud_fill.svg"),
@@ -67,6 +100,20 @@ enum class SunIconStyle(val asset: String) {
 }
 
 enum class MoonIconStyle(val asset: String) {
+    DB_MOON_CRESCENT("db_moon_crescent.svg"),
+    DB_MOON_CRESCENT_LINE("db_moon_crescent_line.svg"),
+    DB_MOON_THIN("db_moon_thin.svg"),
+    DB_MOON_STARS("db_moon_stars.svg"),
+    DB_MOON_STARS_LINE("db_moon_stars_line.svg"),
+    DB_MOON_PLUS("db_moon_plus.svg"),
+    DB_MOON_STAR5("db_moon_star5.svg"),
+    DB_MOON_CLOUD("db_moon_cloud.svg"),
+    DB_MOON_CLOUD_LINE("db_moon_cloud_line.svg"),
+    DB_MOON_HORIZON("db_moon_horizon.svg"),
+    DB_MOON_SLEEP("db_moon_sleep.svg"),
+    DB_MOON_FULL("db_moon_full.svg"),
+    DB_MOON_RING("db_moon_ring.svg"),
+    DB_MOON_DUO("db_moon_duo.svg"),
     BM_MOON_CLOUD_FILL("bm_moon_cloud_fill.svg"),
     BM_MOON_CLOUD_SOFT("bm_moon_cloud_soft.svg"),
     BM_MOON_CLOUD_OUTLINE("bm_moon_cloud_outline.svg"),
@@ -152,8 +199,8 @@ data class City(
     val nameFont: String = "bm.figtree",
     val timeFont: String = "bm.fraunces",
     val dateFont: String = "bm.figtree_light",
-    val sunStyle: SunIconStyle = SunIconStyle.BM_SUN_SIMPLE_FILL,
-    val moonStyle: MoonIconStyle = MoonIconStyle.BM_MOON_PLAIN_FILL,
+    val sunStyle: SunIconStyle = SunIconStyle.DB_SUN_DISC,
+    val moonStyle: MoonIconStyle = MoonIconStyle.DB_MOON_CRESCENT,
     val sunColor: Long = 0xFFFFD58A,
     val moonColor: Long = 0xFFE4E2FF,
     val componentId: Long = 0L,
@@ -179,8 +226,14 @@ data class WidgetLayer(
     val shadowOpacity: Float = .16f,
     val shadowYOffset: Float = 2f,
     val rotation: Float = 0f,
-    val locked: Boolean = false
+    val locked: Boolean = false,
+    /** Surface finish over the fill: [MATERIAL_SOLID] (flat, all pre-0.4.1 layers) or [MATERIAL_MIST]. */
+    val material: String = MATERIAL_SOLID,
 )
+
+const val MATERIAL_SOLID = "solid"
+/** A frosted veil: the fill plus a soft top sheen and a light hairline edge. */
+const val MATERIAL_MIST = "mist"
 
 fun newWidgetLayer(shape: WidgetShape = WidgetShape.ROUNDED, index: Int = 0): WidgetLayer {
     // A new shape occupies the largest natural rectangle available on the 4x4 board.

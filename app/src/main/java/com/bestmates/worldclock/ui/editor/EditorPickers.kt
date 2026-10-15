@@ -83,7 +83,12 @@ import com.bestmates.worldclock.ui.design.BmSlider
 import com.bestmates.worldclock.ui.design.BmSwatch
 import com.bestmates.worldclock.ui.design.BmTextField
 import com.bestmates.worldclock.ui.design.CheckerBrush
+import com.bestmates.worldclock.ui.design.bleedHorizontally
 import com.bestmates.worldclock.ui.i18n.LocalBestMatesLanguage
+import com.bestmates.worldclock.ui.i18n.dateLocale
+import com.bestmates.worldclock.ui.i18n.localizedCountry
+import com.bestmates.worldclock.ui.i18n.localizedCountryName
+import com.bestmates.worldclock.ui.i18n.translated
 import com.bestmates.worldclock.ui.i18n.uiFormat
 import com.bestmates.worldclock.ui.i18n.uiText
 import com.bestmates.worldclock.ui.settings.AppLanguage
@@ -252,13 +257,14 @@ private fun GradientBar(brush: Brush, fraction: Float, checker: Boolean = false,
 @Composable
 fun ColorRow(label: String, value: Long, onPick: (Long) -> Unit, onMore: () -> Unit) {
     val c = Bm.colors
+    val moreLabel = uiText("more_colours")
     Column(Modifier.fillMaxWidth()) {
         Text(label, style = Bm.type.bodySmall, color = c.inkSoft)
         Spacer(Modifier.height(8.dp))
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().bleedHorizontally(20.dp).horizontalScroll(rememberScrollState()).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier.size(34.dp).clip(CircleShape).background(c.surfaceSunken).border(1.dp, c.hairlineStrong, CircleShape)
-                    .clickable(onClick = onMore).semantics { contentDescription = "More colours" },
+                    .clickable(onClick = onMore).semantics { contentDescription = moreLabel },
                 contentAlignment = Alignment.Center,
             ) { Icon(BmIcons.Palette, null, tint = c.ink, modifier = Modifier.size(18.dp)) }
             SWATCHES.take(12).forEach { s ->
@@ -271,29 +277,19 @@ fun ColorRow(label: String, value: Long, onPick: (Long) -> Unit, onMore: () -> U
 
 /* ------------------------------------------------------------------ Shapes */
 
+/** Localised shape name; keys are shape_<enum name in lower case>. */
 @Composable
-fun shapeName(shape: WidgetShape): String {
-    val english = when (shape) {
-        WidgetShape.ROUNDED -> "Card"; WidgetShape.SQUIRCLE -> "Soft square"
-        WidgetShape.PILL -> "Arch"; WidgetShape.CAPSULE -> "Capsule"
-        WidgetShape.CIRCLE -> "Circle"; WidgetShape.CLOUD -> "Cloud"
-        WidgetShape.DIAMOND -> "Quatrefoil"; WidgetShape.PETAL -> "Petal"
-        WidgetShape.HEART -> "Heart"; WidgetShape.DROP -> "Drop"
-        WidgetShape.TICKET -> "Ticket"; WidgetShape.WAVE -> "Banner"
-    }
-    return if (LocalBestMatesLanguage.current == AppLanguage.CHINESE) when (shape) {
-        WidgetShape.ROUNDED -> "卡片"; WidgetShape.SQUIRCLE -> "柔角方"; WidgetShape.PILL -> "拱窗"; WidgetShape.CAPSULE -> "胶囊"
-        WidgetShape.CIRCLE -> "圆"; WidgetShape.CLOUD -> "云朵"; WidgetShape.DIAMOND -> "四叶"; WidgetShape.PETAL -> "花瓣"
-        WidgetShape.HEART -> "爱心"; WidgetShape.DROP -> "水滴"; WidgetShape.TICKET -> "票券"; WidgetShape.WAVE -> "旗帜"
-    } else english
-}
+fun shapeName(shape: WidgetShape): String = uiText("shape_" + shape.name.lowercase())
 
-val SHAPE_ORDER = listOf(
-    WidgetShape.ROUNDED, WidgetShape.SQUIRCLE, WidgetShape.CAPSULE, WidgetShape.CIRCLE,
-    WidgetShape.PILL, WidgetShape.TICKET, WidgetShape.WAVE, WidgetShape.CLOUD,
-    WidgetShape.HEART, WidgetShape.DIAMOND, WidgetShape.PETAL, WidgetShape.DROP,
+/** The gallery, grouped so it reads as a curated library rather than a list. */
+val SHAPE_GROUPS: List<Pair<String, List<WidgetShape>>> = listOf(
+    "shape_group_basic" to listOf(WidgetShape.ROUNDED, WidgetShape.SQUIRCLE, WidgetShape.CAPSULE, WidgetShape.CIRCLE, WidgetShape.PILL, WidgetShape.PEBBLE),
+    "shape_group_paper" to listOf(WidgetShape.TICKET, WidgetShape.STAMP, WidgetShape.FRAME, WidgetShape.NOTE, WidgetShape.BUBBLE, WidgetShape.RIBBON, WidgetShape.WAVE),
+    "shape_group_nature" to listOf(WidgetShape.CLOUD, WidgetShape.PUFF, WidgetShape.PETAL, WidgetShape.BLOOM, WidgetShape.DIAMOND, WidgetShape.DROP),
+    "shape_group_sky" to listOf(WidgetShape.HEART, WidgetShape.HEART_SOFT, WidgetShape.SPARKLE, WidgetShape.CRESCENT, WidgetShape.SUNBURST, WidgetShape.ROSETTE),
 )
 
+val SHAPE_ORDER: List<WidgetShape> = SHAPE_GROUPS.flatMap { it.second }
 @Composable
 fun ShapeGlyph(shape: WidgetShape, fill: Color, modifier: Modifier = Modifier, stroke: Color? = null) {
     Canvas(modifier) {
@@ -311,37 +307,42 @@ fun ShapeGlyph(shape: WidgetShape, fill: Color, modifier: Modifier = Modifier, s
 fun ShapeGrid(selected: WidgetShape?, onPick: (WidgetShape) -> Unit, columns: Int = 4) {
     val c = Bm.colors
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        SHAPE_ORDER.chunked(columns).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { shape ->
-                    val isSelected = shape == selected
-                    Column(
-                        Modifier.weight(1f).clip(RoundedCornerShape(16.dp))
-                            .background(if (isSelected) c.accentSoft else c.surfaceSunken)
-                            .border(if (isSelected) 1.5.dp else 0.dp, if (isSelected) c.accentInk else Color.Transparent, RoundedCornerShape(16.dp))
-                            .clickable(role = Role.RadioButton) { onPick(shape) }
-                            .semantics { this.selected = isSelected }
-                            .padding(vertical = 10.dp, horizontal = 6.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        ShapeGlyph(shape, if (isSelected) c.accentInk else c.ink.copy(alpha = .78f), Modifier.size(width = 52.dp, height = 36.dp))
-                        Spacer(Modifier.height(6.dp))
-                        Text(shapeName(shape), style = Bm.type.caption, color = if (isSelected) c.accentInk else c.inkSoft, maxLines = 1)
+        SHAPE_GROUPS.forEach { (group, shapes) ->
+            BmOverline(uiText(group), Modifier.padding(top = 6.dp, start = 2.dp))
+            shapes.chunked(columns).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    row.forEach { shape ->
+                        val isSelected = shape == selected
+                        Column(
+                            Modifier.weight(1f).clip(RoundedCornerShape(16.dp))
+                                .background(if (isSelected) c.accentSoft else c.surfaceSunken)
+                                .border(if (isSelected) 1.5.dp else 0.dp, if (isSelected) c.accentInk else Color.Transparent, RoundedCornerShape(16.dp))
+                                .clickable(role = Role.RadioButton) { onPick(shape) }
+                                .semantics { this.selected = isSelected }
+                                .padding(vertical = 10.dp, horizontal = 6.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            ShapeGlyph(shape, if (isSelected) c.accentInk else c.ink.copy(alpha = .78f), Modifier.size(width = 52.dp, height = 36.dp))
+                            Spacer(Modifier.height(6.dp))
+                            Text(shapeName(shape), style = Bm.type.caption, color = if (isSelected) c.accentInk else c.inkSoft, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
                     }
+                    repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
                 }
-                repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
             }
         }
     }
 }
-
 /* ------------------------------------------------------------------ Background palettes */
 
 data class Palette(val key: String, val light: Long, val dark: Long)
 
 /** Curated light-mode / dark-mode fills. The first entries suit dark text, the rest light text. */
 val PALETTES = listOf(
-    Palette("mist", 0x40FFFFFFL, 0x30FFFFFFL),
+    // Mist, the default for new shapes: a smoky veil that darkens bright wallpaper enough
+    // for white type, and stays a soft glass on dark wallpaper.
+    Palette("mist", 0x57302B3DL, 0x6115131CL),
+    Palette("frost", 0x40FFFFFFL, 0x30FFFFFFL),
     Palette("paper", 0xF5FBF8F2L, 0xF21B1A21L),
     Palette("marigold", 0xE6F2A93BL, 0xD9A3661FL),
     Palette("apricot", 0xE6E98E6AL, 0xD98A4A3AL),
@@ -356,7 +357,7 @@ val PALETTES = listOf(
 @Composable
 fun PaletteRow(light: Long, dark: Long, onPick: (Palette) -> Unit) {
     val c = Bm.colors
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+    Row(Modifier.fillMaxWidth().bleedHorizontally(20.dp).horizontalScroll(rememberScrollState()).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         PALETTES.forEach { p ->
             val isSelected = p.light == light && p.dark == dark
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable(role = Role.RadioButton) { onPick(p) }.semantics { selected = isSelected }) {
@@ -378,8 +379,9 @@ fun PaletteRow(light: Long, dark: Long, onPick: (Palette) -> Unit) {
 
 /* ------------------------------------------------------------------ Sun and moon */
 
-val SUN_LIBRARY = SunIconStyle.entries.filter { it.name.startsWith("BM_") }
-val MOON_LIBRARY = MoonIconStyle.entries.filter { it.name.startsWith("BM_") }
+/** The Daybook set is the only one offered; older styles stay renderable for saved designs. */
+val SUN_LIBRARY = com.bestmates.worldclock.solar.SolarCatalog.pickerSuns
+val MOON_LIBRARY = com.bestmates.worldclock.solar.SolarCatalog.pickerMoons
 
 @Composable
 fun SolarGlyph(day: Boolean, sun: SunIconStyle, moon: MoonIconStyle, color: Long, size: Float, modifier: Modifier = Modifier) {
@@ -390,27 +392,44 @@ fun SolarGlyph(day: Boolean, sun: SunIconStyle, moon: MoonIconStyle, color: Long
     Image(bitmap, null, modifier.size(size.dp), filterQuality = FilterQuality.High)
 }
 
+/**
+ * Sun or moon library as a wrapping grid: every glyph is visible at once, nothing is cut at
+ * the panel edges. A saved design whose icon predates the Daybook set shows that icon first,
+ * marked as its current classic icon, so keeping it stays one tap away.
+ */
 @Composable
 fun SolarLibrary(day: Boolean, sun: SunIconStyle, moon: MoonIconStyle, color: Long, onSun: (SunIconStyle) -> Unit, onMoon: (MoonIconStyle) -> Unit) {
     val c = Bm.colors
-    val styles: List<Any> = if (day) (if (sun in SUN_LIBRARY) SUN_LIBRARY else listOf(sun) + SUN_LIBRARY) else (if (moon in MOON_LIBRARY) MOON_LIBRARY else listOf(moon) + MOON_LIBRARY)
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // A redrawn older style is shown and selected as its Daybook counterpart; only styles
+    // without one (other icon packs) appear as their own "classic" tile.
+    val current: Any = if (day) com.bestmates.worldclock.solar.SolarCatalog.daybookSun(sun) ?: sun else com.bestmates.worldclock.solar.SolarCatalog.daybookMoon(moon) ?: moon
+    val library: List<Any> = if (day) SUN_LIBRARY else MOON_LIBRARY
+    val styles = if (current in library) library else listOf(current) + library
+    val tile = if (c.isDark) Color(0xFF26233A) else Color(0xFF2E2A45)
+    @OptIn(ExperimentalLayoutApi::class)
+    FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 5) {
         styles.forEach { style ->
-            val isSelected = style == (if (day) sun else moon)
+            val isSelected = style == current
+            val legacy = style !in library
             Box(
-                Modifier.size(54.dp).clip(RoundedCornerShape(16.dp))
-                    .background(if (isSelected) c.ink else Color(0xFF2A2742))
-                    .border(if (isSelected) 2.dp else 0.dp, c.accent, RoundedCornerShape(16.dp))
+                Modifier.weight(1f).aspectRatio(1f).clip(RoundedCornerShape(16.dp))
+                    .background(tile)
+                    .border(if (isSelected) 2.dp else 0.dp, if (isSelected) c.accent else Color.Transparent, RoundedCornerShape(16.dp))
                     .clickable(role = Role.RadioButton) { if (day) onSun(style as SunIconStyle) else onMoon(style as MoonIconStyle) }
                     .semantics { selected = isSelected },
                 contentAlignment = Alignment.Center,
             ) {
-                SolarGlyph(day, if (day) style as SunIconStyle else sun, if (!day) style as MoonIconStyle else moon, color, 34f)
+                SolarGlyph(day, if (day) style as SunIconStyle else sun, if (!day) style as MoonIconStyle else moon, color, 36f)
+                if (legacy) Text(
+                    uiText("classic_icon"), style = Bm.type.caption, color = Color.White.copy(alpha = .7f), maxLines = 1,
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 3.dp),
+                )
             }
         }
+        // Keep the last row's tiles the same width as the others.
+        repeat((5 - styles.size % 5) % 5) { Spacer(Modifier.weight(1f)) }
     }
 }
-
 /* ------------------------------------------------------------------ City picker */
 
 @Composable
@@ -426,7 +445,12 @@ fun CityPickerSheet(onDismiss: () -> Unit, onPick: (City) -> Unit) {
     var countries by remember { mutableStateOf(emptyList<Pair<String, String>>()) }
     var countryCities by remember { mutableStateOf(emptyList<City>()) }
     LaunchedEffect(query) { delay(160); results = withContext(Dispatchers.IO) { runCatching { catalog.search(query) }.getOrDefault(emptyList()) } }
-    LaunchedEffect(continent) { countries = continent?.let { withContext(Dispatchers.IO) { catalog.countries(it) } }.orEmpty() }
+    LaunchedEffect(continent, language) {
+        // Countries are listed by their name in the app's language, in that language's order.
+        val collator = java.text.Collator.getInstance(language.dateLocale())
+        countries = continent?.let { withContext(Dispatchers.IO) { catalog.countries(it) } }.orEmpty()
+            .sortedWith(compareBy(collator) { localizedCountry(it.first, language, it.second) })
+    }
     LaunchedEffect(country) { countryCities = country?.let { withContext(Dispatchers.IO) { catalog.cities(it.first, "", 80) } }.orEmpty() }
     BmSheet(onDismiss = onDismiss, title = uiText("choose_city"), fullHeight = true) {
         Column(Modifier.padding(horizontal = 20.dp)) {
@@ -440,12 +464,12 @@ fun CityPickerSheet(onDismiss: () -> Unit, onPick: (City) -> Unit) {
                     items(results, key = { it.geoId }) { city -> CityRow(city) { onPick(city) } }
                 }
                 country != null -> {
-                    item { BackRow(country!!.second) { country = null } }
+                    item { BackRow(localizedCountry(country!!.first, language, country!!.second)) { country = null } }
                     items(countryCities, key = { it.geoId }) { city -> CityRow(city) { onPick(city) } }
                 }
                 continent != null -> {
                     item { BackRow(continentLabel(continent!!, language)) { continent = null } }
-                    items(countries, key = { it.first }) { co -> BrowseRow(co.second) { country = co } }
+                    items(countries, key = { it.first }) { co -> BrowseRow(localizedCountry(co.first, language, co.second)) { country = co } }
                 }
                 else -> {
                     item { BmOverline(uiText("browse"), Modifier.padding(vertical = 8.dp)) }
@@ -465,7 +489,7 @@ private fun CityRow(city: City, onClick: () -> Unit) {
     Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).clickable(onClick = onClick).padding(vertical = 12.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
             Text(city.name, style = Bm.type.bodyStrong, color = c.ink)
-            Text("${city.country} · ${city.zoneId.substringAfterLast('/').replace('_', ' ')}", style = Bm.type.bodySmall, color = c.inkSoft, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text("${localizedCountryName(city.country, LocalBestMatesLanguage.current)} · ${city.zoneId.substringAfterLast('/').replace('_', ' ')}", style = Bm.type.bodySmall, color = c.inkSoft, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Text(now, style = Bm.type.numeric, color = c.inkSoft)
     }
@@ -490,8 +514,5 @@ private fun BackRow(label: String, onClick: () -> Unit) {
     }
 }
 
-fun continentLabel(code: String, language: AppLanguage): String {
-    val english = mapOf("AS" to "Asia", "EU" to "Europe", "AF" to "Africa", "NA" to "North America", "SA" to "South America", "OC" to "Oceania", "AN" to "Antarctica")
-    val chinese = mapOf("AS" to "亚洲", "EU" to "欧洲", "AF" to "非洲", "NA" to "北美洲", "SA" to "南美洲", "OC" to "大洋洲", "AN" to "南极洲")
-    return (if (language == AppLanguage.CHINESE) chinese else english)[code] ?: code
-}
+fun continentLabel(code: String, language: AppLanguage): String = translated(language, "continent_" + code.lowercase())
+

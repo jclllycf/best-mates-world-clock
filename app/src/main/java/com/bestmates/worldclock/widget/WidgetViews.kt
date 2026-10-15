@@ -63,7 +63,11 @@ object WidgetViews {
         val bitmapScale = min(1f, sqrt(pixelBudget / (viewW * viewH).coerceAtLeast(1f)))
         val bw = (viewW * bitmapScale).roundToInt().coerceAtLeast(1)
         val bh = (viewH * bitmapScale).roundToInt().coerceAtLeast(1)
-        val scene = SceneServices.builder(context).build(config)
+        // The real cell's proportions win over the stored board, so full-bleed designs reach
+        // the widget's edges instead of leaving bands at two sides (BM-REAL-02).
+        val (boardW, boardH) = SceneGeometry.adaptBoard(config.boardWidthDp, config.boardHeightDp, widthDp, heightDp)
+        val shown = SceneGeometry.reflow(config, boardW, boardH)
+        val scene = SceneServices.builder(context).build(shown)
         val bitmap = Bitmap.createBitmap(bw, bh, Bitmap.Config.ARGB_8888)
         val bitmapFit = SceneGeometry.fit(scene.boardW, scene.boardH, 0f, 0f, bw.toFloat(), bh.toFloat())
         SceneServices.widgetRenderer(context).draw(Canvas(bitmap), scene, bitmapFit, DrawOptions(night = isNight(context, config), liveText = false))
@@ -99,7 +103,7 @@ object WidgetViews {
                 val bottom = (viewH - (cy + halfH)).roundToInt().coerceAtLeast(0)
                 views.setViewPadding(slotId, left, top, right, bottom)
                 views.setViewVisibility(slotId, View.VISIBLE)
-                val pattern = if (line.kind == LineKind.TIME) builder.timePattern(config.use24Hour) else builder.datePattern
+                val pattern = if (line.kind == LineKind.TIME) builder.timePattern(shown.use24Hour) else builder.datePattern
                 val clock = RemoteViews(context.packageName, WidgetFonts.resolve(line.fontId).clockLayout).apply {
                     setTextViewTextSize(R.id.clock, TypedValue.COMPLEX_UNIT_PX, line.size * fit.scale)
                     setTextColor(R.id.clock, line.color)

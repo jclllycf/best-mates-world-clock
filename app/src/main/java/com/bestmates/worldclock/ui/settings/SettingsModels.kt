@@ -1,17 +1,18 @@
 package com.bestmates.worldclock.ui.settings
 
-import com.bestmates.worldclock.ui.design.BmAccent
+import com.bestmates.worldclock.ui.design.BmStyle
 
 /**
- * Stored names are the historical `app_settings/app_theme` values. Since 0.4 they select
- * the accent of the single Best Mates palette instead of four separate identities, so
- * every existing preference still resolves.
+ * Stored names are the historical `app_settings/app_theme` values, so every existing
+ * preference still resolves. Since 0.5 each selects a complete style (palette, display
+ * typeface and corner geometry) instead of only an accent; each style keeps the accent
+ * family its name had in 0.4, so nobody lands somewhere unexpected.
  */
-enum class AppThemeStyle(val accent: BmAccent) {
-    CLOUD(BmAccent.MARIGOLD),
-    DREAM(BmAccent.ROSE),
-    MIDNIGHT(BmAccent.IRIS),
-    MONO(BmAccent.GRAPHITE);
+enum class AppThemeStyle(val style: BmStyle, val key: String) {
+    CLOUD(BmStyle.DAYBOOK, "daybook"),
+    DREAM(BmStyle.ROSEWATER, "rosewater"),
+    MIDNIGHT(BmStyle.NOCTURNE, "nocturne"),
+    MONO(BmStyle.STUDIO, "studio");
 
     companion object {
         fun from(value: String?) = entries.firstOrNull { it.name == value } ?: CLOUD

@@ -28,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.bestmates.worldclock.data.ProjectStore
 import com.bestmates.worldclock.data.WidgetBindings
+import com.bestmates.worldclock.scene.SceneGeometry
 import com.bestmates.worldclock.ui.design.BmTheme
 import com.bestmates.worldclock.ui.editor.EditorScreen
 import com.bestmates.worldclock.ui.i18n.LocalBestMatesLanguage
@@ -116,8 +117,10 @@ private fun BestMatesApp(configureWidgetId: Int, openProject: String?, onOpenHan
         activity.finish()
     }
 
-    CompositionLocalProvider(LocalBestMatesLanguage provides language) {
-        BmTheme(dark = dark, accent = theme.accent) {
+    // The app's own language decides reading direction, independent of the phone's locale.
+    val direction = if (language == AppLanguage.ARABIC) androidx.compose.ui.unit.LayoutDirection.Rtl else androidx.compose.ui.unit.LayoutDirection.Ltr
+    CompositionLocalProvider(LocalBestMatesLanguage provides language, androidx.compose.ui.platform.LocalLayoutDirection provides direction) {
+        BmTheme(dark = dark, style = theme.style) {
             AnimatedContent(
                 targetState = screen,
                 transitionSpec = {
@@ -143,7 +146,15 @@ private fun BestMatesApp(configureWidgetId: Int, openProject: String?, onOpenHan
                         onBack = { screen = Screen.Workspace },
                     )
                     is Screen.Editor -> {
-                        val initial = remember(target.projectId) { store.load(target.projectId) }
+                        val initial = remember(target.projectId) {
+                            // A design already on the home screen is edited at the proportions the
+                            // launcher really gives it, so the editor shows exactly what it shows.
+                            val stored = store.load(target.projectId)
+                            WidgetBindings(activity).placedSizeFor(target.projectId)?.let { (w, h) ->
+                                val (bw, bh) = SceneGeometry.adaptBoard(stored.boardWidthDp, stored.boardHeightDp, w, h)
+                                SceneGeometry.reflow(stored, bw, bh)
+                            } ?: stored
+                        }
                         EditorScreen(
                             initial = initial,
                             isProject = true,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bestmates.worldclock.fonts.WidgetFonts
+import com.bestmates.worldclock.model.MATERIAL_MIST
+import com.bestmates.worldclock.model.MATERIAL_SOLID
 import com.bestmates.worldclock.ui.design.Bm
 import com.bestmates.worldclock.ui.design.BmButton
 import com.bestmates.worldclock.ui.design.BmButtonSize
@@ -45,6 +48,7 @@ import com.bestmates.worldclock.ui.design.BmSegmented
 import com.bestmates.worldclock.ui.design.BmSliderRow
 import com.bestmates.worldclock.ui.design.BmSwitch
 import com.bestmates.worldclock.ui.design.BmTextField
+import com.bestmates.worldclock.ui.design.bleedHorizontally
 import com.bestmates.worldclock.ui.i18n.LocalBestMatesLanguage
 import com.bestmates.worldclock.ui.i18n.translated
 import com.bestmates.worldclock.ui.i18n.uiText
@@ -58,7 +62,7 @@ fun Inspector(state: EditorState, sel: EditorSelection, previewNight: Boolean, o
         is EditorSelection.TextItem -> BmIcons.Text to (state.text(sel.index)?.content?.lineSequence()?.firstOrNull().orEmpty().ifBlank { uiText("text") })
     }
     val locked = state.isLocked(sel)
-    Column(Modifier.fillMaxWidth().padding(top = 10.dp)) {
+    Column(Modifier.fillMaxSize().padding(top = 2.dp)) {
         Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Icon(icon, null, tint = Bm.colors.accentInk, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(10.dp))
@@ -71,21 +75,20 @@ fun Inspector(state: EditorState, sel: EditorSelection, previewNight: Boolean, o
             BmIconButton(BmIcons.Check, uiText("done"), { state.selection = null }, tonal = true, size = 38.dp, iconSize = 19.dp)
         }
         when (sel) {
-            is EditorSelection.Layer -> LayerInspector(state, sel.index, previewNight, onSheet)
-            is EditorSelection.CityItem -> CityInspector(state, sel.index, onSheet)
-            is EditorSelection.TextItem -> TextInspector(state, sel.index, onSheet)
+            is EditorSelection.Layer -> LayerInspector(state, sel.index, previewNight, onSheet, Modifier.weight(1f))
+            is EditorSelection.CityItem -> CityInspector(state, sel.index, onSheet, Modifier.weight(1f))
+            is EditorSelection.TextItem -> TextInspector(state, sel.index, onSheet, Modifier.weight(1f))
         }
-        Spacer(Modifier.height(10.dp))
     }
 }
 
 @Composable
-private fun Tabs(labels: List<String>, icons: List<ImageVector?> = emptyList(), content: @Composable ColumnScope.(Int) -> Unit) {
+private fun Tabs(labels: List<String>, modifier: Modifier = Modifier, icons: List<ImageVector?> = emptyList(), content: @Composable ColumnScope.(Int) -> Unit) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier.fillMaxWidth()) {
         BmSegmented(labels, tab.coerceIn(0, labels.lastIndex), { tab = it }, Modifier.padding(horizontal = 20.dp, vertical = 10.dp), icons)
         Column(
-            Modifier.fillMaxWidth().height(212.dp).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 4.dp),
+            Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = 4.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) { content(tab.coerceIn(0, labels.lastIndex)) }
     }
@@ -98,13 +101,22 @@ private fun deg(v: Float) = "${v.roundToInt()}°"
 /* ------------------------------------------------------------------ Shape */
 
 @Composable
-private fun LayerInspector(state: EditorState, index: Int, previewNight: Boolean, onSheet: (EditorSheet) -> Unit) {
+private fun LayerInspector(state: EditorState, index: Int, previewNight: Boolean, onSheet: (EditorSheet) -> Unit, modifier: Modifier = Modifier) {
     val layer = state.layer(index) ?: return
     val lang = LocalBestMatesLanguage.current
-    Tabs(listOf(uiText("tab_shape"), uiText("tab_colour"), uiText("tab_edge"), uiText("tab_depth"))) { tab ->
+    Tabs(listOf(uiText("tab_shape"), uiText("tab_colour"), uiText("tab_edge"), uiText("tab_depth")), modifier) { tab ->
         when (tab) {
             0 -> ShapeGrid(layer.shape, onPick = { s -> state.updateLayer(index) { it.copy(shape = s) } })
             1 -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(uiText("finish"), style = Bm.type.bodySmall, color = Bm.colors.inkSoft, modifier = Modifier.weight(1f))
+                    BmSegmented(
+                        listOf(uiText("finish_mist"), uiText("finish_solid")),
+                        if (layer.material == MATERIAL_MIST) 0 else 1,
+                        { i -> state.updateLayer(index) { it.copy(material = if (i == 0) MATERIAL_MIST else MATERIAL_SOLID) } },
+                        Modifier.width(196.dp),
+                    )
+                }
                 PaletteRow(layer.dayColor, layer.nightColor) { p -> state.updateLayer(index) { it.copy(dayColor = p.light, nightColor = p.dark) } }
                 ColorRow(uiText("fill_light_mode"), layer.dayColor, onPick = { v -> state.updateLayer(index) { it.copy(dayColor = v) } }) {
                     onSheet(EditorSheet.Colour(translated(lang, "fill_light_mode"), layer.dayColor, true) { v -> state.liveLayer(index) { it.copy(dayColor = v) } })
@@ -145,11 +157,11 @@ private fun RotationRow(value: Float, onChange: (Float) -> Unit, onFinished: () 
 /* ------------------------------------------------------------------ City */
 
 @Composable
-private fun CityInspector(state: EditorState, index: Int, onSheet: (EditorSheet) -> Unit) {
+private fun CityInspector(state: EditorState, index: Int, onSheet: (EditorSheet) -> Unit, modifier: Modifier = Modifier) {
     val city = state.city(index) ?: return
     val lang = LocalBestMatesLanguage.current
     val c = Bm.colors
-    Tabs(listOf(uiText("tab_city"), uiText("tab_type"), uiText("tab_colour"), uiText("tab_sky"))) { tab ->
+    Tabs(listOf(uiText("tab_city"), uiText("tab_type"), uiText("tab_colour"), uiText("tab_sky")), modifier) { tab ->
         when (tab) {
             0 -> {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -258,11 +270,11 @@ private fun FontRow(label: String, fontId: String, sample: String, onClick: () -
 /* ------------------------------------------------------------------ Text */
 
 @Composable
-private fun TextInspector(state: EditorState, index: Int, onSheet: (EditorSheet) -> Unit) {
+private fun TextInspector(state: EditorState, index: Int, onSheet: (EditorSheet) -> Unit, modifier: Modifier = Modifier) {
     val item = state.text(index) ?: return
     val lang = LocalBestMatesLanguage.current
     val c = Bm.colors
-    Tabs(listOf(uiText("tab_text"), uiText("tab_font"), uiText("tab_colour"))) { tab ->
+    Tabs(listOf(uiText("tab_text"), uiText("tab_font"), uiText("tab_colour")), modifier) { tab ->
         when (tab) {
             0 -> {
                 BmTextField(item.content, { v -> state.liveText(index) { it.copy(content = v.take(80)) } }, Modifier.fillMaxWidth(), placeholder = uiText("text_content"), singleLine = false, onDone = state::endGesture)
@@ -276,7 +288,7 @@ private fun TextInspector(state: EditorState, index: Int, onSheet: (EditorSheet)
                 androidx.compose.runtime.LaunchedEffect(Unit) {
                     if (current > 1) fontScroll.scrollTo(with(density) { (100.dp * (current - 1)).roundToPx() })
                 }
-                Row(Modifier.fillMaxWidth().horizontalScroll(fontScroll), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(Modifier.fillMaxWidth().bleedHorizontally(20.dp).horizontalScroll(fontScroll).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     WidgetFonts.all.forEach { font ->
                         val selected = WidgetFonts.canonicalId(item.font) == font.id
                         Column(

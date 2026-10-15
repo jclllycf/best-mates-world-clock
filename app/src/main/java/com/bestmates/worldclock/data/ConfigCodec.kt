@@ -105,7 +105,7 @@ object ConfigCodec {
         put("borderWidth", borderWidth); put("borderOpacity", borderOpacity)
         put("softness", softness); put("glowOpacity", glowOpacity)
         put("shadow", shadow); put("shadowOpacity", shadowOpacity); put("shadowYOffset", shadowYOffset)
-        put("rotation", rotation); put("locked", locked)
+        put("rotation", rotation); put("locked", locked); put("material", material)
     }
 
     private fun CustomText.toJson() = JSONObject().apply {
@@ -150,6 +150,8 @@ object ConfigCodec {
                 shadow = it.optFloat("shadow", 8f), shadowOpacity = it.optFloat("shadowOpacity", .16f),
                 shadowYOffset = it.optFloat("shadowYOffset", 2f),
                 rotation = it.optFloat("rotation", 0f), locked = it.optBoolean("locked", false),
+                // Layers saved before materials existed are flat fills.
+                material = it.optString("material", MATERIAL_SOLID).ifBlank { MATERIAL_SOLID },
             ))
         }
     }

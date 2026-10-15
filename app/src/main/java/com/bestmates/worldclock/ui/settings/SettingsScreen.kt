@@ -45,7 +45,8 @@ import com.bestmates.worldclock.ui.design.BmOverline
 import com.bestmates.worldclock.ui.design.BmRow
 import com.bestmates.worldclock.ui.design.BmSegmented
 import com.bestmates.worldclock.ui.design.BmSheet
-import com.bestmates.worldclock.ui.design.bmColors
+import com.bestmates.worldclock.ui.design.BmProvide
+import com.bestmates.worldclock.ui.design.bmTokens
 import com.bestmates.worldclock.ui.i18n.uiText
 import com.bestmates.worldclock.ui.workspace.BrandMark
 
@@ -83,30 +84,19 @@ fun SettingsScreen(
             Text(uiText("appearance_note"), style = Bm.type.bodySmall, color = c.inkSoft)
         }
 
-        Section(uiText("accent")) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AppThemeStyle.entries.forEach { style ->
-                    val selected = style == currentTheme
-                    val swatch = bmColors(c.isDark, style.accent)
-                    Column(
-                        Modifier.weight(1f).clip(RoundedCornerShape(18.dp))
-                            .background(if (selected) c.surfaceSunken else c.surface)
-                            .border(if (selected) 1.5.dp else 1.dp, if (selected) c.ink else c.hairline, RoundedCornerShape(18.dp))
-                            .clickable(role = Role.RadioButton) { onThemeChange(style) }
-                            .semantics { this.selected = selected }
-                            .padding(vertical = 14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Box(Modifier.size(30.dp).clip(CircleShape).background(swatch.accent), contentAlignment = Alignment.Center) {
-                            if (selected) Icon(BmIcons.Check, null, tint = swatch.onAccent, modifier = Modifier.size(16.dp))
-                        }
-                        Spacer(Modifier.height(8.dp))
-                        Text(uiText("accent_${style.accent.name.lowercase()}"), style = Bm.type.caption, color = c.ink)
+        Section(uiText("app_style")) {
+            // Each option is a live miniature drawn with that style's own tokens.
+            AppThemeStyle.entries.chunked(2).forEachIndexed { row, pair ->
+                if (row > 0) Spacer(Modifier.height(10.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    pair.forEach { style ->
+                        StylePreview(style, style == currentTheme, c.isDark, Modifier.weight(1f)) { onThemeChange(style) }
                     }
                 }
             }
+            Spacer(Modifier.height(10.dp))
+            Text(uiText("app_style_note"), style = Bm.type.bodySmall, color = c.inkSoft)
         }
-
         Section(uiText("display_language")) {
             AppLanguage.entries.forEachIndexed { i, language ->
                 if (i > 0) BmDivider()
@@ -128,7 +118,7 @@ fun SettingsScreen(
 
         Section(uiText("about")) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(52.dp).clip(RoundedCornerShape(16.dp)).background(androidx.compose.ui.graphics.Color(0xFF26223A)), contentAlignment = Alignment.Center) {
+                Box(Modifier.size(52.dp).clip(Bm.shapes.tile).background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(c.markTileTop, c.markTileBottom))), contentAlignment = Alignment.Center) {
                     BrandMark(Modifier.size(34.dp))
                 }
                 Spacer(Modifier.width(14.dp))
@@ -147,7 +137,14 @@ fun SettingsScreen(
 
     if (licences) BmSheet(onDismiss = { licences = false }, title = uiText("licences")) {
         Column(Modifier.padding(horizontal = 24.dp).padding(bottom = 24.dp).verticalScroll(rememberScrollState())) {
-            LICENCES.forEach { (name, detail) ->
+            listOf(
+                "Best Mates" to "Apache License 2.0",
+                uiText("licence_daybook_icons") to uiText("licence_daybook_note"),
+                uiText("licence_fonts") + " — " + FONT_FAMILIES to uiText("licence_fonts_note"),
+                uiText("licence_city_data") to "GeoNames (geonames.org), Creative Commons Attribution 4.0.",
+                uiText("licence_classic_icons") to "Lucide (ISC), Tabler, Phosphor, Fluent UI, Iconoir, Meteocons (MIT), Material Design Icons (Apache 2.0).",
+                "AndroidSVG" to "Apache License 2.0",
+            ).forEach { (name, detail) ->
                 Text(name, style = Bm.type.bodyStrong, color = c.ink)
                 Text(detail, style = Bm.type.bodySmall, color = c.inkSoft, modifier = Modifier.padding(bottom = 12.dp))
             }
@@ -155,14 +152,49 @@ fun SettingsScreen(
     }
 }
 
-private val LICENCES = listOf(
-    "Best Mates" to "Apache License 2.0",
-    "Fraunces, Figtree, Instrument Serif, Space Grotesk, JetBrains Mono, Nunito, Caveat, Bricolage Grotesque, Syne, Playfair Display, Pacifico, Silkscreen, Unbounded, Oswald, Baloo 2, DM Serif Display, Sora, Young Serif" to
-        "SIL Open Font License 1.1 — full texts are bundled in the app (assets/licenses).",
-    "City data" to "GeoNames (geonames.org), Creative Commons Attribution 4.0.",
-    "Classic sun and moon sets" to "Lucide (ISC), Tabler, Phosphor, Fluent UI, Iconoir, Meteocons (MIT), Material Design Icons (Apache 2.0).",
-    "AndroidSVG" to "Apache License 2.0",
-)
+/** Proper names of the bundled typefaces (not translated). */
+private const val FONT_FAMILIES = "Fraunces, Figtree, Instrument Serif, Space Grotesk, JetBrains Mono, Nunito, Caveat, Bricolage Grotesque, Syne, Playfair Display, Pacifico, Silkscreen, Unbounded, Oswald, Baloo 2, DM Serif Display, Sora, Young Serif"
+
+@Composable
+private fun StylePreview(style: AppThemeStyle, selected: Boolean, dark: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val outer = Bm.colors
+    val name = uiText("style_${style.key}")
+    val tokens = remember(style, dark) { bmTokens(dark, style.style) }
+    Column(
+        modifier
+            .clip(RoundedCornerShape(20.dp))
+            .border(if (selected) 2.dp else 1.dp, if (selected) outer.ink else outer.hairline, RoundedCornerShape(20.dp))
+            .clickable(role = Role.RadioButton, onClick = onClick)
+            .semantics { this.selected = selected },
+    ) {
+        BmProvide(tokens) {
+            val c = Bm.colors
+            Column(Modifier.fillMaxWidth().background(c.paper).padding(12.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier.size(26.dp).clip(Bm.shapes.control)
+                            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(c.markTileTop, c.markTileBottom))),
+                        contentAlignment = Alignment.Center,
+                    ) { BrandMark(Modifier.size(17.dp)) }
+                    Spacer(Modifier.width(8.dp))
+                    Text("Aa", style = Bm.type.headline, color = c.ink, maxLines = 1)
+                }
+                Spacer(Modifier.height(10.dp))
+                Box(Modifier.fillMaxWidth().height(34.dp).clip(Bm.shapes.tile).background(c.surfaceSunken).padding(7.dp)) {
+                    Box(Modifier.size(width = 54.dp, height = 20.dp).clip(Bm.shapes.button).background(c.accent))
+                    Box(Modifier.align(Alignment.CenterEnd).size(20.dp).clip(CircleShape).background(c.primary))
+                }
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().background(if (selected) outer.surfaceSunken else outer.surface).padding(horizontal = 12.dp, vertical = 9.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(name, style = Bm.type.label, color = outer.ink, modifier = Modifier.weight(1f))
+            if (selected) Icon(BmIcons.Check, null, tint = outer.ink, modifier = Modifier.size(16.dp))
+        }
+    }
+}
 
 @Composable
 private fun Section(title: String, content: @Composable () -> Unit) {

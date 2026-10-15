@@ -57,6 +57,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
@@ -122,9 +123,9 @@ fun BmButton(
         modifier
             .pressable(interaction, enabled)
             .heightIn(min = size.height)
-            .clip(Bm.shapes.pill)
+            .clip(Bm.shapes.button)
             .background(bg.copy(alpha = bg.alpha * alpha))
-            .then(if (border != null) Modifier.border(1.dp, border.copy(alpha = alpha), Bm.shapes.pill) else Modifier)
+            .then(if (border != null) Modifier.border(1.dp, border.copy(alpha = alpha), Bm.shapes.button) else Modifier)
             .clickable(interaction, indication = null, enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = size.pad),
         horizontalArrangement = Arrangement.Center,
@@ -310,7 +311,7 @@ fun BmSegmented(
         modifier
             .fillMaxWidth()
             .height(40.dp)
-            .clip(Bm.shapes.pill)
+            .clip(Bm.shapes.button)
             .background(c.surfaceSunken)
             .padding(3.dp),
     ) {
@@ -318,14 +319,14 @@ fun BmSegmented(
         val x by animateDpAsState(segment * selected, spring(dampingRatio = .82f, stiffness = 600f), label = "seg")
         Box(
             Modifier.offset(x = x).width(segment).fillMaxHeight()
-                .shadow(1.dp, Bm.shapes.pill, ambientColor = c.shadow, spotColor = c.shadow)
-                .clip(Bm.shapes.pill).background(c.surfaceRaised),
+                .shadow(1.dp, Bm.shapes.button, ambientColor = c.shadow, spotColor = c.shadow)
+                .clip(Bm.shapes.button).background(c.surfaceRaised),
         )
         Row(Modifier.fillMaxSize()) {
             options.forEachIndexed { index, label ->
                 val active = index == selected
                 Row(
-                    Modifier.weight(1f).fillMaxHeight().clip(Bm.shapes.pill)
+                    Modifier.weight(1f).fillMaxHeight().clip(Bm.shapes.button)
                         .clickable(role = Role.Tab) { onSelect(index) }
                         .semantics { this.selected = active },
                     horizontalArrangement = Arrangement.Center,
@@ -360,9 +361,9 @@ fun BmChip(
         modifier
             .pressable(interaction)
             .heightIn(min = 38.dp)
-            .clip(Bm.shapes.pill)
+            .clip(Bm.shapes.button)
             .background(bg)
-            .border(1.dp, if (selected) c.ink else c.hairlineStrong, Bm.shapes.pill)
+            .border(1.dp, if (selected) c.ink else c.hairlineStrong, Bm.shapes.button)
             .clickable(interaction, indication = null, role = Role.RadioButton, onClick = onClick)
             .semantics { this.selected = selected }
             .padding(horizontal = 14.dp),
@@ -561,8 +562,8 @@ fun BmDialog(
             Modifier
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth()
-                .shadow(28.dp, RoundedCornerShape(28.dp), ambientColor = c.shadow, spotColor = c.shadow)
-                .clip(RoundedCornerShape(28.dp))
+                .shadow(28.dp, Bm.shapes.dialog, ambientColor = c.shadow, spotColor = c.shadow)
+                .clip(Bm.shapes.dialog)
                 .background(c.surfaceRaised)
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -603,3 +604,16 @@ object CheckerBrush {
     fun brush(isDark: Boolean) = if (isDark) dark else light
 }
 
+
+/**
+ * Lets a horizontally scrolling strip run to the edges of its padded parent, so items
+ * scroll out at the panel edge instead of being cut off inside the padding. Pair it with
+ * [bleed] of horizontal content padding inside the strip.
+ */
+fun Modifier.bleedHorizontally(bleed: Dp): Modifier = layout { measurable, constraints ->
+    val extra = bleed.roundToPx() * 2
+    val max = if (constraints.hasBoundedWidth) constraints.maxWidth + extra else constraints.maxWidth
+    val placeable = measurable.measure(constraints.copy(minWidth = max, maxWidth = max))
+    val width = if (constraints.hasBoundedWidth) constraints.maxWidth else placeable.width
+    layout(width, placeable.height) { placeable.place(-extra / 2, 0) }
+}

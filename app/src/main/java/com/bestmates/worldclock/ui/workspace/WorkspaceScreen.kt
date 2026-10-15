@@ -96,7 +96,9 @@ import com.bestmates.worldclock.ui.design.BmTextField
 import com.bestmates.worldclock.ui.design.pressable
 import com.bestmates.worldclock.ui.i18n.LocalBestMatesLanguage
 import com.bestmates.worldclock.ui.i18n.dateLocale
+import com.bestmates.worldclock.ui.i18n.translated
 import com.bestmates.worldclock.ui.i18n.uiFormat
+import com.bestmates.worldclock.ui.i18n.uiPlural
 import com.bestmates.worldclock.ui.i18n.uiText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -172,7 +174,7 @@ fun WorkspaceRoute(
     if (confirmingDelete) {
         BmDialog(
             title = uiText("delete_projects_title"),
-            message = uiFormat(if (selectedIds.size == 1) "delete_projects_message_one" else "delete_projects_message", selectedIds.size),
+            message = uiPlural("delete_projects_message", selectedIds.size),
             onDismiss = { confirmingDelete = false },
             confirmText = uiText("delete"),
             onConfirm = {
@@ -281,7 +283,7 @@ private fun WorkspaceHeader(
             if (inSelection) {
                 Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
                     BmIconButton(BmIcons.Close, uiText("close"), onClear)
-                    Text(uiFormat("selected_count", count), style = Bm.type.title, color = c.ink, modifier = Modifier.weight(1f).padding(start = 8.dp))
+                    Text(uiPlural("selected_count", count), style = Bm.type.title, color = c.ink, modifier = Modifier.weight(1f).padding(start = 8.dp))
                     BmIconButton(BmIcons.Edit, uiText("rename"), onRename, enabled = count == 1)
                     BmIconButton(BmIcons.Duplicate, uiText("duplicate"), onDuplicate)
                     BmIconButton(BmIcons.Trash, uiText("delete"), onDelete, tint = c.danger)
@@ -305,11 +307,7 @@ private fun LocalNow(modifier: Modifier = Modifier) {
     val minute = rememberMinuteTick()
     val language = LocalBestMatesLanguage.current
     val text = remember(minute, language) {
-        val pattern = when (language) {
-            com.bestmates.worldclock.ui.settings.AppLanguage.CHINESE -> "M月d日 EEEE · HH:mm"
-            com.bestmates.worldclock.ui.settings.AppLanguage.GERMAN -> "EEEE, d. MMMM · HH:mm"
-            else -> "EEEE, d MMMM · HH:mm"
-        }
+        val pattern = translated(language, "date_header_pattern")
         ZonedDateTime.now().format(DateTimeFormatter.ofPattern(pattern, language.dateLocale()))
     }
     Text(text, style = Bm.type.bodySmall, color = Bm.colors.inkSoft, modifier = modifier)
@@ -386,7 +384,7 @@ private fun ProjectCard(
         )
         Row(Modifier.padding(horizontal = 2.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                uiFormat(if (config.cities.size == 1) "card_meta_one" else "card_meta", config.cities.size, config.columns, config.rows),
+                uiPlural("cities_count", config.cities.size) + " · " + uiFormat("cells_format", config.columns, config.rows),
                 style = Bm.type.caption,
                 color = c.inkSoft,
             )
@@ -411,7 +409,7 @@ private fun EmptyWorkspace(onCreate: () -> Unit) {
     ) {
         Box(
             Modifier.size(220.dp).clip(RoundedCornerShape(40.dp))
-                .background(Brush.verticalGradient(listOf(Color(0xFF3A3260), Color(0xFF1E1B2E)))),
+                .background(Brush.verticalGradient(listOf(c.markTileTop, c.markTileBottom))),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(Modifier.fillMaxSize()) { drawStars() }
@@ -427,11 +425,37 @@ private fun EmptyWorkspace(onCreate: () -> Unit) {
     }
 }
 
+/**
+ * A quiet constellation around the mark: four-point sparkles (the same star as the moon
+ * icons) mirrored about the vertical axis, largest near the top, fading towards the edges.
+ */
 private fun DrawScope.drawStars() {
-    val stars = listOf(.16f to .22f, .82f to .18f, .72f to .78f, .24f to .74f, .5f to .12f, .9f to .52f, .1f to .5f)
-    stars.forEachIndexed { i, (x, y) ->
-        drawCircle(Color(0xFFF4EAD8).copy(alpha = if (i % 2 == 0) .55f else .3f), radius = if (i % 3 == 0) 2.4.dp.toPx() else 1.5.dp.toPx(), center = Offset(size.width * x, size.height * y))
+    val star = Color(0xFFF4EAD8)
+    // x is the distance from the vertical axis (0….5), y from the top (0…1).
+    val pairs = listOf(
+        Triple(.32f to .24f, 6.5f, .92f),
+        Triple(.26f to .80f, 4.2f, .62f),
+        Triple(.40f to .52f, 2.0f, .45f),
+        Triple(.17f to .11f, 2.4f, .42f),
+    )
+    pairs.forEach { (pos, r, alpha) ->
+        val (dx, y) = pos
+        sparkle(Offset(size.width * (.5f - dx), size.height * y), r.dp.toPx(), star.copy(alpha = alpha))
+        sparkle(Offset(size.width * (.5f + dx), size.height * y), r.dp.toPx(), star.copy(alpha = alpha))
     }
+    sparkle(Offset(size.width * .5f, size.height * .91f), 3.0.dp.toPx(), star.copy(alpha = .5f))
+}
+
+private fun DrawScope.sparkle(c: Offset, r: Float, color: Color) {
+    val k = r * .14f
+    drawPath(Path().apply {
+        moveTo(c.x, c.y - r)
+        quadraticBezierTo(c.x + k, c.y - k, c.x + r, c.y)
+        quadraticBezierTo(c.x + k, c.y + k, c.x, c.y + r)
+        quadraticBezierTo(c.x - k, c.y + k, c.x - r, c.y)
+        quadraticBezierTo(c.x - k, c.y - k, c.x, c.y - r)
+        close()
+    }, color)
 }
 
 /** The Best Mates mark drawn natively so it scales crisply anywhere in the UI. */

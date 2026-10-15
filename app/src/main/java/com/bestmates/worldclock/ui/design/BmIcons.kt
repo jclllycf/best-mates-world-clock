@@ -20,8 +20,8 @@ object BmIcons {
     val Redo: ImageVector get() = OrbitIcons.Redo
     val Settings: ImageVector get() = OrbitIcons.Settings
 
-    val Back by lazy { icon("Back") { moveTo(14.5f, 5.5f); lineTo(8f, 12f); lineTo(14.5f, 18.5f) } }
-    val ChevronRight by lazy { icon("ChevronRight") { moveTo(9.5f, 5.5f); lineTo(16f, 12f); lineTo(9.5f, 18.5f) } }
+    val Back by lazy { icon("Back", mirror = true) { moveTo(14.5f, 5.5f); lineTo(8f, 12f); lineTo(14.5f, 18.5f) } }
+    val ChevronRight by lazy { icon("ChevronRight", mirror = true) { moveTo(9.5f, 5.5f); lineTo(16f, 12f); lineTo(9.5f, 18.5f) } }
     val ChevronDown by lazy { icon("ChevronDown") { moveTo(6f, 9.5f); lineTo(12f, 15.5f); lineTo(18f, 9.5f) } }
     val Close by lazy { icon("Close") { moveTo(6.5f, 6.5f); lineTo(17.5f, 17.5f); moveTo(17.5f, 6.5f); lineTo(6.5f, 17.5f) } }
     val Plus by lazy { icon("Plus") { moveTo(12f, 5f); lineTo(12f, 19f); moveTo(5f, 12f); lineTo(19f, 12f) } }
@@ -297,13 +297,15 @@ object BmIcons {
     val Info by lazy { icon("Info") { circle(12f, 12f, 8.5f); moveTo(12f, 11f); lineTo(12f, 16.5f); dot(12f, 7.8f, .25f) } }
 }
 
-private fun icon(name: String, stroke: Float = 1.7f, block: PathBuilder.() -> Unit): ImageVector =
+private fun icon(name: String, stroke: Float = 1.7f, mirror: Boolean = false, block: PathBuilder.() -> Unit): ImageVector =
     ImageVector.Builder(
         name = "Bm$name",
         defaultWidth = 24.dp,
         defaultHeight = 24.dp,
         viewportWidth = 24f,
         viewportHeight = 24f,
+        // Direction-bearing glyphs flip in right-to-left languages.
+        autoMirror = mirror,
     ).apply {
         path(
             fill = null,

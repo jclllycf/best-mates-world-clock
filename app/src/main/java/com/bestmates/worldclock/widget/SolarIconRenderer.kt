@@ -12,6 +12,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import com.bestmates.worldclock.model.MoonIconStyle
 import com.bestmates.worldclock.model.SunIconStyle
+import com.bestmates.worldclock.solar.SolarCatalog
 import com.caverock.androidsvg.SVG
 
 /** Renders the actual SVG artwork bundled in assets/solar_icons. */
@@ -22,13 +23,19 @@ object SolarIconRenderer {
         isDay: Boolean,
         sun: SunIconStyle,
         moon: MoonIconStyle,
-        color: Int
+        color: Int,
+        raw: Boolean = false,
     ): Bitmap {
         // `sizePx` is the final, physical target size. Keeping the returned
         // bitmap at exactly that size avoids a second density-dependent scale
         // in Compose/RemoteViews (the source of the former mosaic effect).
         val size = sizePx.coerceAtLeast(20)
-        val asset = if (isDay) sun.asset else moon.asset
+        // Older Best Mates styles with a Daybook redraw are drawn with the redraw (several
+        // had malformed paths, BM-REAL-01). The saved identifier is untouched, so this is a
+        // rendering choice only; [raw] shows the original artwork for the audit sheet.
+        val shownSun = if (raw) sun else SolarCatalog.daybookSun(sun) ?: sun
+        val shownMoon = if (raw) moon else SolarCatalog.daybookMoon(moon) ?: moon
+        val asset = if (isDay) shownSun.asset else shownMoon.asset
         return runCatching { renderSvg(context, asset, size, color) }
             .getOrElse { fallback(size, isDay, color) }
     }
@@ -57,9 +64,13 @@ object SolarIconRenderer {
             RectF(0f, 0f, sourceSize.toFloat(), sourceSize.toFloat())
         )
 
-        val visible = alphaBounds(rawMask)
+        // The Daybook set is designed on one grid with its padding built in, so its whole view
+        // box is shown: every glyph keeps the optical size it was drawn at. Legacy packs vary
+        // in padding and are still cropped to their visible pixels and fitted.
+        val designed = asset.startsWith("db_")
+        val visible = if (designed) Rect(0, 0, sourceSize, sourceSize) else alphaBounds(rawMask)
         val mask = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val occupancy = .80f
+        val occupancy = if (designed) 1f else .80f
         val maxSide = size * occupancy
         val scale = minOf(maxSide / visible.width(), maxSide / visible.height())
         val drawWidth = visible.width() * scale

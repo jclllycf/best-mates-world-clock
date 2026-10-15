@@ -15,11 +15,26 @@ class WidgetBindings(context: Context) {
 
     fun projectFor(widgetId: Int): String? = prefs.getString("w$widgetId", null)
     fun bind(widgetId: Int, projectId: String) = prefs.edit().putString("w$widgetId", projectId).apply()
-    fun unbind(widgetId: Int) = prefs.edit().remove("w$widgetId").apply()
+    fun unbind(widgetId: Int) = prefs.edit().remove("w$widgetId").remove("sw$widgetId").remove("sh$widgetId").apply()
     fun widgetsFor(projectId: String): List<Int> = prefs.all.mapNotNull { (key, value) ->
-        if (value == projectId && key.startsWith("w")) key.drop(1).toIntOrNull() else null
+        if (value == projectId && key.startsWith("w") && !key.startsWith("sw")) key.drop(1).toIntOrNull() else null
     }
     fun widgetCount(projectId: String): Int = widgetsFor(projectId).size
+
+    /** The portrait size (dp) the launcher last reported for [widgetId]. */
+    fun reportedSize(widgetId: Int): Pair<Float, Float>? {
+        val w = prefs.getFloat("sw$widgetId", 0f); val h = prefs.getFloat("sh$widgetId", 0f)
+        return if (w > 0f && h > 0f) w to h else null
+    }
+
+    fun recordSize(widgetId: Int, widthDp: Float, heightDp: Float) {
+        if (widthDp < 20f || heightDp < 20f) return
+        if (reportedSize(widgetId) == (widthDp to heightDp)) return
+        prefs.edit().putFloat("sw$widgetId", widthDp).putFloat("sh$widgetId", heightDp).apply()
+    }
+
+    /** The real size of a home-screen widget showing [projectId], if one is placed. */
+    fun placedSizeFor(projectId: String): Pair<Float, Float>? = widgetsFor(projectId).sortedDescending().firstNotNullOfOrNull { reportedSize(it) }
 }
 
 /**
@@ -39,10 +54,16 @@ class LauncherMetrics(context: Context) {
         val w = widthDp / columns
         val h = heightDp / rows
         if (w !in 30f..260f || h !in 30f..260f) return
-        prefs.edit().putFloat("cellW", w).putFloat("cellH", h).apply()
+        // Cells are not additive (launchers put gaps and padding between them), so the exact
+        // size of every span seen is kept as well as the average cell.
+        prefs.edit().putFloat("cellW", w).putFloat("cellH", h)
+            .putFloat("span${columns}x${rows}w", widthDp).putFloat("span${columns}x${rows}h", heightDp).apply()
     }
 
-    fun boardFor(columns: Int, rows: Int): Pair<Float, Float> = (cellWidthDp * columns) to (cellHeightDp * rows)
+    fun boardFor(columns: Int, rows: Int): Pair<Float, Float> {
+        val w = prefs.getFloat("span${columns}x${rows}w", 0f); val h = prefs.getFloat("span${columns}x${rows}h", 0f)
+        return if (w > 0f && h > 0f) w to h else (cellWidthDp * columns) to (cellHeightDp * rows)
+    }
 
     companion object {
         // A typical 4-column phone grid in portrait (about 360dp usable width).

@@ -6,5 +6,16 @@
             android:exported="true"
             android:excludeFromRecents="true"
             android:label="Best Mates Design Lab" />
+        <!-- BM-REAL-01 sun and moon contact sheet, drawn with the production renderer. -->
+        <activity
+            android:name=".debug.CelestialContactSheetActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="Celestial contact sheet" />
+        <activity
+            android:name=".debug.ShapeContactSheetActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="Shape contact sheet" />
     </application>
 </manifest>

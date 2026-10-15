@@ -4,11 +4,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
+import android.graphics.LinearGradient
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
+import android.graphics.Shader
 import android.text.TextPaint
 import android.util.LruCache
 import com.bestmates.worldclock.fonts.WidgetFonts
+import com.bestmates.worldclock.model.MATERIAL_MIST
 import com.bestmates.worldclock.model.WidgetLayer
 import com.bestmates.worldclock.widget.SolarIconRenderer
 import kotlin.math.abs
@@ -22,6 +27,11 @@ data class DrawOptions(
     /** False on the launcher widget: TextClocks draw time and date there. */
     val liveText: Boolean = true,
     val hiddenLayers: Set<Int> = emptySet(),
+    /**
+     * Nothing outside the board is part of the widget: a launcher shows exactly the board,
+     * so the editor and previews clip to it too (shadows of full-bleed shapes included).
+     */
+    val clipToBoard: Boolean = true,
 )
 
 /**
@@ -44,9 +54,12 @@ class SceneRenderer(context: Context) {
     /** One renderer per thread of use: the paints are reused between calls. */
     @Synchronized
     fun draw(canvas: Canvas, scene: Scene, fit: BoardFit, options: DrawOptions) {
+        val saved = canvas.save()
+        if (options.clipToBoard) canvas.clipRect(fit.x(0f), fit.y(0f), fit.x(scene.boardW), fit.y(scene.boardH))
         scene.layers.forEach { if (it.index !in options.hiddenLayers) drawLayer(canvas, it, fit, options.night) }
         scene.cities.forEach { drawCity(canvas, it, fit, options.liveText) }
         scene.texts.forEach { drawText(canvas, it, fit) }
+        canvas.restoreToCount(saved)
     }
 
     /* ------------------------------------------------------------ layers */
@@ -62,7 +75,7 @@ class SceneRenderer(context: Context) {
         val bleedPx = ceil(bleed(item.layer) * k).toInt()
         val l = item.layer
         val key = "${l.shape}|$wPx|$hPx|$bleedPx|${l.dayColor}|${l.nightColor}|${l.textColor}|${l.borderWidth}|${l.borderOpacity}|" +
-            "${l.softness}|${l.glowOpacity}|${l.shadow}|${l.shadowOpacity}|${l.shadowYOffset}|$night|$k"
+            "${l.softness}|${l.glowOpacity}|${l.shadow}|${l.shadowOpacity}|${l.shadowYOffset}|${l.material}|$night|$k"
         val bitmap = layerCache.get(key) ?: renderLayerBitmap(l, wPx, hPx, bleedPx, k, night).also { layerCache.put(key, it) }
         canvas.save()
         canvas.rotate(f.rotation, fit.x(f.cx), fit.y(f.cy))
@@ -83,6 +96,9 @@ class SceneRenderer(context: Context) {
                 color = 0x01000000
                 setShadowLayer(layer.shadow * k, 0f, layer.shadowYOffset * k, withAlpha(0xFF16131C.toInt(), (layer.shadowOpacity * 255).toInt()))
             })
+            // The shadow belongs outside the shape. Under a translucent fill (Mist, glass) it
+            // would otherwise show through as a grey smudge, so the shape's own area is cleared.
+            canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) })
         }
         if (layer.softness > 0f && layer.glowOpacity > 0f) {
             canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -91,12 +107,33 @@ class SceneRenderer(context: Context) {
             })
         }
         canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = (if (night) layer.nightColor else layer.dayColor).toInt() })
+        if (layer.material == MATERIAL_MIST) drawMist(canvas, layer, rect, k, night)
         if (layer.borderWidth > 0f && layer.borderOpacity > 0f) canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             strokeWidth = stroke
             color = withAlpha(layer.textColor.toInt(), (layer.borderOpacity * 255).toInt())
         })
         return bitmap
+    }
+
+    /**
+     * Mist: light falls on a frosted veil from above. A soft sheen over the top half and a
+     * hairline edge, brighter at the top, give the fill depth and a readable outline on any
+     * wallpaper without needing a blur the launcher cannot provide.
+     */
+    private fun drawMist(canvas: Canvas, layer: WidgetLayer, rect: RectF, k: Float, night: Boolean) {
+        val path = ShapePaths.path(layer.shape, rect)
+        val sheenTop = if (night) 0x26FFFFFF else 0x38FFFFFF
+        canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            shader = LinearGradient(0f, rect.top, 0f, rect.bottom, intArrayOf(sheenTop, 0x0AFFFFFF, 0x00FFFFFF), floatArrayOf(0f, .5f, 1f), Shader.TileMode.CLAMP)
+        })
+        val stroke = (k * .9f).coerceAtLeast(1f)
+        val inner = RectF(rect).apply { inset(stroke / 2f, stroke / 2f) }
+        canvas.drawPath(ShapePaths.path(layer.shape, inner), Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = stroke
+            shader = LinearGradient(0f, rect.top, 0f, rect.bottom, intArrayOf(if (night) 0x52FFFFFF else 0x73FFFFFF, 0x1AFFFFFF), null, Shader.TileMode.CLAMP)
+        })
     }
 
     /* ------------------------------------------------------------ cities and text */

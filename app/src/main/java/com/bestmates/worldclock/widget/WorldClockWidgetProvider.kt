@@ -87,6 +87,7 @@ open class WorldClockWidgetProvider : AppWidgetProvider() {
                 val sizes = reportedSizes(options)
                 val portrait = sizes.minByOrNull { it.width } ?: SizeF(300f, 300f)
                 cellSpan(manager, id)?.let { (c, r) -> LauncherMetrics(context).record(c, r, portrait.width, portrait.height) }
+                if (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) > 0) WidgetBindings(context).recordSize(id, portrait.width, portrait.height)
 
                 val views = if (Build.VERSION.SDK_INT >= 31 && sizes.size > 1) {
                     val budget = 2_400_000 / sizes.size

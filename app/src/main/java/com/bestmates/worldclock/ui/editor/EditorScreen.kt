@@ -14,6 +14,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,9 +71,11 @@ import com.bestmates.worldclock.model.City
 import com.bestmates.worldclock.model.CustomText
 import com.bestmates.worldclock.model.ThemeMode
 import com.bestmates.worldclock.model.WidgetConfig
+import com.bestmates.worldclock.model.MATERIAL_MIST
 import com.bestmates.worldclock.model.WidgetLayer
 import com.bestmates.worldclock.model.WidgetShape
 import com.bestmates.worldclock.scene.CityPlacement
+import com.bestmates.worldclock.scene.SceneGeometry
 import com.bestmates.worldclock.ui.common.Backdrop
 import com.bestmates.worldclock.ui.common.backdropBrush
 import com.bestmates.worldclock.ui.common.rememberWallpaperTones
@@ -146,39 +160,58 @@ fun EditorScreen(
             onRedo = state::redo,
             onTitle = { if (isProject) renaming = true },
         )
-        Box(Modifier.weight(1f).fillMaxWidth()) {
-            EditorCanvas(
-                state = state,
-                night = previewNight,
-                backdrop = Backdrop.from(state.config.backdrop),
-                wallpaper = wallpaper,
-                snap = snap,
-                showGrid = grid,
-                emptyHint = uiText("canvas_empty_hint"),
-                modifier = Modifier.fillMaxSize(),
-                bottomInset = 44.dp,
-            )
-            CanvasToolbar(
-                night = previewNight, onNight = { previewNight = !previewNight },
-                snap = snap, onSnap = { snap = !snap },
-                grid = grid, onGrid = { grid = !grid },
-                backdrop = Backdrop.from(state.config.backdrop),
-                onBackdrop = { sheet = EditorSheet.Backdrops },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp),
-            )
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+            // The canvas takes the height the widget's proportions need at full width, so a
+            // 2×1 strip is as large as the screen allows and the panel gets the rest. The
+            // split never follows the selection (that made the board jump); the user can
+            // drag it, and a double tap on the grabber restores the default.
+            val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            val aspect = (state.config.boardWidthDp / state.config.boardHeightDp).coerceIn(.3f, 5f)
+            val maxCanvas = (maxHeight - PANEL_MIN - navBottom).coerceAtLeast(CANVAS_MIN)
+            val ideal = ((maxWidth - 32.dp) / aspect + CANVAS_CHROME).coerceIn(CANVAS_MIN, maxCanvas)
+            var userCanvas by rememberSaveable(aspect) { mutableStateOf(Float.NaN) }
+            val canvasHeight = if (userCanvas.isNaN()) ideal else userCanvas.dp.coerceIn(CANVAS_MIN, (maxHeight - PANEL_COLLAPSED - navBottom).coerceAtLeast(CANVAS_MIN))
+            val latestCanvas by rememberUpdatedState(canvasHeight)
+            val density = LocalDensity.current
+            Column(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxWidth().height(canvasHeight)) {
+                    EditorCanvas(
+                        state = state,
+                        night = previewNight,
+                        backdrop = Backdrop.from(state.config.backdrop),
+                        wallpaper = wallpaper,
+                        snap = snap,
+                        showGrid = grid,
+                        emptyHint = uiText("canvas_empty_hint"),
+                        modifier = Modifier.fillMaxSize(),
+                        bottomInset = 46.dp,
+                    )
+                    CanvasToolbar(
+                        night = previewNight, onNight = { previewNight = !previewNight },
+                        snap = snap, onSnap = { snap = !snap },
+                        grid = grid, onGrid = { grid = !grid },
+                        backdrop = Backdrop.from(state.config.backdrop),
+                        onBackdrop = { sheet = EditorSheet.Backdrops },
+                        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp),
+                    )
+                }
+                BottomPanel(
+                    state = state,
+                    previewNight = previewNight,
+                    onSheet = { sheet = it },
+                    onAddToHome = onAddToHome?.let { add -> { state.endGesture(); saveNow(); add(state.config) } },
+                    onResize = { dy -> userCanvas = (latestCanvas + with(density) { dy.toDp() }).value },
+                    onResetSize = { userCanvas = Float.NaN },
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
-        BottomPanel(
-            state = state,
-            previewNight = previewNight,
-            onSheet = { sheet = it },
-            onAddToHome = onAddToHome?.let { add -> { state.endGesture(); saveNow(); add(state.config) } },
-        )
     }
 
     when (val s = sheet) {
         null -> Unit
-        EditorSheet.AddShape -> BmSheet(onDismiss = { sheet = null }, title = uiText("add_shape")) {
-            Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp)) {
+        EditorSheet.AddShape -> BmSheet(onDismiss = { sheet = null }, title = uiText("add_shape"), fullHeight = true) {
+            Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(bottom = 24.dp)) {
                 ShapeGrid(null, onPick = { shape ->
                     val c0 = state.config
                     if (c0.layers.size < MAX_LAYERS) {
@@ -240,13 +273,18 @@ private fun freshLayer(shape: WidgetShape, id: Long, config: WidgetConfig): Widg
     // Fill the board along the shape's natural proportion, centred.
     val boardAspect = config.boardWidthDp / config.boardHeightDp
     val ratio = shape.designAspect / boardAspect
-    val (w, h) = if (ratio >= 1f) 1f to (1f / ratio) else ratio to 1f
-    val dusk = PALETTES.first { it.key == "dusk" }
+    // A card is the widget's own surface, so it starts full bleed; other shapes start at
+    // their natural proportion, as large as the board allows.
+    val (w, h) = if (shape == WidgetShape.ROUNDED) 1f to 1f else if (ratio >= 1f) 1f to (1f / ratio) else ratio to 1f
+    // New shapes are Mist: a frosted veil that keeps white type legible on bright and dark
+    // wallpapers alike. Existing layers keep whatever finish they were saved with.
+    val mist = PALETTES.first { it.key == "mist" }
     return WidgetLayer(
         id = id, shape = shape, width = w.coerceIn(.2f, 1f), height = h.coerceIn(.2f, 1f),
-        dayColor = dusk.light, nightColor = dusk.dark,
+        dayColor = mist.light, nightColor = mist.dark, textColor = 0xFFFFFFFF,
         borderWidth = 0f, borderOpacity = .3f, softness = 12f, glowOpacity = 0f,
-        shadow = 14f, shadowOpacity = .22f, shadowYOffset = 4f,
+        shadow = 12f, shadowOpacity = .14f, shadowYOffset = 4f,
+        material = MATERIAL_MIST,
     )
 }
 
@@ -303,22 +341,39 @@ private fun CanvasToolbar(
     }
 }
 
+private val PANEL_MIN = 292.dp
+private val PANEL_COLLAPSED = 168.dp
+private val CANVAS_MIN = 200.dp
+/** Canvas space around the board: margins, rotate-knob room and the floating toolbar. */
+private val CANVAS_CHROME = 112.dp
+
 @Composable
-private fun BottomPanel(state: EditorState, previewNight: Boolean, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?) {
+private fun BottomPanel(
+    state: EditorState, previewNight: Boolean, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?,
+    onResize: (Float) -> Unit, onResetSize: () -> Unit, modifier: Modifier = Modifier,
+) {
     val c = Bm.colors
+    val resizeLabel = uiText("resize_panel")
     Column(
-        Modifier.fillMaxWidth()
+        modifier.fillMaxWidth()
             .shadow(20.dp, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp), ambientColor = c.shadow, spotColor = c.shadow)
             .clip(RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
             .background(c.surfaceRaised)
             .navigationBarsPadding(),
     ) {
+        // Grabber: drag to give the canvas or the panel more room.
+        Box(
+            Modifier.fillMaxWidth().height(18.dp)
+                .pointerInput(Unit) { detectVerticalDragGestures { change, dy -> change.consume(); onResize(dy) } }
+                .pointerInput(Unit) { detectTapGestures(onDoubleTap = { onResetSize() }) }
+                .semantics { contentDescription = resizeLabel },
+            contentAlignment = Alignment.Center,
+        ) { Box(Modifier.size(width = 36.dp, height = 4.dp).clip(CircleShape).background(c.hairlineStrong)) }
         AnimatedContent(
             targetState = state.selection?.let { it::class to it.index },
-            transitionSpec = {
-                (fadeIn(tween(180)) + slideInVertically(tween(220)) { it / 6 }) togetherWith fadeOut(tween(120)) using SizeTransform(clip = false)
-            },
+            transitionSpec = { fadeIn(tween(180)) + slideInVertically(tween(220)) { it / 10 } togetherWith fadeOut(tween(120)) },
             label = "panel",
+            modifier = Modifier.fillMaxWidth().weight(1f),
         ) { key ->
             val sel = state.selection
             if (key == null || sel == null) AddDock(state, onSheet, onAddToHome)
@@ -331,7 +386,7 @@ private fun BottomPanel(state: EditorState, previewNight: Boolean, onSheet: (Edi
 private fun AddDock(state: EditorState, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?) {
     val c = state.config
     val placeholder = uiText("text_placeholder")
-    Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 16.dp, bottom = 14.dp)) {
+    Column(Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(top = 2.dp, bottom = 14.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             AddTile(BmIcons.Shape, uiText("shape"), c.layers.size < MAX_LAYERS, Modifier.weight(1f)) { onSheet(EditorSheet.AddShape) }
             AddTile(BmIcons.City, uiText("city"), c.cities.size < MAX_CITIES, Modifier.weight(1f)) { onSheet(EditorSheet.AddCity) }
@@ -352,8 +407,8 @@ private fun AddDock(state: EditorState, onSheet: (EditorSheet) -> Unit, onAddToH
             BmButton(uiText("widget_settings"), { onSheet(EditorSheet.Widget) }, icon = BmIcons.Frame, style = BmButtonStyle.Secondary, size = BmButtonSize.Small)
             Spacer(Modifier.weight(1f))
         }
+        Spacer(Modifier.weight(1f).heightIn(min = 14.dp))
         if (onAddToHome != null) {
-            Spacer(Modifier.height(14.dp))
             BmButton(uiText("add_home"), onAddToHome, Modifier.fillMaxWidth(), icon = BmIcons.AddToHome, size = BmButtonSize.Large)
         }
     }
@@ -428,7 +483,7 @@ private fun WidgetSettingsSheet(state: EditorState, onDismiss: () -> Unit) {
                 WIDGET_SIZES.forEach { (cols, rows) ->
                     com.bestmates.worldclock.ui.design.BmChip("$cols × $rows", cfg.columns == cols && cfg.rows == rows, onClick = {
                         val (w, h) = LauncherMetrics(context).boardFor(cols, rows)
-                        state.updateConfig { it.copy(columns = cols, rows = rows, boardWidthDp = w, boardHeightDp = h) }
+                        state.updateConfig { SceneGeometry.reflow(it.copy(columns = cols, rows = rows), w, h) }
                     })
                 }
             }
