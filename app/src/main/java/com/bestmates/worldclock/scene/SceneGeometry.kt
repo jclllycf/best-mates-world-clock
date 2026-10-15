@@ -98,20 +98,27 @@ object SceneGeometry {
     /**
      * Re-proportions a design to a board of [newW] × [newH] dp without distorting it.
      *
-     * Shapes that span the board on an axis keep spanning it; shapes touching one edge stay
-     * on that edge; other shapes scale with the design (uniformly, so a circle stays round)
-     * and keep their relative position. Cities and text are stored by relative position.
+     * The composition stays together about the centre, scaled uniformly by the design
+     * scale (1 when only the proportions change), so a city that sat on a card still sits
+     * on it. Only shapes that span the board on an axis stretch to keep spanning it, and
+     * shapes touching one edge stay on that edge.
      */
     fun reflow(config: WidgetConfig, newW: Float, newH: Float): WidgetConfig {
         val bw = config.boardWidthDp; val bh = config.boardHeightDp
         if (newW <= 0f || newH <= 0f || (abs(newW - bw) < .01f && abs(newH - bh) < .01f)) return config
         val s = min(newW / bw, newH / bh)
         val scaled = abs(s - 1f) > .005f
+        // Stored positions are −1…1 of the half board; keep their dp offset from the centre.
+        val kx = bw * s / newW; val ky = bh * s / newH
         return config.copy(
             boardWidthDp = newW, boardHeightDp = newH,
             layers = config.layers.map { reflowLayer(it, bw, bh, newW, newH) },
-            cities = if (scaled) config.cities.map { it.copy(scale = (it.scale * s).coerceIn(.35f, 3f)) } else config.cities,
-            texts = if (scaled) config.texts.map { it.copy(size = (it.size * s).coerceIn(6f, 120f)) } else config.texts,
+            cities = config.cities.map { c ->
+                c.copy(x = (c.x * kx).coerceIn(-1f, 1f), y = (c.y * ky).coerceIn(-1f, 1f), scale = if (scaled) (c.scale * s).coerceIn(.35f, 3f) else c.scale)
+            },
+            texts = config.texts.map { t ->
+                t.copy(x = (t.x * kx).coerceIn(-1f, 1f), y = (t.y * ky).coerceIn(-1f, 1f), size = if (scaled) (t.size * s).coerceIn(6f, 120f) else t.size)
+            },
         )
     }
 
@@ -128,13 +135,14 @@ object SceneGeometry {
             val start = when {
                 atStart -> 0f
                 atEnd -> newSize - len
-                else -> ((lo + hi) / 2f) / size * newSize - len / 2f
+                else -> newSize / 2f + ((lo + hi) / 2f - size / 2f) * s - len / 2f
             }
             return start to start + len
         }
-        // Rotated shapes keep their frame; only the centre moves with the board.
-        val (x0, x1) = if (f.rotation % 180f == 0f) axis(f.left, f.right, bw, newW) else (f.cx / bw * newW - f.w * s / 2f) to (f.cx / bw * newW + f.w * s / 2f)
-        val (y0, y1) = if (f.rotation % 180f == 0f) axis(f.top, f.bottom, bh, newH) else (f.cy / bh * newH - f.h * s / 2f) to (f.cy / bh * newH + f.h * s / 2f)
+        // Rotated shapes keep their frame; their centre keeps its offset from the board centre.
+        fun centred(c: Float, size: Float, newSize: Float) = newSize / 2f + (c - size / 2f) * s
+        val (x0, x1) = if (f.rotation % 180f == 0f) axis(f.left, f.right, bw, newW) else (centred(f.cx, bw, newW) - f.w * s / 2f) to (centred(f.cx, bw, newW) + f.w * s / 2f)
+        val (y0, y1) = if (f.rotation % 180f == 0f) axis(f.top, f.bottom, bh, newH) else (centred(f.cy, bh, newH) - f.h * s / 2f) to (centred(f.cy, bh, newH) + f.h * s / 2f)
         return layerFromFrame(layer, Frame((x0 + x1) / 2f, (y0 + y1) / 2f, x1 - x0, y1 - y0, f.rotation), newW, newH)
     }
 

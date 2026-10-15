@@ -344,14 +344,18 @@ private fun Frame.px(fit: BoardFit, lx: Float, ly: Float): Offset { val (x, y) =
  * so it is always reachable.
  */
 private fun rotateKnob(f: Frame, fit: BoardFit, bounds: Size, offsetPx: Float, knobPx: Float): Pair<Offset, Offset> {
-    val off = offsetPx / fit.scale
-    val options = listOf(
-        f.px(fit, 0f, -f.h / 2f - off) to f.px(fit, 0f, -f.h / 2f),
-        f.px(fit, 0f, f.h / 2f + off) to f.px(fit, 0f, f.h / 2f),
-        f.px(fit, 0f, -f.h / 2f + off * .9f) to f.px(fit, 0f, -f.h / 2f),
-    )
     val m = knobPx + 2f
-    return options.firstOrNull { (p, _) -> p.x in m..(bounds.width - m) && p.y in m..(bounds.height - m) } ?: options.last()
+    fun inside(p: Offset) = p.x in m..(bounds.width - m) && p.y in m..(bounds.height - m)
+    // Full stalk above, then below; then the longest stalk that still fits (down to a
+    // short one that clears the corner handles); finally just inside the top edge.
+    for (k in floatArrayOf(1f, .8f, .62f)) {
+        val off = offsetPx * k / fit.scale
+        val above = f.px(fit, 0f, -f.h / 2f - off)
+        if (inside(above)) return above to f.px(fit, 0f, -f.h / 2f)
+        val below = f.px(fit, 0f, f.h / 2f + off)
+        if (inside(below)) return below to f.px(fit, 0f, f.h / 2f)
+    }
+    return f.px(fit, 0f, -f.h / 2f + offsetPx * .9f / fit.scale) to f.px(fit, 0f, -f.h / 2f)
 }
 
 private fun handlePositions(item: SceneItem, fit: BoardFit, bounds: Size, rotateOffsetPx: Float, knobPx: Float): List<Pair<Handle, Offset>> {

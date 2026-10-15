@@ -55,12 +55,24 @@ class WidgetReflowTest {
         assertEquals(w, bleed.right, .01f)
         assertEquals(0f, bleed.top, .01f)
         assertEquals(h, bleed.bottom, .01f)
-        // The circle keeps its size in dp (still round) and its relative position.
+        // The circle keeps its size in dp (still round) and its offset from the centre, so
+        // whatever sat on it still does.
         val before = SceneGeometry.layerFrame(roundBadge, 172f, 98f)
         val after = SceneGeometry.layerFrame(out.layers[1], w, h)
         assertEquals(before.w, after.w, .01f)
         assertEquals(before.h, after.h, .01f)
-        assertEquals(before.cx / 172f, after.cx / w, .001f)
+        assertEquals(before.cx - 172f / 2f, after.cx - w / 2f, .01f)
+    }
+
+    @Test
+    fun contentKeepsItsPlaceOnTheShapeBelow() {
+        // A caption 30 dp above the centre of a 338 dp board stays 30 dp above the centre
+        // when the launcher cell is taller (the 0.5.0 caption drift on a legacy 4×4).
+        val legacy = WidgetConfig(boardWidthDp = 338f, boardHeightDp = 338f,
+            texts = listOf(CustomText(content = "Same sky", y = -30f / 169f)))
+        val (w, h) = SceneGeometry.adaptBoard(338f, 338f, 380f, 420f)
+        val out = SceneGeometry.reflow(legacy, w, h)
+        assertEquals(-30f, out.texts[0].y * h / 2f, .01f)
     }
 
     @Test

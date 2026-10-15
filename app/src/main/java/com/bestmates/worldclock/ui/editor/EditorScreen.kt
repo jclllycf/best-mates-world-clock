@@ -27,6 +27,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.layout.Box
+import com.bestmates.worldclock.ui.design.bleedHorizontally
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -145,6 +147,13 @@ fun EditorScreen(
     }
 
     fun close() { state.endGesture(); saveNow(); onClose(state.config) }
+    fun addShape(shape: WidgetShape) {
+        val c0 = state.config
+        if (c0.layers.size < MAX_LAYERS) {
+            state.commit(c0.copy(layers = c0.layers + freshLayer(shape, state.newId(c0), c0)))
+            state.selection = EditorSelection.Layer(c0.layers.size)
+        }
+    }
     BackHandler { if (state.selection != null) state.selection = null else close() }
 
     Column(Modifier.fillMaxSize().background(c.desk)) {
@@ -174,34 +183,35 @@ fun EditorScreen(
             val latestCanvas by rememberUpdatedState(canvasHeight)
             val density = LocalDensity.current
             Column(Modifier.fillMaxSize()) {
-                Box(Modifier.fillMaxWidth().height(canvasHeight)) {
-                    EditorCanvas(
-                        state = state,
-                        night = previewNight,
-                        backdrop = Backdrop.from(state.config.backdrop),
-                        wallpaper = wallpaper,
-                        snap = snap,
-                        showGrid = grid,
-                        emptyHint = uiText("canvas_empty_hint"),
-                        modifier = Modifier.fillMaxSize(),
-                        bottomInset = 46.dp,
-                    )
-                    CanvasToolbar(
-                        night = previewNight, onNight = { previewNight = !previewNight },
-                        snap = snap, onSnap = { snap = !snap },
-                        grid = grid, onGrid = { grid = !grid },
-                        backdrop = Backdrop.from(state.config.backdrop),
-                        onBackdrop = { sheet = EditorSheet.Backdrops },
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp),
-                    )
-                }
+                // Nothing floats over the canvas: its tools live in the panel's header, so
+                // handles near the board's lower edge are never covered.
+                EditorCanvas(
+                    state = state,
+                    night = previewNight,
+                    backdrop = Backdrop.from(state.config.backdrop),
+                    wallpaper = wallpaper,
+                    snap = snap,
+                    showGrid = grid,
+                    emptyHint = uiText("canvas_empty_hint"),
+                    modifier = Modifier.fillMaxWidth().height(canvasHeight),
+                )
                 BottomPanel(
                     state = state,
                     previewNight = previewNight,
                     onSheet = { sheet = it },
                     onAddToHome = onAddToHome?.let { add -> { state.endGesture(); saveNow(); add(state.config) } },
+                    onAddShape = ::addShape,
                     onResize = { dy -> userCanvas = (latestCanvas + with(density) { dy.toDp() }).value },
                     onResetSize = { userCanvas = Float.NaN },
+                    tools = {
+                        CanvasToolbar(
+                            night = previewNight, onNight = { previewNight = !previewNight },
+                            snap = snap, onSnap = { snap = !snap },
+                            grid = grid, onGrid = { grid = !grid },
+                            backdrop = Backdrop.from(state.config.backdrop),
+                            onBackdrop = { sheet = EditorSheet.Backdrops },
+                        )
+                    },
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -212,14 +222,7 @@ fun EditorScreen(
         null -> Unit
         EditorSheet.AddShape -> BmSheet(onDismiss = { sheet = null }, title = uiText("add_shape"), fullHeight = true) {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(bottom = 24.dp)) {
-                ShapeGrid(null, onPick = { shape ->
-                    val c0 = state.config
-                    if (c0.layers.size < MAX_LAYERS) {
-                        state.commit(c0.copy(layers = c0.layers + freshLayer(shape, state.newId(c0), c0)))
-                        state.selection = EditorSelection.Layer(c0.layers.size)
-                    }
-                    sheet = null
-                })
+                ShapeGrid(null, onPick = { shape -> addShape(shape); sheet = null })
             }
         }
         EditorSheet.AddCity -> CityPickerSheet(onDismiss = { sheet = null }) { picked ->
@@ -328,12 +331,12 @@ private fun CanvasToolbar(
     val c = Bm.colors
     val wallpaper = rememberWallpaperTones()
     Row(
-        modifier.shadow(10.dp, CircleShape, ambientColor = c.shadow, spotColor = c.shadow).clip(CircleShape).background(c.surfaceRaised).padding(4.dp),
+        modifier.clip(CircleShape).background(c.surfaceSunken).padding(3.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        BmIconButton(if (night) BmIcons.Moon else BmIcons.Sun, uiText(if (night) "preview_dark" else "preview_light"), onNight, size = 38.dp, iconSize = 19.dp, tint = if (night) c.moon else c.sun)
-        BmIconButton(BmIcons.Magnet, uiText("snap"), onSnap, selected = snap, size = 38.dp, iconSize = 19.dp)
-        BmIconButton(BmIcons.Grid, uiText("grid"), onGrid, selected = grid, size = 38.dp, iconSize = 19.dp)
+        BmIconButton(if (night) BmIcons.Moon else BmIcons.Sun, uiText(if (night) "preview_dark" else "preview_light"), onNight, size = 36.dp, iconSize = 18.dp, tint = if (night) c.moon else c.sun)
+        BmIconButton(BmIcons.Magnet, uiText("snap"), onSnap, selected = snap, size = 36.dp, iconSize = 18.dp)
+        BmIconButton(BmIcons.Grid, uiText("grid"), onGrid, selected = grid, size = 36.dp, iconSize = 18.dp)
         Box(
             Modifier.padding(horizontal = 4.dp).size(30.dp).clip(CircleShape).background(backdropBrush(backdrop, wallpaper))
                 .border(1.5.dp, c.hairlineStrong, CircleShape).clickable(role = Role.Button, onClick = onBackdrop),
@@ -341,16 +344,17 @@ private fun CanvasToolbar(
     }
 }
 
-private val PANEL_MIN = 292.dp
-private val PANEL_COLLAPSED = 168.dp
+private val PANEL_MIN = 324.dp
+private val PANEL_COLLAPSED = 200.dp
 private val CANVAS_MIN = 200.dp
-/** Canvas space around the board: margins, rotate-knob room and the floating toolbar. */
-private val CANVAS_CHROME = 112.dp
+/** Canvas space around the board: margins and room for the rotate knob. */
+private val CANVAS_CHROME = 72.dp
 
 @Composable
 private fun BottomPanel(
     state: EditorState, previewNight: Boolean, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?,
-    onResize: (Float) -> Unit, onResetSize: () -> Unit, modifier: Modifier = Modifier,
+    onAddShape: (WidgetShape) -> Unit, onResize: (Float) -> Unit, onResetSize: () -> Unit,
+    tools: @Composable () -> Unit, modifier: Modifier = Modifier,
 ) {
     val c = Bm.colors
     val resizeLabel = uiText("resize_panel")
@@ -361,14 +365,18 @@ private fun BottomPanel(
             .background(c.surfaceRaised)
             .navigationBarsPadding(),
     ) {
-        // Grabber: drag to give the canvas or the panel more room.
-        Box(
-            Modifier.fillMaxWidth().height(18.dp)
+        // Header: the grabber (drag to give the canvas or the panel more room; double tap
+        // restores the default) and the canvas tools, which no longer float over the board.
+        Column(
+            Modifier.fillMaxWidth()
                 .pointerInput(Unit) { detectVerticalDragGestures { change, dy -> change.consume(); onResize(dy) } }
-                .pointerInput(Unit) { detectTapGestures(onDoubleTap = { onResetSize() }) }
-                .semantics { contentDescription = resizeLabel },
-            contentAlignment = Alignment.Center,
-        ) { Box(Modifier.size(width = 36.dp, height = 4.dp).clip(CircleShape).background(c.hairlineStrong)) }
+                .pointerInput(Unit) { detectTapGestures(onDoubleTap = { onResetSize() }) },
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(Modifier.padding(top = 8.dp, bottom = 6.dp).size(width = 36.dp, height = 4.dp).clip(CircleShape).background(c.hairlineStrong).semantics { contentDescription = resizeLabel })
+            tools()
+            Spacer(Modifier.height(4.dp))
+        }
         AnimatedContent(
             targetState = state.selection?.let { it::class to it.index },
             transitionSpec = { fadeIn(tween(180)) + slideInVertically(tween(220)) { it / 10 } togetherWith fadeOut(tween(120)) },
@@ -376,16 +384,18 @@ private fun BottomPanel(
             modifier = Modifier.fillMaxWidth().weight(1f),
         ) { key ->
             val sel = state.selection
-            if (key == null || sel == null) AddDock(state, onSheet, onAddToHome)
+            if (key == null || sel == null) AddDock(state, onSheet, onAddToHome, onAddShape)
             else Inspector(state, sel, previewNight, onSheet)
         }
     }
 }
 
 @Composable
-private fun AddDock(state: EditorState, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?) {
+private fun AddDock(state: EditorState, onSheet: (EditorSheet) -> Unit, onAddToHome: (() -> Unit)?, onAddShape: (WidgetShape) -> Unit) {
     val c = state.config
     val placeholder = uiText("text_placeholder")
+    val names = SHAPE_ORDER.associateWith { shapeName(it) }
+    fun shapeLabel(shape: WidgetShape) = names[shape].orEmpty()
     Column(Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(top = 2.dp, bottom = 14.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             AddTile(BmIcons.Shape, uiText("shape"), c.layers.size < MAX_LAYERS, Modifier.weight(1f)) { onSheet(EditorSheet.AddShape) }
@@ -406,6 +416,24 @@ private fun AddDock(state: EditorState, onSheet: (EditorSheet) -> Unit, onAddToH
             BmButton(uiText("layers"), { onSheet(EditorSheet.Layers) }, icon = BmIcons.Layers, style = BmButtonStyle.Secondary, size = BmButtonSize.Small)
             BmButton(uiText("widget_settings"), { onSheet(EditorSheet.Widget) }, icon = BmIcons.Frame, style = BmButtonStyle.Secondary, size = BmButtonSize.Small)
             Spacer(Modifier.weight(1f))
+        }
+        // One tap adds a shape: the whole library, without opening a sheet.
+        Spacer(Modifier.height(18.dp))
+        BmOverline(uiText("quick_shapes"))
+        Spacer(Modifier.height(8.dp))
+        val canAdd = c.layers.size < MAX_LAYERS
+        Row(
+            Modifier.fillMaxWidth().bleedHorizontally(20.dp).horizontalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            SHAPE_ORDER.forEach { shape ->
+                Box(
+                    Modifier.size(width = 64.dp, height = 52.dp).clip(Bm.shapes.tile).background(Bm.colors.surfaceSunken)
+                        .clickable(enabled = canAdd, role = Role.Button) { onAddShape(shape) }
+                        .semantics { contentDescription = shapeLabel(shape) },
+                    contentAlignment = Alignment.Center,
+                ) { ShapeGlyph(shape, Bm.colors.ink.copy(alpha = if (canAdd) .72f else .25f), Modifier.size(width = 40.dp, height = 28.dp)) }
+            }
         }
         Spacer(Modifier.weight(1f).heightIn(min = 14.dp))
         if (onAddToHome != null) {
