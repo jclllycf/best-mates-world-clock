@@ -1,8 +1,9 @@
 # Changelog
 
-## v0.5.0 (versionCode 11) — fixes from the first Samsung review
+## v0.5.0 (versionCode 11) — 2026-10-16
 
-See `PROJECT_STATUS.md` (section 0.5.0) for verification, data notes and Samsung check steps.
+Consolidated public release for this development stage.
+See `PROJECT_STATUS.md` (section 0.5.0) for detailed architecture, verification data, and test steps.
 
 ### Fixed
 
