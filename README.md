@@ -1,10 +1,10 @@
 # Best Mates
 
-**Languages:** [English](README.md) · [中文](docs/README_zh-CN.md) · [Русский](docs/README_ru.md) · [العربية](docs/README_ar.md) · [Türkçe](docs/README_tr.md) · [Deutsch](docs/README_de.md)
+**Languages:** [English](README.md) · [中文](docs/README_zh-CN.md) · [Français](docs/README_fr.md) · [Deutsch](docs/README_de.md) · [Русский](docs/README_ru.md) · [العربية](docs/README_ar.md) · [Türkçe](docs/README_tr.md)
 
 Best Mates is an open-source Android world-clock widget editor designed for people who want personal, beautiful, and tactile home-screen widgets without having to master complex formula-driven widget builders.
 
-> **Status: v0.5.0 Public Release.** Best Mates v0.5.0 is the consolidated release for this development stage. It introduces the full "Daybook" visual language, 29 original celestial sun/moon artworks, 13 new shapes with Mist frosted finishes, proportion-matching home-screen rendering, 6 localized languages (with native right-to-left Arabic layout), magnetic editor snapping, and extensive stability and compatibility hardening.
+> **Status: v0.5.0 Final Milestone — Project Complete.** Best Mates v0.5.0 is the consolidated and accepted final release for this development stage. It introduces the full "Daybook" visual language, 29 original celestial sun/moon artworks, 25 geometric shapes with Mist frosted finishes, proportion-matching home-screen rendering, 7 localized languages (with native right-to-left Arabic layout), magnetic editor snapping, and extensive stability hardening. Active feature development is concluded, and the project is in community-driven maintenance mode.
 
 ---
 
@@ -30,15 +30,15 @@ Best Mates is an open-source Android world-clock widget editor designed for peop
 - **Proportional Canvas Editor:** Real-time design canvas sized directly to target widget proportions (1×1, 2×1, 2×2, 3×3, 4×1, 4×2, 4×3, 4×4).
 - **Intelligent Snapping & Layer Selection:** Magnetic snap guides for edges, centers, thirds, quarters, and sibling elements. Direct one-tap selection of cities or text overlapping shapes.
 - **Daybook Celestial Set:** 29 original geometric sun and moon icons, automatically reflecting daylight/night status calculated via solar coordinates.
-- **Shape & Material System:** 13 geometric shapes organized into four families, featuring Mist (frosted finish), Glass, and Solid styling.
+- **Shape & Material System:** 25 geometric shapes organized into four families (including 13 additions introduced in v0.5.0), featuring Mist (frosted finish), Glass, and Solid styling.
 - **Typography:** 21 bundled open-license typefaces (Fraunces, Figtree, Bricolage Grotesque, JetBrains Mono, Baloo 2, Space Grotesk, etc.) alongside 14 live system font styles.
 - **Complete Visual Identities:** Four curated themes — **Daybook**, **Rosewater**, **Nocturne**, and **Studio** — with full Light, Dark, and System appearance support.
 - **Offline & Online City Search:** Instant offline access to global cities via a bundled GeoNames database, supplemented by online search via Open-Meteo Geocoding.
-- **International Localization:** Complete interfaces in English, 中文 (Chinese Simplified), Русский (Russian), العربية (Arabic with native RTL layout), Türkçe (Turkish), and Deutsch (German).
+- **International Localization:** Complete interfaces in seven languages: English, 中文 (Simplified Chinese), Français (French), Deutsch (German), Русский (Russian), العربية (Arabic with native RTL layout), and Türkçe (Turkish).
 - **Home-Screen Precision:** Full bleed rendering with zero edge-cropping or drop-shadow spilling on modern Android launchers (including Samsung One UI).
 - **Privacy by Design:** All widget configurations remain strictly on-device. No accounts, telemetry, ads, or background location tracking.
 
-*Note on feature boundaries:* This release focuses strictly on world clocks and typography. Live weather forecasts, analog clock hands, and cloud synchronization / file import-export are exploratory ideas not included in v0.5.0.
+*Note on feature boundaries:* This release focuses strictly on world clocks and typography. Live weather forecasts, analog clock hands, and cloud synchronization / file import-export are intentional non-goals for this release, not unfinished defects.
 
 ---
 
@@ -57,10 +57,24 @@ Download **`BestMates-v0.5.0-debug.apk`** from this repository's [Releases](../.
 3. Launch **Best Mates**, create or customize a widget, and tap **Add to Home**.
 4. If your launcher does not automatically display the widget pin prompt, long-press on your home screen and select **Best Mates** from the widget drawer.
 
-> [!IMPORTANT]
-> **Signature & Upgrade Notice:**
-> Best Mates v0.5.0 is distributed as a debug-signed public release. Standard Android security requires identical signing certificates for in-place app updates. Because earlier preview builds (such as v0.1.0 or v0.2.0) were generated with different debug keys, Android may display an `App not installed as package appears to be invalid` error when attempting an in-place upgrade.
-> If you have an earlier preview build installed, please take note of your custom city configurations before uninstalling the older build, as local app data is tied to the previous installation signature.
+> [!WARNING]
+> **Crucial Signature & Data Safety Notice:**
+> - Best Mates v0.5.0 is distributed as a **debug-signed public build**. Standard Android package management blocks in-place upgrades if the APK signing certificate differs from an already installed version (such as earlier preview builds v0.1.0 or v0.2.0).
+> - **DO NOT uninstall Best Mates if you have existing custom projects that you need to retain.**
+> - All project configurations live locally in app-private storage, and Best Mates does not currently include a complete export/import backup feature. Uninstalling the app permanently erases all locally saved widget projects.
+> - If you are currently using an earlier build and rely on your existing configurations, please preserve your current installation until a verified data migration or backup method is available. Do not uninstall as a routine troubleshooting step for signature conflicts.
+> - For new users or clean installations without unbacked-up project data, the v0.5.0 APK can be installed directly.
+
+---
+
+## Maintenance Policy & Project Status
+
+With the v0.5.0 milestone, Best Mates has reached its planned design and functionality goals and is considered officially complete:
+- **No additional features are planned.**
+- **No further visual redesigns are planned.**
+- **No unnecessary architectural reconstructions will be performed.**
+- **Community maintenance:** [GitHub Issues](../../issues) remains open for the community to report critical bugs, security vulnerabilities, or necessary Android platform compatibility adjustments.
+- **Future updates:** Maintenance releases will be evaluated strictly on an individual basis as needed to preserve stability and platform compatibility.
 
 ---
 
@@ -87,6 +101,6 @@ The compiled APK will be output to `app/build/outputs/apk/debug/app-debug.apk`.
 - **Geographical Data:** Bundled city and timezone reference data derived from [GeoNames](https://www.geonames.org/) under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
 - **Online Geocoding:** Powered by [Open-Meteo Geocoding API](https://open-meteo.com/en/docs/geocoding-api).
 - **Bundled Fonts:** All included typefaces are open-source under the [SIL Open Font License 1.1](http://scripts.sil.org/OFL) or Apache License 2.0.
-- **Third-Party Icons:** Open-source vector icons from Lucide, Tabler, Phosphor, Fluent UI, Iconoir, Material Design, and Meteocons. Details are in [app/src/main/assets/THIRD_PARTY_NOTICES.md](app/src/main/assets/THIRD_PARTY_NOTICES.md).
+- **Third-Party Icons:** Open-source vector icons from Lucide, Tabler, Phosphor, Fluent UI, Iconoir, Material Design, and Meteocons. Details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Copyright 2026 Best Mates Contributors.

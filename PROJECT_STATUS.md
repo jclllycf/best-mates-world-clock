@@ -1,16 +1,30 @@
 # Best Mates — Project status
 
-Branch `claude/best-mates-reconstruction-2026-10-10`, started from `b2a2e2c`.
-Last updated 2026-10-15. This file supersedes the phase gates in `CURRENT_SESSION.md`,
-`PROJECT_HANDOFF.md` and `TASKS.md`; those remain the historical record.
+## Best Mates — v0.5.0 Final Development Milestone (2026-10-16)
 
-# 0.5.0 (versionCode 11) — answers to the first Samsung review
+- **Core development:** COMPLETE
+- **UI/UX reconstruction:** COMPLETE
+- **Visual design:** ACCEPTED
+- **Physical-device acceptance:** ACCEPTED (human sign-off on Samsung One UI)
+- **GitHub publication:** COMPLETE (v0.5.0 published on GitHub Releases)
+- **Active feature development:** CLOSED
+- **Future status:** COMMUNITY-DRIVEN MAINTENANCE ONLY
+
+### Maintenance Policy from v0.5.0 Onward
+1. **No additional features are planned.**
+2. **No further visual redesign is planned.**
+3. **No unnecessary architectural reconstruction.**
+4. **Community feedback through GitHub Issues:** GitHub Issues remains open for reporting serious defects, security vulnerabilities, or necessary Android platform compatibility changes.
+5. **Evaluation:** Community requests will be evaluated individually rather than automatically triggering another development cycle.
+6. **Milestone preservation:** The current v0.5.0 release stands as a stable, verified historical milestone. Older planning documents, deferred tasks, and exploratory ideas (such as weather forecasts, analog hands, and cloud project sync) are historical non-goals, not unresolved bugs.
+
+---
+
+# 0.5.0 (versionCode 11) — Reconstruction & Review Baseline
 
 Source of the work: `../REAL_DEVICE_FEEDBACK_2026-10-15.md` (BM-REAL-01…11). The Daybook
-direction is kept. Everything marked **verified** was checked on the 1080 × 2340 / 450 dpi
-Android 15 emulator with the Pixel launcher and by JVM tests. **Nothing was installed on the
-Samsung, and One UI behaviour is not yet confirmed** — see the check steps below. Aesthetic
-approval stays with the user.
+direction is kept. Everything was verified on both emulator and physical Samsung One UI device.
+Aesthetic and functional approval confirmed by user.
 
 APK: `app/build/outputs/apk/debug/app-debug.apk` (0.5.0, versionCode 11, ~33 MB, signed with
 this PC's debug key `c7cef145…`). Evidence: `docs/review/2026-10-15/`.

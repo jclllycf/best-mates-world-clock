@@ -21,10 +21,9 @@ See `PROJECT_STATUS.md` (section 0.5.0) for detailed architecture, verification 
 ### Added / Changed
 
 - Daybook celestial set: 29 original suns and moons drawn from geometry.
-- Mist, a frosted finish, is the default for new shapes; 13 new shapes in four groups.
+- Mist, a frosted finish, is the default for new shapes; expanded shape library to 25 shapes in four groups (13 new additions).
 - Four complete app styles — Daybook, Rosewater, Nocturne, Studio — with live previews.
-- Complete German, French, Russian, Turkish and Arabic (right-to-left) interfaces with
-  correct plurals, plus a build-time translation coverage test.
+- Complete interfaces in seven languages: English, Simplified Chinese, French, German, Russian, Turkish, and Arabic (right-to-left), with CLDR plurals and build-time translation coverage testing.
 - Canvas sized to the widget's proportions, a draggable split, four edge handles,
   pinch on empty canvas for the selection, one-tap shape strip.
 - Symmetric star constellation on the empty Workspace.
